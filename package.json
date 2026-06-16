@@ -1,0 +1,117 @@
+{
+  "name": "bhims",
+  "private": true,
+  "type": "module",
+  "main": "electron.js",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev --host 0.0.0.0 --port 3000",
+    "generate-routes": "tsr generate",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "format": "biome format",
+    "lint": "biome lint",
+    "check": "biome check",
+    "electron:dev": "concurrently -k \"vite dev --host 0.0.0.0 --port 3000\" \"electron .\"",
+    "electron:build": "vite build && electron-builder",
+    "postinstall": "node-gyp rebuild --directory node_modules/better-sqlite3 --release"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.3.0",
+    "@radix-ui/react-slot": "^1.2.5",
+    "@tabler/icons-react": "^3.44.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/match-sorter-utils": "latest",
+    "@tanstack/react-devtools": "latest",
+    "@tanstack/react-form": "latest",
+    "@tanstack/react-query": "latest",
+    "@tanstack/react-query-devtools": "latest",
+    "@tanstack/react-router": "latest",
+    "@tanstack/react-router-devtools": "latest",
+    "@tanstack/react-router-ssr-query": "latest",
+    "@tanstack/react-start": "latest",
+    "@tanstack/react-table": "latest",
+    "@tanstack/router-plugin": "^1.132.0",
+    "better-sqlite3": "^12.10.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "drizzle-orm": "^0.45.2",
+    "lucide-react": "^0.577.0",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.5.0",
+    "react": "^19.2.0",
+    "react-day-picker": "^10.0.1",
+    "react-dom": "^19.2.0",
+    "react-draggable": "^4.6.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss": "^4.1.18",
+    "tw-animate-css": "^1.3.6",
+    "xlsx": "^0.18.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.5",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tanstack/devtools-vite": "latest",
+    "@tanstack/router-cli": "^1.132.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^10.0.3",
+    "drizzle-kit": "^0.31.10",
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3",
+    "jsdom": "^28.1.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss",
+      "better-sqlite3",
+      "electron",
+      "electron-winstaller"
+    ],
+    "allowBuilds": {
+      "esbuild": false,
+      "workerd": false,
+      "sharp": false,
+      "better-sqlite3": true,
+      "electron": true,
+      "electron-winstaller": true
+    }
+  },
+  "build": {
+    "appId": "com.barangay.bhims",
+    "productName": "Barangay Handumanan BHIMS",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "drizzle/**/*",
+      "electron.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "BHIMS"
+    }
+  }
+}
