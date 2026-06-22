@@ -17,9 +17,7 @@ import {
 	Search,
 	Trash2,
 	UserPlus,
-	Calendar as CalendarIcon,
 } from "lucide-react";
-import { format, parseISO, isValid } from "date-fns";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
@@ -32,7 +30,6 @@ import {
 	DialogTitle,
 } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -40,7 +37,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/ui/select";
-import { Switch } from "../components/ui/switch";
 import {
 	Table,
 	TableBody,
@@ -49,11 +45,10 @@ import {
 	TableHeader,
 	TableRow,
 } from "../components/ui/table";
-import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
-import { Calendar as CalendarComponent } from "../components/ui/calendar";
+
+import { AddResidentModal } from "../components/AddResidentModal";
 
 import {
-	addResident,
 	deleteResident,
 	getResidents,
 	getUniquePuroks,
@@ -155,7 +150,9 @@ function ResidentsView() {
 				const target = event.target as HTMLElement;
 				if (
 					target.closest('[role="dialog"]') ||
-					target.closest("[data-radix-popper-content-wrapper]")
+					target.closest("[data-radix-popper-content-wrapper]") ||
+					target.closest("[data-radix-select-content]") ||
+					target.closest('[role="listbox"]')
 				) {
 					return;
 				}
@@ -169,22 +166,6 @@ function ResidentsView() {
 
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [residentToDelete, setResidentToDelete] = useState<number | null>(null);
-
-	// Form state
-	const [formName, setFormName] = useState("");
-	const [formBirthdate, setFormBirthdate] = useState("");
-	const [formGender, setFormGender] = useState("Male");
-	const [formContact, setFormContact] = useState("");
-	const [formPurok, setFormPurok] = useState("");
-	const [formHouseholdId, setFormHouseholdId] = useState("");
-	const [formRelationship, setFormRelationship] = useState("Self");
-	const [formIsPwd, setFormIsPwd] = useState(false);
-	const [formPwdType, setFormPwdType] = useState("");
-	const [formIsSenior, setFormIsSenior] = useState(false);
-	const [formIsVoter, setFormIsVoter] = useState(false);
-	const [formIsSingleParent, setFormIsSingleParent] = useState(false);
-
-	const [formError, setFormError] = useState("");
 
 	useEffect(() => {
 		if (searchParams.action === "add" && !isAddModalOpen) {
@@ -223,7 +204,7 @@ function ResidentsView() {
 					purok: selectedPurok || undefined,
 					isPwd: filterPwd,
 					isSenior: filterSenior,
-					isVoter: filterVoter,
+					isRegisteredVoter: filterVoter,
 					isSingleParent: filterSingleParent,
 					gender: selectedGender || undefined,
 					page: currentPage,
@@ -294,63 +275,6 @@ function ResidentsView() {
 		return () => clearTimeout(delayDebounceFn);
 	}, [loadData]);
 
-	const resetForm = () => {
-		setFormName("");
-		setFormBirthdate("");
-		setFormGender("Male");
-		setFormContact("");
-		setFormPurok("");
-		setFormHouseholdId("");
-		setFormRelationship("Self");
-		setFormIsPwd(false);
-		setFormPwdType("");
-		setFormIsSenior(false);
-		setFormIsVoter(false);
-		setFormIsSingleParent(false);
-		setFormError("");
-	};
-
-	const handleAddSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!formName || !formPurok) {
-			setFormError("Name and Purok are required fields.");
-			return;
-		}
-
-		const payload: ResidentInput = {
-			fullName: formName,
-			birthDate: formBirthdate || null,
-			gender: formGender || null,
-			contactNumber: formContact || null,
-			purok: formPurok,
-			householdId: formHouseholdId || null,
-			isHeadOfHousehold:
-				formRelationship === "Head" || formRelationship === "Self",
-			relationshipToHead: formRelationship,
-			isPwd: formIsPwd,
-			pwdType: formIsPwd ? formPwdType : null,
-			isSeniorCitizen: formIsSenior,
-			isVoter: formIsVoter,
-			isSingleParent: formIsSingleParent,
-		};
-
-		try {
-			const result = await addResident({ data: payload });
-			if (result.success) {
-				setIsAddModalOpen(false);
-				resetForm();
-				invalidateResidentsCache();
-				invalidateHouseholdsCache();
-				loadData();
-				loadPuroks();
-				toast.success("Resident added successfully");
-			}
-		} catch (err) {
-			setFormError("Failed to add resident. Check your fields.");
-			toast.error("Failed to add resident");
-		}
-	};
-
 	const handleDeleteClick = useCallback((id: number) => {
 		setResidentToDelete(id);
 		setIsDeleteModalOpen(true);
@@ -394,7 +318,7 @@ function ResidentsView() {
 			"Is PWD": r.isPwd ? "Yes" : "No",
 			"Disability Type": r.pwdType || "",
 			"Is Senior Citizen": r.isSeniorCitizen ? "Yes" : "No",
-			"Registered Voter": r.isVoter ? "Yes" : "No",
+			"Registered Voter": r.isRegisteredVoter ? "Yes" : "No",
 			"Single Parent": r.isSingleParent ? "Yes" : "No",
 		}));
 
@@ -531,7 +455,10 @@ function ResidentsView() {
 				cell: ({ row }) => {
 					const r = row.original;
 					const hasTag =
-						r.isPwd || r.isSeniorCitizen || r.isVoter || r.isSingleParent;
+						r.isPwd ||
+						r.isSeniorCitizen ||
+						r.isRegisteredVoter ||
+						r.isSingleParent;
 					if (!hasTag)
 						return <span className="text-neutral-600 text-xs">—</span>;
 					return (
@@ -549,7 +476,7 @@ function ResidentsView() {
 									Senior
 								</span>
 							)}
-							{r.isVoter && (
+							{r.isRegisteredVoter && (
 								<span className="rounded-full bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
 									Voter
 								</span>
@@ -630,7 +557,6 @@ function ResidentsView() {
 					</Button>
 					<Button
 						onClick={() => {
-							resetForm();
 							setIsAddModalOpen(true);
 						}}
 						className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-4"
@@ -957,8 +883,15 @@ function ResidentsView() {
 
 				{/* Resident Profile Pane */}
 				{drawerResident && (
-					<Draggable nodeRef={dragNodeRef} handle=".drag-handle" cancel=".no-drag">
-						<div ref={dragNodeRef} className="fixed top-20 right-4 w-[380px] lg:w-[420px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto">
+					<Draggable
+						nodeRef={dragNodeRef}
+						handle=".drag-handle"
+						cancel=".no-drag"
+					>
+						<div
+							ref={dragNodeRef}
+							className="fixed top-20 right-4 w-[450px] lg:w-[500px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
+						>
 							<ResidentProfilePane
 								resident={drawerResident}
 								onClose={() => setDrawerResident(null)}
@@ -975,216 +908,17 @@ function ResidentsView() {
 				)}
 			</div>
 			{/* ADD MODAL */}
-			<Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-				<DialogContent className="max-w-2xl bg-neutral-900 border-neutral-800 text-neutral-100 p-6 max-h-[90vh] overflow-y-auto sm:rounded-2xl">
-					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100 mb-2">
-							Add New Resident Profile
-						</DialogTitle>
-					</DialogHeader>
-					<form onSubmit={handleAddSubmit} className="space-y-6 mt-4">
-						{formError && (
-							<div className="p-3 bg-red-950/40 border border-red-900/50 rounded-xl text-xs text-red-400 flex items-center gap-2">
-								<AlertCircle className="h-4 w-4 shrink-0" />
-								<span>{formError}</span>
-							</div>
-						)}
-
-						{/* Form columns */}
-						<div className="grid gap-4 sm:grid-cols-2">
-							<div className="space-y-2">
-								<Label htmlFor="add-name">Full Name *</Label>
-								<Input
-									id="add-name"
-									value={formName}
-									onChange={(e) => setFormName(e.target.value)}
-									className="bg-neutral-950 border-neutral-800 text-neutral-100"
-									placeholder="e.g. Juan dela Cruz"
-									required
-								/>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="add-birthdate">Birthdate</Label>
-								<Popover>
-									<PopoverTrigger asChild>
-										<Button
-											variant={"outline"}
-											className={`w-full justify-start text-left font-normal bg-neutral-950 border-neutral-800 text-neutral-100 h-10 px-3 py-2 text-sm ${!formBirthdate ? "text-neutral-500" : ""}`}
-										>
-											<CalendarIcon className="mr-2 h-4 w-4" />
-											{formBirthdate ? (
-												format(parseISO(formBirthdate), "PPP")
-											) : (
-												<span>Pick a date</span>
-											)}
-										</Button>
-									</PopoverTrigger>
-									<PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-800 text-neutral-100" align="start">
-										<CalendarComponent
-											mode="single"
-											captionLayout="dropdown"
-											startMonth={new Date(1900, 0)}
-											endMonth={new Date()}
-											selected={formBirthdate && isValid(parseISO(formBirthdate)) ? parseISO(formBirthdate) : undefined}
-											onSelect={(date) => setFormBirthdate(date ? format(date, "yyyy-MM-dd") : "")}
-											className="bg-neutral-900 text-neutral-100"
-										/>
-									</PopoverContent>
-								</Popover>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="add-gender">Gender</Label>
-								<Select value={formGender} onValueChange={setFormGender}>
-									<SelectTrigger
-										id="add-gender"
-										className="w-full bg-neutral-950 border-neutral-800 text-neutral-300 rounded-lg focus:border-emerald-500 h-10 px-3 py-2 text-sm"
-									>
-										<SelectValue placeholder="Select Gender" />
-									</SelectTrigger>
-									<SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
-										<SelectItem value="Male">Male</SelectItem>
-										<SelectItem value="Female">Female</SelectItem>
-										<SelectItem value="Other">Other</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="add-contact">Contact Number</Label>
-								<Input
-									id="add-contact"
-									value={formContact}
-									onChange={(e) => setFormContact(e.target.value)}
-									className="bg-neutral-950 border-neutral-800 text-neutral-100"
-									placeholder="e.g. 0917XXXXXXX"
-								/>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="add-purok">Purok / Address *</Label>
-								<Input
-									id="add-purok"
-									value={formPurok}
-									onChange={(e) => setFormPurok(e.target.value)}
-									className="bg-neutral-950 border-neutral-800 text-neutral-100"
-									placeholder="e.g. Purok 3"
-									required
-								/>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="add-household">Household ID</Label>
-								<Input
-									id="add-household"
-									value={formHouseholdId}
-									onChange={(e) => setFormHouseholdId(e.target.value)}
-									className="bg-neutral-950 border-neutral-800 text-neutral-100"
-									placeholder="e.g. hh-102"
-								/>
-							</div>
-						</div>
-
-						<div className="border-t border-neutral-800/80 pt-4 space-y-4">
-							<div className="space-y-2 max-w-sm">
-								<Label htmlFor="add-relationship">Relationship to Head</Label>
-								<Select
-									value={formRelationship}
-									onValueChange={setFormRelationship}
-								>
-									<SelectTrigger
-										id="add-relationship"
-										className="w-full bg-neutral-950 border-neutral-800 text-neutral-300 rounded-lg focus:border-emerald-500 h-10 px-3 py-2 text-sm"
-									>
-										<SelectValue placeholder="Select Relationship" />
-									</SelectTrigger>
-									<SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
-										<SelectItem value="Head">Head / Self</SelectItem>
-										<SelectItem value="Spouse">Spouse</SelectItem>
-										<SelectItem value="Child">Child</SelectItem>
-										<SelectItem value="Parent">Parent</SelectItem>
-										<SelectItem value="Sibling">Sibling</SelectItem>
-										<SelectItem value="Relative">Relative</SelectItem>
-										<SelectItem value="Other">Other</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-						</div>
-
-						{/* Status Toggles (PWD, Voter, Solo Parent) */}
-						<div className="border-t border-neutral-800/80 pt-4 space-y-4">
-							<h4 className="text-sm font-semibold text-neutral-300 uppercase tracking-wider">
-								Demographic Flags
-							</h4>
-
-							<div className="grid gap-4 sm:grid-cols-3">
-								{/* Voter toggle */}
-								<div className="flex items-center justify-between p-3 rounded-xl border border-neutral-800 bg-neutral-950/30">
-									<Label className="text-xs font-semibold text-neutral-300">
-										Registered Voter
-									</Label>
-									<Switch
-										checked={formIsVoter}
-										onCheckedChange={setFormIsVoter}
-									/>
-								</div>
-
-								{/* Single parent toggle */}
-								<div className="flex items-center justify-between p-3 rounded-xl border border-neutral-800 bg-neutral-950/30">
-									<Label className="text-xs font-semibold text-neutral-300">
-										Single Parent
-									</Label>
-									<Switch
-										checked={formIsSingleParent}
-										onCheckedChange={setFormIsSingleParent}
-									/>
-								</div>
-
-								{/* PWD toggle */}
-								<div className="flex items-center justify-between p-3 rounded-xl border border-neutral-800 bg-neutral-950/30">
-									<Label className="text-xs font-semibold text-neutral-300">
-										PWD Status
-									</Label>
-									<Switch checked={formIsPwd} onCheckedChange={setFormIsPwd} />
-								</div>
-							</div>
-
-							{formIsPwd && (
-								<div className="space-y-2 max-w-sm animate-in slide-in-from-top-1 duration-150">
-									<Label htmlFor="add-pwd-type">
-										Disability Type / Details
-									</Label>
-									<Input
-										id="add-pwd-type"
-										value={formPwdType}
-										onChange={(e) => setFormPwdType(e.target.value)}
-										className="bg-neutral-950 border-neutral-800 text-neutral-100"
-										placeholder="e.g. Visual Impairment"
-									/>
-								</div>
-							)}
-						</div>
-
-						{/* Actions */}
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
-							<Button
-								type="button"
-								onClick={() => setIsAddModalOpen(false)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
-							>
-								Cancel
-							</Button>
-							<Button
-								type="submit"
-								className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5"
-							>
-								Save Profile
-							</Button>
-						</div>
-					</form>
-				</DialogContent>
-			</Dialog>
+			<AddResidentModal
+				isOpen={isAddModalOpen}
+				onClose={() => setIsAddModalOpen(false)}
+				onSuccess={() => {
+					setIsAddModalOpen(false);
+					invalidateResidentsCache();
+					invalidateHouseholdsCache();
+					loadData();
+					loadPuroks();
+				}}
+			/>
 			{/* DELETE CONFIRMATION DIALOG */}
 			<Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
 				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">

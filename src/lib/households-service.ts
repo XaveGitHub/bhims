@@ -1,28 +1,66 @@
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { residents } from "../db/schema";
+import { households, residents } from "../db/schema";
 
 export interface HouseholdMember {
 	id: number;
+	// Name
 	fullName: string;
+	lastName: string | null;
+	firstName: string | null;
+	middleName: string | null;
+	suffix: string | null;
+	// Demographics
 	birthDate: string | null;
 	gender: string | null;
+	civilStatus: string | null;
+	religion: string | null;
+	// Contact
+	contactNumber: string | null;
+	email: string | null;
+	// Household
 	relationshipToHead: string | null;
 	isHeadOfHousehold: boolean;
+	purok: string;
+	householdId: string | null;
+	// Education & Work
+	educationalAttainment: string | null;
+	occupation: string | null;
+	employmentStatus: string | null;
+	monthlyIncome: string | null;
+	sourceOfLivelihood: string | null;
+	// Status Flags
 	isPwd: boolean;
 	pwdType: string | null;
 	isSeniorCitizen: boolean;
-	isVoter: boolean;
+	isResidentVoter: boolean;
+	isRegisteredVoter: boolean;
 	isSingleParent: boolean;
-	contactNumber: string | null;
-	purok: string;
-	householdId: string | null;
+	isOfw: boolean;
+	isOsy: boolean;
+	isIp: boolean;
+	isMigrant: boolean;
+	isNationalPensioner: boolean;
+	isLocalPensioner: boolean;
+	// Health
+	debilitatingDiseases: string | null;
+	isBedBound: boolean;
+	isWheelchairBound: boolean;
+	isDialysisPatient: boolean;
+	isCancerPatient: boolean;
 }
 
 export interface HouseholdDetail {
 	householdId: string;
 	purok: string;
+	block: string | null;
+	lot: string | null;
+	phase: string | null;
+	tenureStatus: string | null;
+	housingType: string | null;
+	constructionType: string | null;
+	sanitationMethod: string | null;
 	head: HouseholdMember | null;
 	spouse: HouseholdMember | null;
 	children: HouseholdMember[];
@@ -34,6 +72,15 @@ export interface HouseholdSummary {
 	purok: string;
 	headName: string;
 	memberCount: number;
+	adultsCount: number;
+	childrenCount: number;
+}
+
+// Helper to determine age based on birthDate
+function getAge(birthDate: string | null): number | null {
+	if (!birthDate) return null;
+	const birth = new Date(birthDate);
+	return new Date().getFullYear() - birth.getFullYear();
 }
 
 // Get list of all households summaries
@@ -53,6 +100,18 @@ export const getHouseholds = createServerFn({
 	const summaries: HouseholdSummary[] = [];
 
 	for (const [householdId, members] of Object.entries(groups)) {
+		let adultsCount = 0;
+		let childrenCount = 0;
+
+		for (const m of members) {
+			const age = getAge(m.birthDate);
+			if (age !== null && age < 18) {
+				childrenCount++;
+			} else {
+				adultsCount++; // Treat missing birthDate as adult by default
+			}
+		}
+
 		const isHead = (m: any) =>
 			m.relationshipToHead?.toLowerCase() === "head" ||
 			m.relationshipToHead?.toLowerCase() === "self";
@@ -69,6 +128,8 @@ export const getHouseholds = createServerFn({
 			purok,
 			headName,
 			memberCount: members.length,
+			adultsCount,
+			childrenCount,
 		});
 	}
 
@@ -86,13 +147,20 @@ export const getHouseholdDetails = createServerFn({
 })
 	.validator((householdId: string) => householdId)
 	.handler(async ({ data: householdId }): Promise<HouseholdDetail | null> => {
+		// Fetch the dwelling info
+		const dwelling = db
+			.select()
+			.from(households)
+			.where(eq(households.id, householdId))
+			.get();
+
 		const members = db
 			.select()
 			.from(residents)
 			.where(eq(residents.householdId, householdId))
 			.all();
 
-		if (members.length === 0) return null;
+		if (members.length === 0 && !dwelling) return null;
 
 		let head: HouseholdMember | null = null;
 		let spouse: HouseholdMember | null = null;
@@ -107,20 +175,23 @@ export const getHouseholdDetails = createServerFn({
 
 		for (const m of members) {
 			const formattedMember: HouseholdMember = {
-				id: m.id,
-				fullName: m.fullName,
-				birthDate: m.birthDate,
-				gender: m.gender,
-				relationshipToHead: m.relationshipToHead,
+				...m,
 				isHeadOfHousehold: m.id === headId,
 				isPwd: m.isPwd ?? false,
-				pwdType: m.pwdType ?? null,
 				isSeniorCitizen: m.isSeniorCitizen ?? false,
-				isVoter: m.isVoter ?? false,
+				isResidentVoter: m.isResidentVoter ?? false,
+				isRegisteredVoter: m.isRegisteredVoter ?? false,
 				isSingleParent: m.isSingleParent ?? false,
-				contactNumber: m.contactNumber,
-				purok: m.purok,
-				householdId: m.householdId,
+				isOfw: m.isOfw ?? false,
+				isOsy: m.isOsy ?? false,
+				isIp: m.isIp ?? false,
+				isMigrant: m.isMigrant ?? false,
+				isNationalPensioner: m.isNationalPensioner ?? false,
+				isLocalPensioner: m.isLocalPensioner ?? false,
+				isBedBound: m.isBedBound ?? false,
+				isWheelchairBound: m.isWheelchairBound ?? false,
+				isDialysisPatient: m.isDialysisPatient ?? false,
+				isCancerPatient: m.isCancerPatient ?? false,
 			};
 
 			if (headId && m.id === headId) {
@@ -134,11 +205,18 @@ export const getHouseholdDetails = createServerFn({
 			}
 		}
 
-		const purok = head ? head.purok : members[0]?.purok || "Unknown";
+		const purok = dwelling?.purok || head?.purok || members[0]?.purok || "Unknown";
 
 		return {
 			householdId,
 			purok,
+			block: dwelling?.block || null,
+			lot: dwelling?.lot || null,
+			phase: dwelling?.phase || null,
+			tenureStatus: dwelling?.tenureStatus || null,
+			housingType: dwelling?.housingType || null,
+			constructionType: dwelling?.constructionType || null,
+			sanitationMethod: dwelling?.sanitationMethod || null,
 			head,
 			spouse,
 			children,

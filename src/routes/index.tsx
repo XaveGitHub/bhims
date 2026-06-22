@@ -26,9 +26,31 @@ import {
 	CollapsibleTrigger,
 } from "../components/ui/collapsible";
 import { getDashboardData } from "../lib/dashboard-service";
+import { getUniquePuroks } from "../lib/residents-service";
+import { z } from "zod";
+import { useNavigate } from "@tanstack/react-router";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../components/ui/select";
+
+const dashboardSearchSchema = z.object({
+	purok: z.string().optional(),
+});
 
 export const Route = createFileRoute("/")({
-	loader: () => getDashboardData(),
+	validateSearch: dashboardSearchSchema,
+	loaderDeps: ({ search: { purok } }) => ({ purok }),
+	loader: async ({ deps: { purok } }) => {
+		const [stats, puroks] = await Promise.all([
+			getDashboardData({ data: { purok } }),
+			getUniquePuroks(),
+		]);
+		return { stats, puroks };
+	},
 	staleTime: 10000,
 	component: DashboardView,
 });
@@ -59,7 +81,10 @@ function getInitials(name: string): string {
 
 // ─── Main Component ─────────────────────────────────────────────
 function DashboardView() {
-	const stats = Route.useLoaderData();
+	const { stats, puroks } = Route.useLoaderData();
+	const { purok } = Route.useSearch();
+	const navigate = useNavigate({ from: Route.fullPath });
+	
 	const [copied, setCopied] = useState(false);
 	const [hoveredRing, setHoveredRing] = useState<number | null>(null);
 	const [lanOpen, setLanOpen] = useState(false);
@@ -130,25 +155,22 @@ function DashboardView() {
 	];
 
 	// ── Concentric ring chart data ────────────────────────────────
+	// Demographic Ratios ring data — all percentages relative to total residents
+	const total = stats?.totalResidents ?? 0;
 	const ringData = [
 		{
 			label: "Registered Voters",
 			value: stats?.totalVoters ?? 0,
-			pct:
-				stats && stats.totalResidents > 0
-					? (stats.totalVoters / stats.totalResidents) * 100
-					: 0,
+			pct: total > 0 ? ((stats?.totalVoters ?? 0) / total) * 100 : 0,
 			color: "text-cyan-400",
 			stroke: "#22d3ee",
 			radius: 54,
 		},
 		{
-			label: "Senior Citizens",
-			value: stats?.totalSeniors ?? 0,
-			pct:
-				stats && stats.totalResidents > 0
-					? (stats.totalSeniors / stats.totalResidents) * 100
-					: 0,
+			// Use age-calculated seniors (60+) — more accurate than the manual boolean flag
+			label: "Seniors (60+)",
+			value: stats?.totalSeniorsAge ?? 0,
+			pct: total > 0 ? ((stats?.totalSeniorsAge ?? 0) / total) * 100 : 0,
 			color: "text-amber-400",
 			stroke: "#fbbf24",
 			radius: 44,
@@ -156,10 +178,7 @@ function DashboardView() {
 		{
 			label: "PWD Residents",
 			value: stats?.totalPwd ?? 0,
-			pct:
-				stats && stats.totalResidents > 0
-					? (stats.totalPwd / stats.totalResidents) * 100
-					: 0,
+			pct: total > 0 ? ((stats?.totalPwd ?? 0) / total) * 100 : 0,
 			color: "text-purple-400",
 			stroke: "#c084fc",
 			radius: 34,
@@ -167,10 +186,7 @@ function DashboardView() {
 		{
 			label: "Single Parents",
 			value: stats?.totalSingleParents ?? 0,
-			pct:
-				stats && stats.totalResidents > 0
-					? (stats.totalSingleParents / stats.totalResidents) * 100
-					: 0,
+			pct: total > 0 ? ((stats?.totalSingleParents ?? 0) / total) * 100 : 0,
 			color: "text-pink-400",
 			stroke: "#f472b6",
 			radius: 24,
@@ -209,12 +225,12 @@ function DashboardView() {
 		{ bar: "bg-sky-500", glow: "shadow-sky-500/30", text: "text-sky-400" },
 	];
 
-	const totalGenderCount = (stats?.totalMale ?? 0) + (stats?.totalFemale ?? 0);
+	const totalGenderCount = (stats?.totalMale ?? 0) + (stats?.totalFemale ?? 0) + (stats?.totalOtherGender ?? 0);
 
 	return (
 		<div className="space-y-6 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			{/* ── Page Header ─────────────────────────────────────── */}
-			<div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 				<div>
 					<h2 className="text-2xl font-bold tracking-tight text-neutral-100">
 						Dashboard
@@ -222,6 +238,28 @@ function DashboardView() {
 					<p className="text-sm text-neutral-500 mt-0.5">
 						Population overview for Barangay Handumanan
 					</p>
+				</div>
+				<div className="flex items-center gap-2">
+					<Select
+						value={purok || "all"}
+						onValueChange={(val) => {
+							navigate({
+								search: { purok: val === "all" ? undefined : val },
+							});
+						}}
+					>
+						<SelectTrigger className="w-[180px] bg-neutral-900 border-white/10 text-neutral-200">
+							<SelectValue placeholder="All Puroks" />
+						</SelectTrigger>
+						<SelectContent className="bg-neutral-900 border-white/10 text-neutral-200">
+							<SelectItem value="all">All Puroks</SelectItem>
+							{puroks.map((p: string) => (
+								<SelectItem key={p} value={p}>
+									{p}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
 				</div>
 			</div>
 
@@ -423,7 +461,7 @@ function DashboardView() {
 							</p>
 						</CardHeader>
 						<CardContent className="px-5 pb-5">
-							{stats && stats.totalResidents > 0 ? (
+							{stats && stats.totalWithBirthdate > 0 ? (
 								<div className="space-y-4 mt-2">
 									<div className="flex items-center justify-between text-sm mb-1.5">
 										<div className="flex items-center gap-2">
@@ -455,28 +493,22 @@ function DashboardView() {
 											</span>
 										</div>
 										<span className="font-bold text-neutral-100">
-											{(stats?.totalSeniors ?? 0).toLocaleString()}
+											{(stats?.totalSeniorsAge ?? 0).toLocaleString()}
 										</span>
 									</div>
 									{/* Split bar */}
 									<div className="flex rounded-full overflow-hidden h-2 mt-4 border border-white/5">
 										<div
 											className="bg-cyan-500 transition-all duration-700"
-											style={{
-												width: `${((stats?.totalMinors ?? 0) / stats.totalResidents) * 100}%`,
-											}}
+											style={{ width: `${((stats?.totalMinors ?? 0) / (stats.totalWithBirthdate || 1)) * 100}%` }}
 										/>
 										<div
 											className="bg-indigo-500 transition-all duration-700"
-											style={{
-												width: `${((stats?.totalAdults ?? 0) / stats.totalResidents) * 100}%`,
-											}}
+											style={{ width: `${((stats?.totalAdults ?? 0) / (stats.totalWithBirthdate || 1)) * 100}%` }}
 										/>
 										<div
 											className="bg-amber-500 transition-all duration-700"
-											style={{
-												width: `${((stats?.totalSeniors ?? 0) / stats.totalResidents) * 100}%`,
-											}}
+											style={{ width: `${((stats?.totalSeniorsAge ?? 0) / (stats.totalWithBirthdate || 1)) * 100}%` }}
 										/>
 									</div>
 								</div>

@@ -109,3 +109,5 @@ export function runMigrations() {
 
 // Automatically run migrations on database module load
 runMigrations();
+// Trigger reload comment to apply new schema
+

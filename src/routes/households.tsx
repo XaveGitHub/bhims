@@ -17,7 +17,6 @@ import { Card } from "../components/ui/card";
 import {
 	Dialog,
 	DialogContent,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 } from "../components/ui/dialog";
@@ -176,12 +175,14 @@ function HouseholdsView() {
 				const target = event.target as HTMLElement;
 				if (
 					target.closest('[role="dialog"]') ||
-					target.closest("[data-radix-popper-content-wrapper]")
+					target.closest("[data-radix-popper-content-wrapper]") ||
+					target.closest("[data-radix-select-content]") ||
+					target.closest('[role="listbox"]')
 				) {
 					return;
 				}
 				// Also don't close if they clicked a household member card
-				if (target.closest('.member-card-node')) {
+				if (target.closest(".member-card-node")) {
 					return;
 				}
 				setDrawerResident(null);
@@ -309,7 +310,7 @@ function HouseholdsView() {
 							Senior
 						</span>
 					)}
-					{member.isVoter && (
+					{member.isRegisteredVoter && (
 						<span className="inline-flex items-center rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-400/20">
 							Voter
 						</span>
@@ -416,7 +417,10 @@ function HouseholdsView() {
 											<span className="bg-neutral-900 border border-neutral-800/80 px-2 py-0.5 rounded-full truncate">
 												{h.purok}
 											</span>
-											<span>{h.memberCount} members</span>
+											<span className="truncate">
+												{h.memberCount} members ({h.adultsCount} Adults,{" "}
+												{h.childrenCount} Children)
+											</span>
 										</div>
 									</div>
 									<ChevronRight
@@ -583,8 +587,15 @@ function HouseholdsView() {
 
 				{/* Floating Resident Profile Pane (Draggable on the right side of the screen) */}
 				{drawerResident && (
-					<Draggable nodeRef={dragNodeRef} handle=".drag-handle" cancel=".no-drag">
-						<div ref={dragNodeRef} className="fixed top-20 right-4 w-[380px] lg:w-[420px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto">
+					<Draggable
+						nodeRef={dragNodeRef}
+						handle=".drag-handle"
+						cancel=".no-drag"
+					>
+						<div
+							ref={dragNodeRef}
+							className="fixed top-20 right-4 w-[450px] lg:w-[500px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
+						>
 							<ResidentProfilePane
 								resident={drawerResident}
 								onClose={() => setDrawerResident(null)}

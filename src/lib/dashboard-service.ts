@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
-import { residents } from "../db/schema";
+import { households, residents } from "../db/schema";
 
 export interface PurokStat {
 	purok: string;
@@ -19,7 +19,7 @@ export interface RecentActivity {
 export interface DashboardStats {
 	totalResidents: number;
 	totalPwd: number;
-	totalSeniors: number;
+	totalSeniors: number; // boolean flag (isSeniorCitizen)
 	totalVoters: number;
 	totalSingleParents: number;
 	totalHouseholds: number;
@@ -28,6 +28,8 @@ export interface DashboardStats {
 	totalOtherGender: number;
 	totalMinors: number;
 	totalAdults: number;
+	totalSeniorsAge: number; // age-calculated seniors (60+)
+	totalWithBirthdate: number; // residents with a birth date set
 	avgHouseholdSize: number;
 	dataCompletenessPct: number;
 	purokStats: PurokStat[];
@@ -36,15 +38,26 @@ export interface DashboardStats {
 }
 
 export const getDashboardData = createServerFn({
-	method: "GET",
-}).handler(async (): Promise<DashboardStats> => {
-	// Get all residents
-	const allResidents = db.select().from(residents).all();
+	method: "POST",
+})
+	.validator((params: { purok?: string } | void) => params || {})
+	.handler(async ({ data }): Promise<DashboardStats> => {
+	const purokFilter = data?.purok;
+
+	// Get residents
+	const allResidents = purokFilter 
+		? db.select().from(residents).where(eq(residents.purok, purokFilter)).all()
+		: db.select().from(residents).all();
+
+	// Get households
+	const allHouseholds = purokFilter
+		? db.select().from(households).where(eq(households.purok, purokFilter)).all()
+		: db.select().from(households).all();
 
 	const totalResidents = allResidents.length;
 	const totalPwd = allResidents.filter((r) => r.isPwd).length;
 	const totalSeniors = allResidents.filter((r) => r.isSeniorCitizen).length;
-	const totalVoters = allResidents.filter((r) => r.isVoter).length;
+	const totalVoters = allResidents.filter((r) => r.isRegisteredVoter).length;
 	const totalSingleParents = allResidents.filter(
 		(r) => r.isSingleParent,
 	).length;
@@ -56,15 +69,12 @@ export const getDashboardData = createServerFn({
 	const totalFemale = allResidents.filter(
 		(r) => r.gender?.toLowerCase() === "female",
 	).length;
-	const totalOtherGender = totalResidents - totalMale - totalFemale;
+	const totalOtherGender = allResidents.filter(
+		(r) => r.gender != null && r.gender.trim() !== "" && r.gender?.toLowerCase() !== "male" && r.gender?.toLowerCase() !== "female",
+	).length;
 
-	// Unique households
-	const uniqueHouseholds = new Set(
-		allResidents
-			.map((r) => r.householdId)
-			.filter((id) => id !== null && id !== undefined && id !== ""),
-	);
-	const totalHouseholds = uniqueHouseholds.size;
+	// Total households from the households table
+	const totalHouseholds = allHouseholds.length;
 
 	// Average Household Size
 	const residentsInHouseholds = allResidents.filter(
@@ -76,8 +86,7 @@ export const getDashboardData = createServerFn({
 	// Age Demographics & Data Completeness
 	let totalMinors = 0;
 	let totalAdults = 0;
-	// totalSeniors is already counted via isSeniorCitizen boolean, but let's make sure it matches logic if needed. We'll use the boolean since the user explicitly tracks it.
-	// For minors and adults, we calculate from birthDate
+	let totalSeniorsAge = 0;
 	let completeProfiles = 0;
 
 	const today = new Date();
@@ -100,6 +109,8 @@ export const getDashboardData = createServerFn({
 				totalMinors++;
 			} else if (age >= 18 && age < 60) {
 				totalAdults++;
+			} else {
+				totalSeniorsAge++;
 			}
 		}
 	}
@@ -175,6 +186,8 @@ export const getDashboardData = createServerFn({
 		// fallback silently
 	}
 
+	const totalWithBirthdate = totalMinors + totalAdults + totalSeniorsAge;
+
 	return {
 		totalResidents,
 		totalPwd,
@@ -187,6 +200,8 @@ export const getDashboardData = createServerFn({
 		totalOtherGender,
 		totalMinors,
 		totalAdults,
+		totalSeniorsAge,
+		totalWithBirthdate,
 		avgHouseholdSize,
 		dataCompletenessPct,
 		purokStats,

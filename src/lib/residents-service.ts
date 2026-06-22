@@ -4,19 +4,50 @@ import { db } from "../db";
 import { residents } from "../db/schema";
 
 export interface ResidentInput {
+	// Name
 	fullName: string;
+	lastName: string | null;
+	firstName: string | null;
+	middleName: string | null;
+	suffix: string | null;
+	// Demographics
 	birthDate: string | null;
 	gender: string | null;
+	civilStatus: string | null;
+	religion: string | null;
+	// Contact
 	contactNumber: string | null;
+	email: string | null;
+	// Location & Household
 	purok: string;
 	householdId: string | null;
 	isHeadOfHousehold: boolean;
 	relationshipToHead: string | null;
+	// Education & Work
+	educationalAttainment: string | null;
+	occupation: string | null;
+	employmentStatus: string | null;
+	monthlyIncome: string | null;
+	sourceOfLivelihood: string | null;
+	// Status Flags
 	isPwd: boolean;
 	pwdType: string | null;
 	isSeniorCitizen: boolean;
-	isVoter: boolean;
+	isResidentVoter: boolean;
+	isRegisteredVoter: boolean;
 	isSingleParent: boolean;
+	isOfw: boolean;
+	isOsy: boolean;
+	isIp: boolean;
+	isMigrant: boolean;
+	isNationalPensioner: boolean;
+	isLocalPensioner: boolean;
+	// Health
+	debilitatingDiseases: string | null;
+	isBedBound: boolean;
+	isWheelchairBound: boolean;
+	isDialysisPatient: boolean;
+	isCancerPatient: boolean;
 }
 
 // Get all residents with optional filters and pagination
@@ -29,7 +60,8 @@ export const getResidents = createServerFn({
 			purok?: string;
 			isPwd?: boolean;
 			isSenior?: boolean;
-			isVoter?: boolean;
+			isResidentVoter?: boolean;
+			isRegisteredVoter?: boolean;
 			isSingleParent?: boolean;
 			gender?: string;
 			page?: number;
@@ -56,8 +88,11 @@ export const getResidents = createServerFn({
 		if (params.isSenior !== undefined) {
 			conditions.push(eq(residents.isSeniorCitizen, params.isSenior));
 		}
-		if (params.isVoter !== undefined) {
-			conditions.push(eq(residents.isVoter, params.isVoter));
+		if (params.isResidentVoter !== undefined) {
+			conditions.push(eq(residents.isResidentVoter, params.isResidentVoter));
+		}
+		if (params.isRegisteredVoter !== undefined) {
+			conditions.push(eq(residents.isRegisteredVoter, params.isRegisteredVoter));
 		}
 		if (params.isSingleParent !== undefined) {
 			conditions.push(eq(residents.isSingleParent, params.isSingleParent));
@@ -107,18 +142,22 @@ export const addResident = createServerFn({
 			}
 		}
 
-		const result = db
-			.insert(residents)
-			.values({
-				...data,
-				isSeniorCitizen: isSenior,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			})
-			.returning()
-			.get(); // Drizzle SQLite `.returning().get()` gets the inserted row
+		try {
+			const result = db
+				.insert(residents)
+				.values({
+					...data,
+					isSeniorCitizen: isSenior,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				})
+				.returning()
+				.get(); // Drizzle SQLite `.returning().get()` gets the inserted row
 
-		return { success: true, resident: result };
+			return { success: true, resident: result, error: null as string | null };
+		} catch (err: any) {
+			return { success: false, resident: null, error: err.message || "Failed to add resident" };
+		}
 	});
 
 // Update a resident

@@ -3,7 +3,7 @@ import path from "node:path";
 import { createServerFn } from "@tanstack/react-start";
 import Database from "better-sqlite3";
 import { db } from "../db";
-import { settings } from "../db/schema";
+import { households, residents, settings } from "../db/schema";
 
 export interface SettingsData {
 	barangayName: string;
@@ -115,6 +115,33 @@ export const restoreBackup = createServerFn({
 			return {
 				success: false,
 				error: "Database restore failed. Verify backup file integrity.",
+			};
+		}
+	});
+
+// Clear all residents and households data (keeps settings intact)
+export const clearAllData = createServerFn({
+	method: "POST",
+})
+	.validator((confirmation: string) => confirmation)
+	.handler(async ({ data: confirmation }) => {
+		if (confirmation !== "DELETE ALL") {
+			return { success: false, error: "Invalid confirmation phrase." };
+		}
+
+		try {
+			// Delete all residents first (no FK constraints, but order is cleaner)
+			db.delete(residents).run();
+			// Delete all households
+			db.delete(households).run();
+
+			console.log("[Database] All resident and household data cleared.");
+			return { success: true, message: "All data has been deleted." };
+		} catch (error) {
+			console.error("[Database] Clear all data failed:", error);
+			return {
+				success: false,
+				error: "Failed to clear data. Please try again.",
 			};
 		}
 	});

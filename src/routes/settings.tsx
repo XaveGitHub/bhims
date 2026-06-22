@@ -6,6 +6,8 @@ import {
 	EyeOff,
 	RefreshCw,
 	Settings,
+	ShieldAlert,
+	Trash2,
 	Upload,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -21,6 +23,7 @@ import {
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import {
+	clearAllData,
 	downloadBackup,
 	getSettings,
 	restoreBackup,
@@ -58,6 +61,9 @@ function SettingsView() {
 	const [backingUp, setBackingUp] = useState(false);
 	const [restoring, setRestoring] = useState(false);
 	const [isRestoreConfirmOpen, setIsRestoreConfirmOpen] = useState(false);
+	const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
+	const [deleteConfirmText, setDeleteConfirmText] = useState("");
+	const [deleting, setDeleting] = useState(false);
 
 	const loadSettings = useCallback(async () => {
 		if (cachedSettings) {
@@ -159,6 +165,28 @@ function SettingsView() {
 	const confirmRestore = () => {
 		setIsRestoreConfirmOpen(false);
 		restoreInputRef.current?.click();
+	};
+
+	const handleDeleteAll = async () => {
+		if (deleteConfirmText !== "DELETE ALL") return;
+		setDeleting(true);
+		try {
+			const result = await clearAllData({ data: "DELETE ALL" });
+			if (result.success) {
+				toast.success("All data has been deleted. Reloading...");
+				setIsDeleteAllOpen(false);
+				setDeleteConfirmText("");
+				setTimeout(() => {
+					window.location.href = "/";
+				}, 1500);
+			} else {
+				toast.error(result.error || "Failed to delete data.");
+			}
+		} catch {
+			toast.error("An unexpected error occurred.");
+		} finally {
+			setDeleting(false);
+		}
 	};
 
 	const handleRestoreFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -378,6 +406,103 @@ function SettingsView() {
 					</div>
 				</div>
 			</Card>
+
+			{/* Danger Zone */}
+			<Card className="rounded-2xl border-red-900/40 bg-red-950/10 backdrop-blur-xl shadow-lg p-6 space-y-5">
+				<div>
+					<h3 className="text-lg font-bold text-red-400 flex items-center gap-2">
+						<ShieldAlert className="h-4.5 w-4.5" />
+						<span>Danger Zone</span>
+					</h3>
+					<p className="text-xs text-neutral-400 mt-1">
+						Destructive actions that cannot be undone. Proceed with extreme caution.
+					</p>
+				</div>
+
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-red-900/30 bg-neutral-950/30">
+					<div className="space-y-1">
+						<h4 className="font-bold text-sm text-neutral-200">Delete All Records</h4>
+						<p className="text-[10px] text-neutral-500 leading-normal max-w-sm">
+							Permanently removes <strong className="text-neutral-400">all residents and household records</strong> from the database.
+							System settings (barangay name, PIN) are preserved. This action is irreversible.
+						</p>
+					</div>
+					<Button
+						type="button"
+						onClick={() => { setDeleteConfirmText(""); setIsDeleteAllOpen(true); }}
+						className="shrink-0 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-800/50 hover:border-red-700 rounded-xl px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all"
+					>
+						<Trash2 className="h-3.5 w-3.5" />
+						Delete All Data
+					</Button>
+				</div>
+			</Card>
+
+			{/* DELETE ALL CONFIRMATION DIALOG */}
+			<Dialog
+				open={isDeleteAllOpen}
+				onOpenChange={(open) => {
+					if (!deleting) {
+						setIsDeleteAllOpen(open);
+						if (!open) setDeleteConfirmText("");
+					}
+				}}
+			>
+				<DialogContent className="max-w-md bg-neutral-900 border-red-900/50 text-neutral-100 p-6 sm:rounded-2xl">
+					<DialogHeader>
+						<DialogTitle className="text-xl font-bold text-red-400 flex items-center gap-2">
+							<Trash2 className="h-5 w-5" />
+							<span>Delete All Records</span>
+						</DialogTitle>
+					</DialogHeader>
+					<div className="mt-4 space-y-4">
+						<div className="p-3 rounded-xl bg-red-950/40 border border-red-900/50">
+							<p className="text-sm text-red-300 leading-relaxed">
+								⚠️ This will <strong>permanently delete every resident and household record</strong> in the system.
+								This cannot be undone. Make sure you have a backup before proceeding.
+							</p>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="delete-confirm" className="text-sm text-neutral-300">
+								Type <strong className="text-red-400 font-mono">DELETE ALL</strong> to confirm:
+							</Label>
+							<Input
+								id="delete-confirm"
+								value={deleteConfirmText}
+								onChange={(e) => setDeleteConfirmText(e.target.value)}
+								placeholder="DELETE ALL"
+								className="bg-neutral-950 border-red-900/50 text-white placeholder:text-neutral-600 focus:border-red-500 rounded-xl font-mono tracking-widest"
+								disabled={deleting}
+								autoComplete="off"
+							/>
+						</div>
+
+						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+							<Button
+								type="button"
+								onClick={() => { setIsDeleteAllOpen(false); setDeleteConfirmText(""); }}
+								disabled={deleting}
+								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+							>
+								Cancel
+							</Button>
+							<Button
+								type="button"
+								onClick={handleDeleteAll}
+								disabled={deleteConfirmText !== "DELETE ALL" || deleting}
+								className="bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl px-5 flex items-center gap-2 transition-all"
+							>
+								{deleting ? (
+									<><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Deleting...</>
+								) : (
+									<><Trash2 className="h-3.5 w-3.5" /> Delete Everything</>
+								)}
+							</Button>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
 
 			{/* RESTORE CONFIRMATION DIALOG */}
 			<Dialog

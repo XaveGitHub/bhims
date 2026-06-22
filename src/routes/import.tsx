@@ -20,106 +20,314 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/ui/select";
-import { importResidents } from "../lib/import-service";
-import type { ResidentInput } from "../lib/residents-service";
+import {
+	importResidents,
+	parseBirthDate,
+	normalizeGender,
+	normalizeCivilStatus,
+	normalizeEducation,
+	normalizePurok,
+	toTitleCase,
+	type ImportRow,
+} from "../lib/import-service";
 
 export const Route = createFileRoute("/import")({
 	component: ImportView,
 });
 
+// ─── Normalise an Excel header for fuzzy matching ──────────────────────────
+// Converts underscores to spaces, trims, lowercases so that
+// "last_name", "Last Name", "LAST NAME" all match the same synonym.
+function normalizeHeader(h: string): string {
+	return h.toLowerCase().replace(/_/g, " ").trim();
+}
+
 // Database fields that require mapping
 const DB_FIELDS = [
 	{
-		key: "fullName",
-		label: "Full Name *",
-		desc: "First name, last name, or combined name",
+		key: "lastName",
+		label: "Last Name *",
+		desc: "Family name",
 		required: true,
-		synonyms: ["name", "full name", "fullname", "resident name", "nama"],
+		synonyms: ["last name", "lastname", "surname", "last", "family name", "apelyido", "last_name"],
+	},
+	{
+		key: "firstName",
+		label: "First Name *",
+		desc: "Given name",
+		required: true,
+		synonyms: ["first name", "firstname", "given name", "first_name"],
+	},
+	{
+		key: "middleName",
+		label: "Middle Name",
+		desc: "Middle name",
+		required: false,
+		synonyms: ["middle name", "middlename", "middle_name"],
+	},
+	{
+		key: "suffix",
+		label: "Suffix",
+		desc: "Jr, Sr, III, etc.",
+		required: false,
+		synonyms: ["suffix", "ext name", "extension", "suffix"],
 	},
 	{
 		key: "purok",
-		label: "Purok / Address *",
-		desc: "Purok number, zone, or address",
+		label: "Purok *",
+		desc: "Purok number or name",
 		required: true,
-		synonyms: ["purok", "address", "zone", "sitio", "address1", "purok/sitio"],
+		synonyms: ["purok", "zone", "sitio"],
+	},
+	{
+		key: "block",
+		label: "Block",
+		desc: "Block number",
+		required: false,
+		synonyms: ["block", "blk"],
+	},
+	{
+		key: "lot",
+		label: "Lot",
+		desc: "Lot number",
+		required: false,
+		synonyms: ["lot"],
+	},
+	{
+		key: "phase",
+		label: "Phase",
+		desc: "Phase number",
+		required: false,
+		synonyms: ["phase"],
 	},
 	{
 		key: "birthDate",
 		label: "Birthdate",
-		desc: "Date of birth (YYYY-MM-DD)",
+		desc: "YYYY-MM-DD format",
 		required: false,
-		synonyms: ["birthday", "birthdate", "birth date", "dob", "birth_date"],
+		synonyms: ["birthday", "birthdate", "dob", "birth_date", "birth date"],
 	},
 	{
 		key: "gender",
-		label: "Gender",
-		desc: "Male, Female, or Other",
+		label: "Sex / Gender",
+		desc: "Male, Female",
 		required: false,
 		synonyms: ["gender", "sex", "kasarian"],
 	},
 	{
+		key: "civilStatus",
+		label: "Civil Status",
+		desc: "Single, Married, Widow, etc.",
+		required: false,
+		synonyms: ["civil status", "status", "civil_status"],
+	},
+	{
+		key: "educationalAttainment",
+		label: "Educational Attainment",
+		desc: "Highest level of education",
+		required: false,
+		synonyms: ["educational attainment", "education", "educational_attainment"],
+	},
+	{
+		key: "occupation",
+		label: "Occupation",
+		desc: "Current job",
+		required: false,
+		synonyms: ["occupation", "job", "profession"],
+	},
+	{
+		key: "employmentStatus",
+		label: "Employment Status",
+		desc: "Employed, Unemployed, etc.",
+		required: false,
+		synonyms: ["employment status", "employment_status"],
+	},
+	{
 		key: "contactNumber",
 		label: "Contact Number",
-		desc: "Mobile number or landline",
+		desc: "Mobile number",
 		required: false,
-		synonyms: [
-			"contact",
-			"phone",
-			"mobile",
-			"number",
-			"contact number",
-			"phone number",
-		],
+		synonyms: ["contact number", "mobile", "phone", "contact_number"],
 	},
 	{
-		key: "householdId",
-		label: "Household ID",
-		desc: "Shared code/number to group family members",
+		key: "email",
+		label: "Email",
+		desc: "Email address",
 		required: false,
-		synonyms: ["household", "household id", "householdid", "hhid", "hh id"],
+		synonyms: ["email", "e-mail", "email address"],
 	},
-
 	{
-		key: "relationshipToHead",
-		label: "Relationship to Head",
-		desc: "Spouse, Child, Parent, Sibling, etc.",
+		key: "isResidentVoter",
+		label: "Is Resident Voter",
+		desc: "True/Yes if resident voter",
 		required: false,
-		synonyms: ["relationship", "relation", "relationship to head", "rel"],
+		synonyms: ["is resident voter", "resident voter", "is_resident_voter"],
+	},
+	{
+		key: "isRegisteredVoter",
+		label: "Is Registered Voter",
+		desc: "True/Yes if registered voter",
+		required: false,
+		synonyms: ["is registered voter", "registered voter", "voter", "is_registered_voter"],
+	},
+	{
+		key: "isOfw",
+		label: "Is OFW",
+		desc: "True/Yes if Overseas Filipino Worker",
+		required: false,
+		synonyms: ["is ofw", "ofw", "is_ofw"],
 	},
 	{
 		key: "isPwd",
-		label: "Is PWD?",
-		desc: "True/1/Yes if Person with Disability",
+		label: "Is PWD",
+		desc: "True/Yes if Person with Disability",
 		required: false,
-		synonyms: ["pwd", "is pwd", "ispwd", "is_pwd", "disability"],
+		synonyms: ["is pwd", "pwd", "is_pwd"],
 	},
 	{
-		key: "pwdType",
-		label: "PWD Disability Type",
-		desc: "Type of disability (if PWD)",
+		key: "isOsy",
+		label: "Is OSY",
+		desc: "True/Yes if Out of School Youth",
 		required: false,
-		synonyms: ["pwd type", "disability type", "pwd_type"],
+		synonyms: ["is osy", "osy", "out of school youth", "is_osy"],
 	},
 	{
 		key: "isSeniorCitizen",
-		label: "Is Senior Citizen?",
-		desc: "Age 60+ (System will also auto-check birthday)",
+		label: "Is Senior Citizen",
+		desc: "True/Yes if Senior Citizen",
 		required: false,
-		synonyms: ["senior", "is senior", "senior citizen", "issenior"],
-	},
-	{
-		key: "isVoter",
-		label: "Is Registered Voter?",
-		desc: "True/1/Yes if registered voter in barangay",
-		required: false,
-		synonyms: ["voter", "is voter", "isvoter", "registered voter", "is_voter"],
+		synonyms: ["is senior citizen", "senior citizen", "senior", "is_senior_citizen"],
 	},
 	{
 		key: "isSingleParent",
-		label: "Is Single Parent?",
-		desc: "True/1/Yes if solo parent",
+		label: "Is Solo Parent",
+		desc: "True/Yes if single/solo parent",
 		required: false,
-		synonyms: ["single parent", "solo parent", "single_parent", "solo_parent"],
+		synonyms: ["is solo parent", "solo parent", "single parent", "is_solo_parent"],
+	},
+	{
+		key: "isIp",
+		label: "Is IP",
+		desc: "True/Yes if Indigenous Person",
+		required: false,
+		synonyms: ["is ip", "ip", "indigenous", "is_ip"],
+	},
+	{
+		key: "isMigrant",
+		label: "Is Migrant",
+		desc: "True/Yes if Migrant",
+		required: false,
+		synonyms: ["is migrant", "migrant", "is_migrant"],
+	},
+	{
+		key: "monthlyIncome",
+		label: "Estimated Monthly Income",
+		desc: "Monthly income range",
+		required: false,
+		synonyms: ["estimated monthly income", "monthly income", "income", "monthly_income"],
+	},
+	{
+		key: "sourceOfLivelihood",
+		label: "Primary Source of Livelihood",
+		desc: "Primary livelihood",
+		required: false,
+		synonyms: [
+			"primary source of livelihood",
+			"livelihood",
+			"source of income",
+			"source_of_livelihood",
+		],
+	},
+	{
+		key: "tenureStatus",
+		label: "Tenure Status",
+		desc: "Owned, Rented, etc.",
+		required: false,
+		synonyms: ["tenure status", "tenure", "tenure_status"],
+	},
+	{
+		key: "housingType",
+		label: "Housing Type",
+		desc: "Type of housing",
+		required: false,
+		synonyms: ["housing type", "housing_type"],
+	},
+	{
+		key: "constructionType",
+		label: "Construction Type",
+		desc: "Concrete, Wood, etc.",
+		required: false,
+		synonyms: ["construction type", "construction_type"],
+	},
+	{
+		key: "sanitationMethod",
+		label: "Sanitation Method",
+		desc: "Toilet type, etc.",
+		required: false,
+		synonyms: ["sanitation method", "sanitation", "toilet", "sanitation_method"],
+	},
+	{
+		key: "religion",
+		label: "Religion",
+		desc: "Religious affiliation",
+		required: false,
+		synonyms: ["religion"],
+	},
+	{
+		key: "debilitatingDiseases",
+		label: "Debilitating Diseases",
+		desc: "List of diseases",
+		required: false,
+		synonyms: ["debilitating diseases", "diseases", "illness", "debilitating_diseases"],
+	},
+	{
+		key: "isBedBound",
+		label: "Is Bed Bound",
+		desc: "True/Yes if bed bound",
+		required: false,
+		synonyms: ["is bed bound", "bed bound", "is_bed_bound"],
+	},
+	{
+		key: "isWheelchairBound",
+		label: "Is Wheelchair Bound",
+		desc: "True/Yes if wheelchair bound",
+		required: false,
+		synonyms: ["is wheelchair bound", "wheelchair bound", "is_wheelchair_bound"],
+	},
+	{
+		key: "isDialysisPatient",
+		label: "Is Dialysis Patient",
+		desc: "True/Yes if dialysis patient",
+		required: false,
+		synonyms: ["is dialysis patient", "dialysis patient", "is_dialysis_patient"],
+	},
+	{
+		key: "isCancerPatient",
+		label: "Is Cancer Patient",
+		desc: "True/Yes if cancer patient",
+		required: false,
+		synonyms: ["is cancer patient", "cancer patient", "is_cancer_patient"],
+	},
+	{
+		key: "isNationalPensioner",
+		label: "Is National Pensioner",
+		desc: "True/Yes if SSS/GSIS pensioner",
+		required: false,
+		synonyms: ["is national pensioner", "national pensioner", "is_national_pensioner"],
+	},
+	{
+		key: "isLocalPensioner",
+		label: "Is Local Pensioner",
+		desc: "True/Yes if local pensioner",
+		required: false,
+		synonyms: ["is local pensioner", "local pensioner", "is_local_pensioner"],
+	},
+	{
+		key: "relationshipToHead",
+		label: "Relationship to Head",
+		desc: "Head, Spouse, Child, etc.",
+		required: false,
+		synonyms: ["relationship", "relation", "relationship to head", "rel", "relationship_to_head"],
 	},
 ];
 
@@ -179,10 +387,11 @@ function ImportView() {
 				setExcelHeaders(headers);
 
 				// Perform auto-mapping based on synonyms
+				// Headers are normalised: underscores→spaces, lowercased, trimmed
 				const initialMappings: Record<string, string> = {};
 				for (const field of DB_FIELDS) {
 					const matchedHeader = headers.find((h) => {
-						const normalizedHeader = h.toLowerCase().trim();
+						const normalizedHeader = normalizeHeader(h);
 						return field.synonyms.includes(normalizedHeader);
 					});
 					if (matchedHeader) {
@@ -231,8 +440,9 @@ function ImportView() {
 		}));
 	};
 
-	// Check if true/1/yes in excel cells
+	// Parse TRUE/FALSE/1/0/YES/NO boolean values from Excel
 	const parseBoolean = (value: any): boolean => {
+		if (value === true || value === 1) return true;
 		if (!value) return false;
 		const str = String(value).toLowerCase().trim();
 		return str === "true" || str === "1" || str === "yes" || str === "y";
@@ -253,44 +463,83 @@ function ImportView() {
 		setLoading(true);
 		setError("");
 
-		// Map excel rows to DB payload format
-		const payload: ResidentInput[] = excelData.map((row) => {
-			const getMappedValue = (dbFieldKey: string) => {
-				const mappedHeader = mappings[dbFieldKey];
-				return mappedHeader ? row[mappedHeader] : null;
+		// Map excel rows to ImportRow — pass raw values; all normalization happens server-side
+		const payload: ImportRow[] = excelData.map((row) => {
+			const get = (key: string) => {
+				const header = mappings[key];
+				return header ? row[header] : null;
+			};
+
+			// Boolean fields
+			const boolField = (key: string) => parseBoolean(get(key));
+
+			// String fields — pass raw so server normalizes
+			const strField = (key: string): string | null => {
+				const v = get(key);
+				if (v === null || v === undefined || v === "") return null;
+				return String(v);
 			};
 
 			return {
-				fullName: String(getMappedValue("fullName") || "").trim(),
-				birthDate: getMappedValue("birthDate")
-					? String(getMappedValue("birthDate")).trim()
-					: null,
-				gender: getMappedValue("gender")
-					? String(getMappedValue("gender")).trim()
-					: null,
-				contactNumber: getMappedValue("contactNumber")
-					? String(getMappedValue("contactNumber")).trim()
-					: null,
-				purok: String(getMappedValue("purok") || "Purok 1").trim(),
-				householdId: getMappedValue("householdId")
-					? String(getMappedValue("householdId")).trim()
-					: null,
+				// Names — pass raw strings; server title-cases
+				fullName: "", // computed server-side
+				lastName: strField("lastName"),
+				firstName: strField("firstName"),
+				middleName: strField("middleName"),
+				suffix: strField("suffix"),
+				// Location
+				purok: strField("purok") || "",
+				block: strField("block"),
+				lot: strField("lot"),
+				phase: strField("phase"),
+				// Demographics — pass raw; server normalizes
+				birthDate: get("birthDate"), // pass raw (number OR string)
+				gender: strField("gender"),
+				civilStatus: strField("civilStatus"),
+				religion: strField("religion"),
+				// Education & Work
+				educationalAttainment: strField("educationalAttainment"),
+				occupation: strField("occupation"),
+				employmentStatus: strField("employmentStatus"),
+				monthlyIncome: strField("monthlyIncome"),
+				sourceOfLivelihood: strField("sourceOfLivelihood"),
+				// Contact
+				contactNumber: strField("contactNumber"),
+				email: strField("email"),
+				// Household
+				householdId: null,
 				isHeadOfHousehold: false,
-				relationshipToHead: getMappedValue("relationshipToHead")
-					? String(getMappedValue("relationshipToHead")).trim()
-					: null,
-				isPwd: parseBoolean(getMappedValue("isPwd")),
-				pwdType: getMappedValue("pwdType")
-					? String(getMappedValue("pwdType")).trim()
-					: null,
-				isSeniorCitizen: parseBoolean(getMappedValue("isSeniorCitizen")),
-				isVoter: parseBoolean(getMappedValue("isVoter")),
-				isSingleParent: parseBoolean(getMappedValue("isSingleParent")),
-			};
+				relationshipToHead: strField("relationshipToHead"),
+				// Boolean flags
+				isPwd: boolField("isPwd"),
+				isSeniorCitizen: boolField("isSeniorCitizen"),
+				isResidentVoter: boolField("isResidentVoter"),
+				isRegisteredVoter: boolField("isRegisteredVoter"),
+				isSingleParent: boolField("isSingleParent"),
+				isOfw: boolField("isOfw"),
+				isOsy: boolField("isOsy"),
+				isIp: boolField("isIp"),
+				isMigrant: boolField("isMigrant"),
+				isNationalPensioner: boolField("isNationalPensioner"),
+				isLocalPensioner: boolField("isLocalPensioner"),
+				// Health
+				debilitatingDiseases: strField("debilitatingDiseases"),
+				isBedBound: boolField("isBedBound"),
+				isWheelchairBound: boolField("isWheelchairBound"),
+				isDialysisPatient: boolField("isDialysisPatient"),
+				isCancerPatient: boolField("isCancerPatient"),
+				// Household data
+				tenureStatus: strField("tenureStatus"),
+				housingType: strField("housingType"),
+				constructionType: strField("constructionType"),
+				sanitationMethod: strField("sanitationMethod"),
+			} as ImportRow;
 		});
 
-		// Filter out rows that have an empty name
-		const validPayload = payload.filter((r) => r.fullName !== "");
+		// Filter out rows with no name at all
+		const validPayload = payload.filter(
+			(r) => r.firstName || r.lastName || r.fullName,
+		);
 
 		if (validPayload.length === 0) {
 			setError("No valid resident records (with names) could be parsed.");
@@ -313,17 +562,47 @@ function ImportView() {
 		}
 	};
 
-	// Preview data based on current mapping
+	// Preview shows NORMALIZED values (what the data looks like after import)
 	const getPreviewRows = () => {
 		return excelData.slice(0, 3).map((row) => {
-			const preview: Record<string, string> = {};
-			for (const field of DB_FIELDS) {
-				const mappedHeader = mappings[field.key];
-				preview[field.key] = mappedHeader
-					? String(row[mappedHeader] || "")
-					: "-";
-			}
-			return preview;
+			const get = (key: string) => {
+				const header = mappings[key];
+				return header ? row[header] : null;
+			};
+			const str = (key: string) => {
+				const v = get(key);
+				return v !== null && v !== undefined && v !== "" ? String(v) : null;
+			};
+
+			const firstName = toTitleCase(str("firstName"));
+			const middleName = toTitleCase(str("middleName"));
+			const lastName = toTitleCase(str("lastName"));
+			const suffix = toTitleCase(str("suffix"));
+			const fullName =
+				[firstName, middleName, lastName, suffix].filter(Boolean).join(" ") || "—";
+
+			const purokRaw = str("purok") || str("phase");
+			const purok = normalizePurok(purokRaw) || "—";
+			const block = str("block") || "";
+			const lot = str("lot") || "";
+			const hhKey =
+				block && lot && purok !== "—"
+					? `Blk ${block} Lot ${lot}, ${purok}`
+					: purok;
+
+			return {
+				fullName,
+				purok,
+				hhKey,
+				birthDate: parseBirthDate(get("birthDate")) || "—",
+				gender: normalizeGender(str("gender")) || "—",
+				civilStatus: normalizeCivilStatus(str("civilStatus")) || "—",
+				education: normalizeEducation(str("educationalAttainment")) || "—",
+				isPwd: parseBoolean(get("isPwd")),
+				isSeniorCitizen: parseBoolean(get("isSeniorCitizen")),
+				isRegisteredVoter: parseBoolean(get("isRegisteredVoter")),
+				isSingleParent: parseBoolean(get("isSingleParent")),
+			};
 		});
 	};
 
@@ -505,61 +784,54 @@ function ImportView() {
 
 						<div className="overflow-x-auto rounded-xl border border-neutral-800 bg-neutral-950">
 							<table className="w-full text-left text-xs text-neutral-300">
-								<thead className="bg-neutral-900 border-b border-neutral-800 text-neutral-400 font-semibold uppercase">
+								<thead className="bg-neutral-900 border-b border-neutral-800 text-neutral-400 font-semibold">
 									<tr>
 										<th className="px-4 py-3">Full Name</th>
-										<th className="px-4 py-3">Purok</th>
+										<th className="px-4 py-3">Household (Blk/Lot/Zone)</th>
 										<th className="px-4 py-3">Birthdate</th>
 										<th className="px-4 py-3">Gender</th>
-										<th className="px-4 py-3">Household Status</th>
-										<th className="px-4 py-3">PWD / Senior / Voter / Solo P</th>
+										<th className="px-4 py-3">Education</th>
+										<th className="px-4 py-3">Flags</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-neutral-900">
 									{getPreviewRows().map((row, idx) => (
 										<tr
-											key={`${row.fullName}-${idx}`}
+											key={`preview-${idx}`}
 											className="hover:bg-neutral-900/20"
 										>
-											<td className="px-4 py-3 font-semibold text-neutral-200">
+											<td className="px-4 py-3 font-semibold text-neutral-200 whitespace-nowrap">
 												{row.fullName}
 											</td>
-											<td className="px-4 py-3 text-neutral-300">
-												{row.purok}
+											<td className="px-4 py-3 text-neutral-400 text-[11px] whitespace-nowrap">
+												{row.hhKey}
 											</td>
-											<td className="px-4 py-3">{row.birthDate}</td>
+											<td className="px-4 py-3 tabular-nums">{row.birthDate}</td>
 											<td className="px-4 py-3">{row.gender}</td>
+											<td className="px-4 py-3 text-[11px] text-neutral-400">{row.education}</td>
 											<td className="px-4 py-3">
-												{row.relationshipToHead?.toLowerCase() === "head" ||
-												row.relationshipToHead?.toLowerCase() === "self" ? (
-													<span className="text-emerald-400 font-medium">
-														Head
-													</span>
-												) : (
-													<span>{row.relationshipToHead}</span>
-												)}
-											</td>
-											<td className="px-4 py-3 space-x-1">
-												{parseBoolean(row.isPwd) && (
-													<span className="bg-purple-950/40 border border-purple-900/30 text-purple-400 text-[8px] px-1 rounded">
-														PWD
-													</span>
-												)}
-												{parseBoolean(row.isSeniorCitizen) && (
-													<span className="bg-amber-950/40 border border-amber-900/30 text-amber-400 text-[8px] px-1 rounded">
-														SR
-													</span>
-												)}
-												{parseBoolean(row.isVoter) && (
-													<span className="bg-emerald-950/40 border border-emerald-900/30 text-emerald-400 text-[8px] px-1 rounded">
-														Voter
-													</span>
-												)}
-												{parseBoolean(row.isSingleParent) && (
-													<span className="bg-pink-950/40 border border-pink-900/30 text-pink-400 text-[8px] px-1 rounded">
-														Solo P
-													</span>
-												)}
+												<div className="flex flex-wrap gap-1">
+													{row.isPwd && (
+														<span className="bg-purple-950/40 border border-purple-900/30 text-purple-400 text-[8px] px-1.5 py-0.5 rounded">
+															PWD
+														</span>
+													)}
+													{row.isSeniorCitizen && (
+														<span className="bg-amber-950/40 border border-amber-900/30 text-amber-400 text-[8px] px-1.5 py-0.5 rounded">
+															Senior
+														</span>
+													)}
+													{row.isRegisteredVoter && (
+														<span className="bg-cyan-950/40 border border-cyan-900/30 text-cyan-400 text-[8px] px-1.5 py-0.5 rounded">
+															Voter
+														</span>
+													)}
+													{row.isSingleParent && (
+														<span className="bg-pink-950/40 border border-pink-900/30 text-pink-400 text-[8px] px-1.5 py-0.5 rounded">
+															Solo Parent
+														</span>
+													)}
+												</div>
 											</td>
 										</tr>
 									))}
