@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { eq } from "drizzle-orm";
+import { eq, like, and, or } from "drizzle-orm";
 import { db } from "../db";
 import { households, residents } from "../db/schema";
 
@@ -23,6 +23,8 @@ export interface HouseholdMember {
 	relationshipToHead: string | null;
 	isHeadOfHousehold: boolean;
 	purok: string;
+	block: string | null;
+	lot: string | null;
 	householdId: string | null;
 	// Education & Work
 	educationalAttainment: string | null;
@@ -49,6 +51,7 @@ export interface HouseholdMember {
 	isWheelchairBound: boolean;
 	isDialysisPatient: boolean;
 	isCancerPatient: boolean;
+	isDeceased: boolean | null;
 }
 
 export interface HouseholdDetail {
@@ -74,20 +77,33 @@ export interface HouseholdSummary {
 	memberCount: number;
 	adultsCount: number;
 	childrenCount: number;
+	block?: string | null;
+	lot?: string | null;
 }
 
-// Helper to determine age based on birthDate
+const currentYear = new Date().getFullYear();
+// Fast helper to determine age without creating Date objects
 function getAge(birthDate: string | null): number | null {
-	if (!birthDate) return null;
-	const birth = new Date(birthDate);
-	return new Date().getFullYear() - birth.getFullYear();
+	if (!birthDate || birthDate.length < 4) return null;
+	const birthYear = parseInt(birthDate.substring(0, 4), 10);
+	if (isNaN(birthYear)) return null;
+	return currentYear - birthYear;
 }
 
 // Get list of all households summaries
 export const getHouseholds = createServerFn({
 	method: "POST",
 }).handler(async (): Promise<HouseholdSummary[]> => {
-	const allResidents = db.select().from(residents).all();
+	const allResidents = db.select({
+		id: residents.id,
+		householdId: residents.householdId,
+		birthDate: residents.birthDate,
+		relationshipToHead: residents.relationshipToHead,
+		fullName: residents.fullName,
+		purok: residents.purok,
+	}).from(residents).all();
+	const allHouseholds = db.select().from(households).all();
+	const hhMap = new Map(allHouseholds.map((h) => [h.id, h]));
 
 	// Group residents by householdId
 	const groups: Record<string, typeof allResidents> = {};
@@ -130,6 +146,8 @@ export const getHouseholds = createServerFn({
 			memberCount: members.length,
 			adultsCount,
 			childrenCount,
+			block: hhMap.get(householdId)?.block || null,
+			lot: hhMap.get(householdId)?.lot || null,
 		});
 	}
 
@@ -176,6 +194,8 @@ export const getHouseholdDetails = createServerFn({
 		for (const m of members) {
 			const formattedMember: HouseholdMember = {
 				...m,
+				block: dwelling?.block || null,
+				lot: dwelling?.lot || null,
 				isHeadOfHousehold: m.id === headId,
 				isPwd: m.isPwd ?? false,
 				isSeniorCitizen: m.isSeniorCitizen ?? false,
@@ -192,13 +212,14 @@ export const getHouseholdDetails = createServerFn({
 				isWheelchairBound: m.isWheelchairBound ?? false,
 				isDialysisPatient: m.isDialysisPatient ?? false,
 				isCancerPatient: m.isCancerPatient ?? false,
+				isDeceased: m.isDeceased ?? false,
 			};
 
 			if (headId && m.id === headId) {
 				head = formattedMember;
 			} else if (m.relationshipToHead?.toLowerCase() === "spouse") {
 				spouse = formattedMember;
-			} else if (m.relationshipToHead?.toLowerCase() === "child") {
+			} else if (["child", "son", "daughter"].includes(m.relationshipToHead?.toLowerCase() || "")) {
 				children.push(formattedMember);
 			} else {
 				others.push(formattedMember);
@@ -230,8 +251,9 @@ export const updateHouseholdDetails = createServerFn({
 	.validator(
 		(data: {
 			oldHouseholdId: string;
-			newHouseholdId: string;
 			purok: string;
+			block: string | null;
+			lot: string | null;
 			newHeadId?: number;
 		}) => data,
 	)
@@ -244,6 +266,41 @@ export const updateHouseholdDetails = createServerFn({
 
 		if (members.length === 0)
 			return { success: false, error: "Household not found" };
+
+		let headMember = members.find((m) => m.id === data.newHeadId);
+		if (!headMember) {
+			headMember = members.find(
+				(m) =>
+					m.isHeadOfHousehold ||
+					m.relationshipToHead?.toLowerCase() === "head" ||
+					m.relationshipToHead?.toLowerCase() === "self",
+			);
+		}
+		if (!headMember) {
+			headMember = members[0];
+		}
+
+		let newHouseholdId = `HH-${data.purok || "UNKNOWN"}-BLK${data.block || ""}-LOT${data.lot || ""}`.replace(/[\s\/]+/g, "_").toUpperCase();
+		if (!data.block && !data.lot) {
+			newHouseholdId = `HH-${data.purok || "UNKNOWN"}-FAM-${headMember.lastName || "UNKNOWN"}`.replace(/[\s\/]+/g, "_").toUpperCase();
+		}
+
+		// Upsert the household
+		db.insert(households).values({
+			id: newHouseholdId,
+			purok: data.purok,
+			block: data.block || null,
+			lot: data.lot || null,
+			updatedAt: new Date(),
+		}).onConflictDoUpdate({
+			target: households.id,
+			set: {
+				purok: data.purok,
+				block: data.block || null,
+				lot: data.lot || null,
+				updatedAt: new Date(),
+			}
+		}).run();
 
 		for (const member of members) {
 			let isHead = member.isHeadOfHousehold;
@@ -265,7 +322,7 @@ export const updateHouseholdDetails = createServerFn({
 
 			db.update(residents)
 				.set({
-					householdId: data.newHouseholdId,
+					householdId: newHouseholdId,
 					purok: data.purok,
 					isHeadOfHousehold: isHead,
 					relationshipToHead: relationship,
@@ -275,5 +332,108 @@ export const updateHouseholdDetails = createServerFn({
 				.run();
 		}
 
-		return { success: true };
+		return { success: true, newHouseholdId };
+	});
+
+// Fast search for households within a specific purok
+export const searchHouseholds = createServerFn({
+	method: "POST",
+})
+	.validator((params: { purok: string; query?: string }) => params)
+	.handler(async ({ data: { purok, query } }) => {
+		// First get matching households in the purok
+		const conditions = [eq(households.purok, purok)];
+		
+		if (query && query.trim() !== "") {
+			const searchTerm = `%${query.trim()}%`;
+			conditions.push(
+				or(
+					like(households.id, searchTerm),
+					like(households.block, searchTerm),
+					like(households.lot, searchTerm)
+				) as any
+			);
+		}
+
+		// Find the households
+		const hhQuery = db
+			.select()
+			.from(households)
+			.where(and(...conditions))
+			.limit(30)
+			.all();
+
+		if (hhQuery.length === 0) return [];
+
+		// For each household, find the head to get their name
+		const householdIds = hhQuery.map((h) => h.id);
+		
+		const heads = db
+			.select({
+				householdId: residents.householdId,
+				firstName: residents.firstName,
+				lastName: residents.lastName,
+			})
+			.from(residents)
+			.where(
+				and(
+					eq(residents.isHeadOfHousehold, true),
+					// Using or for IN clause since sqlite IN requires specific syntax in drizzle sometimes
+					or(...householdIds.map(id => eq(residents.householdId, id)))
+				)
+			)
+			.all();
+
+		const headMap = new Map();
+		for (const h of heads) {
+			headMap.set(h.householdId, `${h.firstName || ""} ${h.lastName || ""}`.trim() || "Unknown");
+		}
+
+		// Map results
+		const results: HouseholdSummary[] = hhQuery.map((h) => ({
+			householdId: h.id,
+			purok: h.purok,
+			block: h.block,
+			lot: h.lot,
+			headName: headMap.get(h.id) || "Family",
+			memberCount: 0, // Not needed for combobox
+			adultsCount: 0,
+			childrenCount: 0,
+		}));
+
+		// If there is a query, we should also search by resident head name directly
+		if (query && query.trim() !== "") {
+			const headNameSearch = db
+				.select()
+				.from(residents)
+				.where(
+					and(
+						eq(residents.purok, purok),
+						eq(residents.isHeadOfHousehold, true),
+						like(residents.fullName, `%${query.trim()}%`)
+					)
+				)
+				.limit(20)
+				.all();
+
+			for (const resident of headNameSearch) {
+				if (resident.householdId && !results.some(r => r.householdId === resident.householdId)) {
+					const hh = db.select().from(households).where(eq(households.id, resident.householdId)).get();
+					if (hh) {
+						results.push({
+							householdId: hh.id,
+							purok: hh.purok,
+							block: hh.block,
+							lot: hh.lot,
+							headName: resident.fullName,
+							memberCount: 0,
+							adultsCount: 0,
+							childrenCount: 0,
+						});
+					}
+				}
+			}
+		}
+
+		return results.slice(0, 30);
 	});

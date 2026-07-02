@@ -58,6 +58,7 @@ function DialogContent({
 					"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg gap-4 border border-neutral-800 bg-neutral-900 p-6 shadow-lg duration-200 transform -translate-x-1/2 -translate-y-1/2 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-2xl md:w-full",
 					className,
 				)}
+				aria-describedby={props['aria-describedby'] || undefined}
 				{...props}
 			>
 				{children}

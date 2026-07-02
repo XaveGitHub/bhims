@@ -2,8 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
 	AlertTriangle,
 	Download,
-	Eye,
-	EyeOff,
 	RefreshCw,
 	Settings,
 	ShieldAlert,
@@ -34,7 +32,7 @@ export const Route = createFileRoute("/settings")({
 	component: SettingsView,
 });
 
-let cachedSettings: { barangayName: string; pin: string } | null = null;
+let cachedSettings: { barangayName: string } | null = null;
 
 // Manual prefetcher for hover-optimizations
 export const prefetchSettingsData = async () => {
@@ -52,8 +50,6 @@ function SettingsView() {
 
 	// Settings Form state
 	const [brgyName, setBrgyName] = useState(cachedSettings?.barangayName || "");
-	const [pin, setPin] = useState(cachedSettings?.pin || "");
-	const [showPin, setShowPin] = useState(false);
 
 	// Loading & statuses
 	const [loading, setLoading] = useState(!cachedSettings);
@@ -65,10 +61,9 @@ function SettingsView() {
 	const [deleteConfirmText, setDeleteConfirmText] = useState("");
 	const [deleting, setDeleting] = useState(false);
 
-	const loadSettings = useCallback(async () => {
-		if (cachedSettings) {
+	const loadSettings = useCallback(async (force = false) => {
+		if (!force && cachedSettings) {
 			setBrgyName(cachedSettings.barangayName);
-			setPin(cachedSettings.pin);
 			setLoading(false);
 			return;
 		}
@@ -77,7 +72,6 @@ function SettingsView() {
 		try {
 			const data = await getSettings();
 			setBrgyName(data.barangayName);
-			setPin(data.pin);
 			cachedSettings = data;
 		} catch (err) {
 			console.error("Error fetching settings:", err);
@@ -92,12 +86,8 @@ function SettingsView() {
 
 	const handleSaveSettings = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!brgyName || !pin) {
-			toast.error("Barangay Name and PIN are required.");
-			return;
-		}
-		if (pin.length < 4) {
-			toast.error("Access Key must be at least 4 characters.");
+		if (!brgyName) {
+			toast.error("Barangay Name is required.");
 			return;
 		}
 
@@ -105,7 +95,7 @@ function SettingsView() {
 
 		try {
 			const result = await updateSettings({
-				data: { barangayName: brgyName, pin },
+				data: { barangayName: brgyName },
 			});
 			if (result.success) {
 				toast.success("Settings updated successfully.");
@@ -273,37 +263,6 @@ function SettingsView() {
 								placeholder="e.g. Barangay Handumanan"
 								className="bg-neutral-950 border-neutral-800 text-white placeholder:text-neutral-500 focus:border-emerald-500 rounded-xl"
 							/>
-						</div>
-
-						{/* Access PIN */}
-						<div className="space-y-2">
-							<Label htmlFor="system-pin" className="text-neutral-200">
-								Shared Login PIN
-							</Label>
-							<div className="relative">
-								<Input
-									id="system-pin"
-									type={showPin ? "text" : "password"}
-									value={pin}
-									onChange={(e) => setPin(e.target.value.slice(0, 32))}
-									placeholder="Access key used for locking"
-									className="bg-neutral-950 border-neutral-800 text-white placeholder:text-neutral-500 focus:border-emerald-500 rounded-xl pr-10 tracking-widest font-mono"
-								/>
-								<button
-									type="button"
-									onClick={() => setShowPin(!showPin)}
-									className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-500 hover:text-neutral-300"
-								>
-									{showPin ? (
-										<EyeOff className="h-4 w-4" />
-									) : (
-										<Eye className="h-4 w-4" />
-									)}
-								</button>
-							</div>
-							<p className="text-[10px] text-neutral-500">
-								Can be any letters, numbers, or symbols (4 to 32 characters).
-							</p>
 						</div>
 					</div>
 

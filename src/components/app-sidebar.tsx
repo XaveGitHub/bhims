@@ -2,9 +2,12 @@ import {
 	IconDashboard,
 	IconDatabase,
 	IconFolder,
+	IconFileCertificate,
 	IconInnerShadowTop,
 	IconSettings,
 	IconUsers,
+	IconUserShield,
+	IconClipboardList,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type * as React from "react";
@@ -39,6 +42,11 @@ export function AppSidebar({
 				icon: IconDashboard,
 			},
 			{
+				title: "Staff Queue",
+				url: "/queue",
+				icon: IconClipboardList,
+			},
+			{
 				title: "Residents",
 				url: "/residents",
 				icon: IconUsers,
@@ -47,6 +55,11 @@ export function AppSidebar({
 				title: "Households",
 				url: "/households",
 				icon: IconFolder,
+			},
+			{
+				title: "Document Templates",
+				url: "/templates",
+				icon: IconFileCertificate,
 			},
 		],
 		documents: [
@@ -57,6 +70,11 @@ export function AppSidebar({
 			},
 		],
 		navSecondary: [
+			{
+				title: "Accounts",
+				url: "/accounts",
+				icon: IconUserShield,
+			},
 			{
 				title: "Settings",
 				url: "/settings",

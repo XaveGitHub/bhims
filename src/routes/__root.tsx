@@ -48,8 +48,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		],
 	}),
 	loader: async ({ location }) => {
-		// Bypass auth check for login page
-		if (location.pathname === "/login") {
+		// Bypass auth check for login and kiosk pages
+		if (location.pathname === "/login" || location.pathname === "/kiosk") {
 			return;
 		}
 
@@ -69,16 +69,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootLayout() {
 	const location = useLocation();
 	const isLoginPage = location.pathname === "/login";
+	const isKioskPage = location.pathname === "/kiosk";
+	const isFullscreenPage = isLoginPage || isKioskPage;
 	const [brgyName, setBrgyName] = useState("Barangay Handumanan");
 
 	useEffect(() => {
-		if (!isLoginPage) {
+		if (!isFullscreenPage) {
 			getBarangayName().then(setBrgyName);
 		}
-	}, [isLoginPage]);
+	}, [isFullscreenPage]);
 
-	// If we are on the login page, just render the child route directly without the layout shell
-	if (isLoginPage) {
+	// If we are on a fullscreen page (login/kiosk), just render the child route directly without the layout shell
+	if (isFullscreenPage) {
 		return (
 			<RootDocument>
 				<Outlet />

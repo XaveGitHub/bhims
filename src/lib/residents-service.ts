@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, eq, like, sql } from "drizzle-orm";
+import { and, or, eq, like, sql, getTableColumns, desc, asc, inArray } from "drizzle-orm";
 import { db } from "../db";
-import { residents } from "../db/schema";
+import { residents, households } from "../db/schema";
 
 export interface ResidentInput {
 	// Name
@@ -21,6 +21,9 @@ export interface ResidentInput {
 	// Location & Household
 	purok: string;
 	householdId: string | null;
+	isNewHousehold?: boolean;
+	newHouseholdBlock?: string | null;
+	newHouseholdLot?: string | null;
 	isHeadOfHousehold: boolean;
 	relationshipToHead: string | null;
 	// Education & Work
@@ -63,9 +66,13 @@ export const getResidents = createServerFn({
 			isResidentVoter?: boolean;
 			isRegisteredVoter?: boolean;
 			isSingleParent?: boolean;
+			isUnemployed?: boolean;
 			gender?: string;
+			isDeceased?: boolean;
 			page?: number;
 			limit?: number;
+			sortBy?: string;
+			sortDesc?: boolean;
 		}) => params,
 	)
 	.handler(async ({ data: params }) => {
@@ -73,11 +80,31 @@ export const getResidents = createServerFn({
 		const limit = params.limit || 10;
 		const offset = (page - 1) * limit;
 
-		const baseQuery = db.select().from(residents);
+		const baseQuery = db
+			.select({
+				...getTableColumns(residents),
+				block: households.block,
+				lot: households.lot,
+			})
+			.from(residents)
+			.leftJoin(households, eq(residents.householdId, households.id));
+			
 		const conditions = [];
 
 		if (params.search) {
-			conditions.push(like(residents.fullName, `%${params.search}%`));
+			const searchTerms = params.search.trim().split(/\s+/);
+			const termConditions = searchTerms.map(term => {
+				const wildcardTerm = `%${term}%`;
+				return or(
+					like(residents.fullName, wildcardTerm),
+					like(residents.firstName, wildcardTerm),
+					like(residents.lastName, wildcardTerm),
+					like(residents.middleName, wildcardTerm),
+					like(residents.residentId, wildcardTerm)
+				);
+			});
+			// All terms must match at least one of the fields (e.g. typing "Smith John" matches both)
+			conditions.push(and(...termConditions));
 		}
 		if (params.purok) {
 			conditions.push(eq(residents.purok, params.purok));
@@ -97,9 +124,19 @@ export const getResidents = createServerFn({
 		if (params.isSingleParent !== undefined) {
 			conditions.push(eq(residents.isSingleParent, params.isSingleParent));
 		}
+		if (params.isUnemployed !== undefined) {
+			if (params.isUnemployed) {
+				conditions.push(eq(residents.employmentStatus, "Unemployed"));
+			} else {
+				conditions.push(sql`${residents.employmentStatus} != 'Unemployed' OR ${residents.employmentStatus} IS NULL`);
+			}
+		}
 		if (params.gender) {
 			conditions.push(eq(residents.gender, params.gender));
 		}
+		
+		// By default, exclude deceased residents unless explicitly requested
+		conditions.push(eq(residents.isDeceased, params.isDeceased ?? false));
 
 		const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
@@ -113,9 +150,27 @@ export const getResidents = createServerFn({
 		const total = totalResult[0]?.count || 0;
 
 		// 2. Fetch paginated records
+		let sortColumn: any = residents.lastName;
+		if (params.sortBy === "age") {
+			// Age sort is inverse to birthDate (older = smaller birthDate)
+			sortColumn = residents.birthDate;
+		} else if (params.sortBy === "purok") {
+			sortColumn = residents.purok;
+		} else if (params.sortBy === "fullName") {
+			sortColumn = residents.fullName;
+		}
+
+		// When sorting by age visually, we flip the desc since smaller birthDate = higher age
+		let finalDesc = params.sortDesc;
+		if (params.sortBy === "age") {
+			finalDesc = !finalDesc;
+		}
+
+		const orderFn = finalDesc ? desc : asc;
+
 		const itemsQuery = whereClause ? baseQuery.where(whereClause) : baseQuery;
 		const items = itemsQuery
-			.orderBy(residents.fullName)
+			.orderBy(orderFn(sortColumn), orderFn(residents.firstName)) // Secondary sort by first name
 			.limit(limit)
 			.offset(offset)
 			.all();
@@ -142,11 +197,65 @@ export const addResident = createServerFn({
 			}
 		}
 
+		// Prevent duplicates based on firstName, lastName, and birthDate (case-insensitive)
+		const existingResident = db.select({ id: residents.id })
+			.from(residents)
+			.where(
+				and(
+					sql`lower(${residents.firstName}) = lower(${data.firstName || ""})`,
+					sql`lower(${residents.lastName}) = lower(${data.lastName || ""})`,
+					eq(residents.birthDate, data.birthDate || "")
+				)
+			)
+			.get();
+			
+		if (existingResident) {
+			return { success: false, resident: null, error: "A resident with this exact name and birth date already exists." };
+		}
+
+		let finalHouseholdId = data.householdId;
+		if (data.isNewHousehold) {
+			let hhId = `HH-${data.purok}-BLK${data.newHouseholdBlock || ""}-LOT${data.newHouseholdLot || ""}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			if (!data.newHouseholdBlock && !data.newHouseholdLot) {
+				hhId = `HH-${data.purok}-FAM-${data.lastName}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			}
+			
+			db.insert(households).values({
+				id: hhId,
+				purok: data.purok,
+				block: data.newHouseholdBlock || null,
+				lot: data.newHouseholdLot || null,
+			}).onConflictDoNothing().run();
+			
+			finalHouseholdId = hhId;
+		}
+
+		// Remove the extra UI-only fields before inserting
+		const { isNewHousehold, newHouseholdBlock, newHouseholdLot, ...insertData } = data;
+
+		// Generate a unique 8-digit numeric ID
+		const generateId = () => {
+			return Math.floor(10000000 + Math.random() * 90000000).toString();
+		};
+
+		let residentId = generateId();
+		let isUnique = false;
+		while (!isUnique) {
+			const existing = db.select({ id: residents.id }).from(residents).where(eq(residents.residentId, residentId)).get();
+			if (!existing) {
+				isUnique = true;
+			} else {
+				residentId = generateId();
+			}
+		}
+
 		try {
 			const result = db
 				.insert(residents)
 				.values({
-					...data,
+					...insertData,
+					residentId,
+					householdId: finalHouseholdId,
 					isSeniorCitizen: isSenior,
 					createdAt: new Date(),
 					updatedAt: new Date(),
@@ -157,6 +266,57 @@ export const addResident = createServerFn({
 			return { success: true, resident: result, error: null as string | null };
 		} catch (err: any) {
 			return { success: false, resident: null, error: err.message || "Failed to add resident" };
+		}
+	});
+
+// Bulk delete residents
+export const bulkDeleteResidents = createServerFn({
+	method: "POST",
+})
+	.validator((ids: number[]) => ids)
+	.handler(async ({ data: ids }) => {
+		if (!ids.length) return { success: false };
+		try {
+			db.delete(residents).where(inArray(residents.id, ids)).run();
+			return { success: true };
+		} catch (err: any) {
+			return { success: false, error: err.message };
+		}
+	});
+
+// Mark resident as deceased
+export const markResidentDeceased = createServerFn({
+	method: "POST",
+})
+	.validator((ids: number[]) => ids)
+	.handler(async ({ data: ids }) => {
+		if (!ids.length) return { success: false };
+		try {
+			db.update(residents)
+				.set({ isDeceased: true, updatedAt: new Date() })
+				.where(inArray(residents.id, ids))
+				.run();
+			return { success: true };
+		} catch (err: any) {
+			return { success: false, error: err.message };
+		}
+	});
+
+// Bulk update purok
+export const bulkUpdatePurok = createServerFn({
+	method: "POST",
+})
+	.validator((params: { ids: number[]; purok: string }) => params)
+	.handler(async ({ data: { ids, purok } }) => {
+		if (!ids.length) return { success: false };
+		try {
+			db.update(residents)
+				.set({ purok, updatedAt: new Date() })
+				.where(inArray(residents.id, ids))
+				.run();
+			return { success: true };
+		} catch (err: any) {
+			return { success: false, error: err.message };
 		}
 	});
 
@@ -175,9 +335,30 @@ export const updateResident = createServerFn({
 			}
 		}
 
+		let finalHouseholdId = data.householdId;
+		if (data.isNewHousehold) {
+			let hhId = `HH-${data.purok || "UNKNOWN"}-BLK${data.newHouseholdBlock || ""}-LOT${data.newHouseholdLot || ""}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			if (!data.newHouseholdBlock && !data.newHouseholdLot) {
+				hhId = `HH-${data.purok || "UNKNOWN"}-FAM-${data.lastName || "UNKNOWN"}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			}
+			
+			db.insert(households).values({
+				id: hhId,
+				purok: data.purok || "UNKNOWN",
+				block: data.newHouseholdBlock || null,
+				lot: data.newHouseholdLot || null,
+			}).onConflictDoNothing().run();
+			
+			finalHouseholdId = hhId;
+		}
+
+		// Remove the extra UI-only fields before updating
+		const { isNewHousehold, newHouseholdBlock, newHouseholdLot, ...restData } = data;
+
 		const updateData = {
-			...data,
+			...restData,
 			...(isSenior !== undefined ? { isSeniorCitizen: isSenior } : {}),
+			...(finalHouseholdId !== undefined ? { householdId: finalHouseholdId } : {}),
 			updatedAt: new Date(),
 		};
 

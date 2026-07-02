@@ -2,12 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { createServerFn } from "@tanstack/react-start";
 import Database from "better-sqlite3";
-import { db } from "../db";
+import { db, sqlite } from "../db";
 import { households, residents, settings } from "../db/schema";
 
 export interface SettingsData {
 	barangayName: string;
-	pin: string;
 }
 
 // Fetch current settings
@@ -18,9 +17,7 @@ export const getSettings = createServerFn({
 	const barangayName =
 		allSettings.find((s: { key: string }) => s.key === "barangay_name")
 			?.value || "Barangay Handumanan";
-	const pin =
-		allSettings.find((s: { key: string }) => s.key === "pin")?.value || "1234";
-	return { barangayName, pin };
+	return { barangayName };
 });
 
 // Update settings
@@ -38,12 +35,6 @@ export const updateSettings = createServerFn({
 			})
 			.run();
 
-		// Upsert PIN
-		db.insert(settings)
-			.values({ key: "pin", value: data.pin })
-			.onConflictDoUpdate({ target: settings.key, set: { value: data.pin } })
-			.run();
-
 		return { success: true };
 	});
 
@@ -59,9 +50,17 @@ export const downloadBackup = createServerFn({
 		throw new Error("Database file not found.");
 	}
 
-	// Read the binary file and convert to base64
-	const fileBuffer = fs.readFileSync(dbPath);
+	const tempBackupPath = path.resolve(process.cwd(), `bhims_backup_temp_${Date.now()}.db`);
+
+	// Use better-sqlite3's native backup to safely flush WAL and consolidate into a single file
+	await sqlite.backup(tempBackupPath);
+
+	// Read the consolidated backup file and convert to base64
+	const fileBuffer = fs.readFileSync(tempBackupPath);
 	const base64 = fileBuffer.toString("base64");
+
+	// Clean up the temporary backup file
+	fs.unlinkSync(tempBackupPath);
 
 	return {
 		filename: `bhims_backup_${new Date().toISOString().split("T")[0]}.db`,

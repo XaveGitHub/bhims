@@ -3,11 +3,13 @@ import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { addResident } from "../lib/residents-service";
+import { addResident, getUniquePuroks } from "../lib/residents-service";
+import { cn } from "../lib/utils";
 import type { Resident } from "#/routes/residents.tsx";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { HouseholdCombobox } from "./HouseholdCombobox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar as CalendarComponent } from "./ui/calendar";
 import {
@@ -20,7 +22,6 @@ import {
 import { Switch } from "./ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { cn } from "#/lib/utils.ts";
 
 export const residentSchema = z.object({
 	firstName: z.string().min(1, "First Name is required"),
@@ -63,7 +64,12 @@ export const residentSchema = z.object({
 	isWheelchairBound: z.boolean().optional(),
 	isDialysisPatient: z.boolean().optional(),
 	isCancerPatient: z.boolean().optional(),
+	isNewHousehold: z.boolean().optional(),
+	newHouseholdBlock: z.string().nullable().optional(),
+	newHouseholdLot: z.string().nullable().optional(),
 });
+
+type ResidentInputForm = z.infer<typeof residentSchema>;
 
 interface AddResidentModalProps {
 	isOpen: boolean;
@@ -79,8 +85,10 @@ export function AddResidentModal({
 	initialHouseholdId,
 }: AddResidentModalProps) {
 	const [isSaving, setIsSaving] = useState(false);
-	const [formData, setFormData] = useState<Partial<Resident>>({});
+	const [purokOptions, setPurokOptions] = useState<string[]>([]);
+	const [formData, setFormData] = useState<Partial<ResidentInputForm>>({});
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -91,10 +99,16 @@ export function AddResidentModal({
 				householdId: initialHouseholdId || "",
 			});
 			setErrors({});
-		}
-	}, [isOpen, initialHouseholdId]);
 
-	const updateField = (key: keyof Resident, value: any) => {
+			if (purokOptions.length === 0) {
+				getUniquePuroks()
+					.then(setPurokOptions)
+					.catch((err) => console.error("Failed to load puroks", err));
+			}
+		}
+	}, [isOpen, initialHouseholdId, purokOptions.length]);
+
+	const updateField = (key: keyof ResidentInputForm, value: any) => {
 		setFormData((prev) => ({ ...prev, [key]: value }));
 		if (errors[key]) {
 			setErrors((prev) => {
@@ -116,6 +130,14 @@ export function AddResidentModal({
 				const path = issue.path[0] as string;
 				newErrors[path] = issue.message;
 			}
+			
+			if (!formData.isNewHousehold && !formData.householdId) {
+				newErrors.householdId = "Household is required";
+			}
+			if (formData.isNewHousehold && !formData.purok) {
+				newErrors.purok = "Purok is required";
+			}
+
 			setErrors(newErrors);
 			toast.error("Please fill in all required fields correctly.");
 			return;
@@ -146,7 +168,7 @@ export function AddResidentModal({
 			const result = await addResident({ data: payload });
 			if (result.success && result.resident) {
 				toast.success("Resident added successfully!");
-				onSuccess(result.resident as Resident);
+				onSuccess(result.resident as unknown as Resident);
 			} else {
 				toast.error(result.error || "Failed to add resident.");
 			}
@@ -212,7 +234,7 @@ export function AddResidentModal({
 								<span className="flex items-center justify-center gap-2">
 									Personal
 									{hasPersonalErrors && (
-										<span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
+										<span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
 									)}
 								</span>
 							</TabsTrigger>
@@ -223,7 +245,7 @@ export function AddResidentModal({
 								<span className="flex items-center justify-center gap-2">
 									Health & Status
 									{hasHealthErrors && (
-										<span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
+										<span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
 									)}
 								</span>
 							</TabsTrigger>
@@ -234,7 +256,7 @@ export function AddResidentModal({
 								<span className="flex items-center justify-center gap-2">
 									Household & Economic
 									{hasEconomicErrors && (
-										<span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
+										<span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
 									)}
 								</span>
 							</TabsTrigger>
@@ -256,11 +278,11 @@ export function AddResidentModal({
 												className={cn(
 													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
 													errors.firstName &&
-														"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+														"border-red-500 focus-visible:ring-red-500",
 												)}
 											/>
 											{errors.firstName && (
-												<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.firstName}</p>
+												<p className="text-xs text-red-500 font-medium mt-1">{errors.firstName}</p>
 											)}
 										</div>
 										<div className="space-y-1.5">
@@ -275,11 +297,11 @@ export function AddResidentModal({
 												className={cn(
 													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
 													errors.lastName &&
-														"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+														"border-red-500 focus-visible:ring-red-500",
 												)}
 											/>
 											{errors.lastName && (
-												<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.lastName}</p>
+												<p className="text-xs text-red-500 font-medium mt-1">{errors.lastName}</p>
 											)}
 										</div>
 										<div className="space-y-1.5">
@@ -310,12 +332,16 @@ export function AddResidentModal({
 											<Label className="text-xs text-neutral-400">
 												Birthdate
 											</Label>
-											<Popover>
+											<Popover open={isDatePopoverOpen} onOpenChange={setIsDatePopoverOpen}>
 												<PopoverTrigger asChild>
 													<Button
 														type="button"
 														variant="outline"
-														className="w-full justify-start text-left font-normal bg-neutral-950 border-neutral-800 text-neutral-200 hover:bg-neutral-800 hover:text-neutral-100 h-10"
+														className={cn(
+															"w-full justify-start text-left font-normal bg-neutral-950 border-neutral-800 text-neutral-200 h-10",
+															!formData.birthDate &&
+																"text-neutral-500",
+														)}
 													>
 														<CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
 														{formData.birthDate ? (
@@ -328,7 +354,7 @@ export function AddResidentModal({
 														)}
 													</Button>
 												</PopoverTrigger>
-												<PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-800 text-neutral-200">
+												<PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-800 text-neutral-200" align="start">
 													<CalendarComponent
 														mode="single"
 														selected={
@@ -336,12 +362,21 @@ export function AddResidentModal({
 																? parseISO(formData.birthDate)
 																: undefined
 														}
-														onSelect={(date) =>
+														defaultMonth={
+															formData.birthDate
+																? parseISO(formData.birthDate)
+																: undefined
+														}
+														captionLayout="dropdown"
+														startMonth={new Date(1900, 0)}
+														endMonth={new Date()}
+														onSelect={(date) => {
 															updateField(
 																"birthDate",
 																date ? format(date, "yyyy-MM-dd") : "",
-															)
-														}
+															);
+															setIsDatePopoverOpen(false);
+														}}
 													/>
 												</PopoverContent>
 											</Popover>
@@ -349,7 +384,7 @@ export function AddResidentModal({
 										<div className="space-y-1.5">
 											<Label className="text-xs text-neutral-400">Gender</Label>
 											<Select
-												value={formData.gender || ""}
+												value={formData.gender || undefined}
 												onValueChange={(val) => updateField("gender", val)}
 											>
 												<SelectTrigger className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200">
@@ -366,7 +401,7 @@ export function AddResidentModal({
 												Civil Status
 											</Label>
 											<Select
-												value={formData.civilStatus || ""}
+												value={formData.civilStatus || undefined}
 												onValueChange={(val) => updateField("civilStatus", val)}
 											>
 												<SelectTrigger className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200">
@@ -415,11 +450,11 @@ export function AddResidentModal({
 												className={cn(
 													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
 													errors.email &&
-														"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+														"border-red-500 focus-visible:ring-red-500",
 												)}
 											/>
 											{errors.email && (
-												<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.email}</p>
+												<p className="text-xs text-red-500 font-medium mt-1">{errors.email}</p>
 											)}
 										</div>
 									</div>
@@ -561,49 +596,101 @@ export function AddResidentModal({
 										<h4 className="text-sm font-semibold text-neutral-200 mb-3">
 											Location & Household
 										</h4>
-										<div className="grid grid-cols-2 gap-4">
-											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">
-													Purok *
-												</Label>
-												<Input
-													value={formData.purok || ""}
-													onChange={(e) => updateField("purok", e.target.value)}
-													placeholder="e.g. Purok 1"
-													className={cn(
-														"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
-														errors.purok &&
-															"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+										<div className="space-y-4">
+											<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+												<div className="space-y-1.5">
+													<Label className="text-xs text-neutral-400">Purok *</Label>
+													<Input
+														list="purok-options"
+														value={formData.purok || ""}
+														onChange={(e) => {
+															updateField("purok", e.target.value);
+															if (formData.householdId && formData.householdId !== "NEW") {
+																updateField("householdId", undefined);
+															}
+														}}
+														placeholder="Select or type Purok..."
+														className={cn("bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+													/>
+													<datalist id="purok-options">
+														{purokOptions.map((p) => <option key={p} value={p} />)}
+													</datalist>
+													{errors.purok && (
+														<p className="text-xs text-red-500 font-medium mt-1">{errors.purok}</p>
 													)}
-												/>
-												{errors.purok && (
-													<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.purok}</p>
-												)}
+												</div>
+
+												<div className="space-y-1.5">
+													<Label className="text-xs text-neutral-400">
+														Household *
+													</Label>
+													<HouseholdCombobox
+														purok={formData.purok || ""}
+														value={formData.isNewHousehold ? "NEW" : (formData.householdId || undefined)}
+														onChange={(val) => {
+															if (val === "NEW") {
+																updateField("isNewHousehold", true);
+																updateField("householdId", undefined);
+															} else {
+																updateField("isNewHousehold", false);
+																updateField("householdId", val);
+															}
+														}}
+														error={!!errors.householdId}
+														className="h-10 bg-neutral-950"
+													/>
+													{errors.householdId && (
+														<p className="text-xs text-red-500 font-medium mt-1">{errors.householdId}</p>
+													)}
+												</div>
 											</div>
-											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">
-													Household ID
-												</Label>
-												<Input
-													value={formData.householdId || ""}
-													onChange={(e) =>
-														updateField("householdId", e.target.value)
-													}
-													className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
-												/>
-											</div>
-											<div className="col-span-2 space-y-1.5">
+											
+											{formData.isNewHousehold && (
+												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-neutral-950/50 p-3 rounded-lg border border-neutral-800/80">
+													<div className="space-y-1.5">
+														<Label className="text-xs text-neutral-400">Block</Label>
+														<Input
+															value={formData.newHouseholdBlock || ""}
+															onChange={(e) => updateField("newHouseholdBlock", e.target.value)}
+															className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+														/>
+													</div>
+													<div className="space-y-1.5">
+														<Label className="text-xs text-neutral-400">Lot</Label>
+														<Input
+															value={formData.newHouseholdLot || ""}
+															onChange={(e) => updateField("newHouseholdLot", e.target.value)}
+															className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+														/>
+													</div>
+												</div>
+											)}
+
+											<div className="space-y-1.5 mt-4">
 												<Label className="text-xs text-neutral-400">
 													Relationship to Head
 												</Label>
-												<Input
-													value={formData.relationshipToHead || ""}
-													onChange={(e) =>
-														updateField("relationshipToHead", e.target.value)
+												<Select
+													value={formData.relationshipToHead || undefined}
+													onValueChange={(val) =>
+														updateField("relationshipToHead", val)
 													}
-													placeholder="Head, Spouse, Child, Member"
-													className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
-												/>
+												>
+													<SelectTrigger className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200">
+														<SelectValue placeholder="Select relationship" />
+													</SelectTrigger>
+													<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+														<SelectItem value="Head">Head</SelectItem>
+														<SelectItem value="Spouse">Spouse</SelectItem>
+														<SelectItem value="Son">Son</SelectItem>
+														<SelectItem value="Daughter">Daughter</SelectItem>
+														<SelectItem value="Parent">Parent</SelectItem>
+														<SelectItem value="Sibling">Sibling</SelectItem>
+														<SelectItem value="Grandchild">Grandchild</SelectItem>
+														<SelectItem value="Relative">Relative</SelectItem>
+														<SelectItem value="Other">Other</SelectItem>
+													</SelectContent>
+												</Select>
 											</div>
 										</div>
 									</div>
@@ -691,7 +778,7 @@ export function AddResidentModal({
 									</div>
 
 									<div className="space-y-4">
-										<h4 className="text-sm font-semibold text-neutral-300 uppercase tracking-wider">
+										<h4 className="text-sm font-semibold text-neutral-200 mb-3">
 											Other Statuses
 										</h4>
 										<div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -776,14 +863,14 @@ export function AddResidentModal({
 							type="button"
 							variant="ghost"
 							onClick={onClose}
-							className="text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800"
+							className="text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-xl"
 						>
 							Cancel
 						</Button>
 						<Button
 							type="submit"
 							disabled={isSaving}
-							className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20"
+							className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 rounded-xl"
 						>
 							{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 							Save Resident

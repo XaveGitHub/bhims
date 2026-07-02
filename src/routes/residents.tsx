@@ -10,13 +10,17 @@ import {
 } from "@tanstack/react-table";
 import {
 	AlertCircle,
+	AlertTriangle,
 	ArrowUpDown,
 	ChevronDown,
 	ChevronUp,
 	Download,
+	Eye,
+	Map,
 	Search,
 	Trash2,
 	UserPlus,
+	X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -45,6 +49,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "../components/ui/table";
+import { Checkbox } from "../components/ui/checkbox";
 
 import { AddResidentModal } from "../components/AddResidentModal";
 
@@ -52,12 +57,22 @@ import {
 	deleteResident,
 	getResidents,
 	getUniquePuroks,
+	bulkDeleteResidents,
+	bulkUpdatePurok,
+	markResidentDeceased,
 	type ResidentInput,
 } from "../lib/residents-service";
 
 type ResidentsSearch = {
 	action?: "add";
 	householdId?: string;
+	filterVoter?: boolean;
+	filterSenior?: boolean;
+	filterPwd?: boolean;
+	filterSingleParent?: boolean;
+	filterUnemployed?: boolean;
+	filterDeceased?: boolean;
+	purok?: string;
 };
 
 import Draggable from "react-draggable";
@@ -70,6 +85,13 @@ export const Route = createFileRoute("/residents")({
 		return {
 			action: search.action === "add" ? "add" : undefined,
 			householdId: search.householdId as string | undefined,
+			filterVoter: search.filterVoter === true || search.filterVoter === 'true' ? true : undefined,
+			filterSenior: search.filterSenior === true || search.filterSenior === 'true' ? true : undefined,
+			filterPwd: search.filterPwd === true || search.filterPwd === 'true' ? true : undefined,
+			filterSingleParent: search.filterSingleParent === true || search.filterSingleParent === 'true' ? true : undefined,
+			filterUnemployed: search.filterUnemployed === true || search.filterUnemployed === 'true' ? true : undefined,
+			filterDeceased: search.filterDeceased === true || search.filterDeceased === 'true' ? true : undefined,
+			purok: search.purok as string | undefined,
 		};
 	},
 });
@@ -78,6 +100,10 @@ export interface Resident extends ResidentInput {
 	id: number;
 	createdAt: Date;
 	updatedAt: Date;
+	block: string | null;
+	lot: string | null;
+	residentId: string | null;
+	isDeceased: boolean | null;
 }
 let cachedResidentsList: { items: Resident[]; total: number } | null = null;
 let cachedPurokOptions: string[] | null = null;
@@ -101,23 +127,20 @@ function ResidentsView() {
 
 	// TanStack Table state
 	const [sorting, setSorting] = useState<SortingState>([
-		{ id: "fullName", desc: false },
+		{ id: "lastName", desc: false },
 	]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	const [rowSelection, setRowSelection] = useState({});
 
 	// Search and Filter states
 	const [search, setSearch] = useState("");
-	const [selectedPurok, setSelectedPurok] = useState("");
-	const [filterPwd, setFilterPwd] = useState<boolean | undefined>(undefined);
-	const [filterSenior, setFilterSenior] = useState<boolean | undefined>(
-		undefined,
-	);
-	const [filterVoter, setFilterVoter] = useState<boolean | undefined>(
-		undefined,
-	);
-	const [filterSingleParent, setFilterSingleParent] = useState<
-		boolean | undefined
-	>(undefined);
+	const [selectedPurok, setSelectedPurok] = useState(searchParams.purok || "");
+	const [filterPwd, setFilterPwd] = useState<boolean | undefined>(searchParams.filterPwd);
+	const [filterSenior, setFilterSenior] = useState<boolean | undefined>(searchParams.filterSenior);
+	const [filterVoter, setFilterVoter] = useState<boolean | undefined>(searchParams.filterVoter);
+	const [filterSingleParent, setFilterSingleParent] = useState<boolean | undefined>(searchParams.filterSingleParent);
+	const [filterUnemployed, setFilterUnemployed] = useState<boolean | undefined>(searchParams.filterUnemployed);
+	const [filterDeceased, setFilterDeceased] = useState<boolean | undefined>(searchParams.filterDeceased);
 	const [selectedGender, setSelectedGender] = useState("");
 
 	// Debounced search input (UI value) — fires setSearch after 300ms
@@ -150,6 +173,7 @@ function ResidentsView() {
 				const target = event.target as HTMLElement;
 				if (
 					target.closest('[role="dialog"]') ||
+					target.closest('[data-slot="dialog-overlay"]') ||
 					target.closest("[data-radix-popper-content-wrapper]") ||
 					target.closest("[data-radix-select-content]") ||
 					target.closest('[role="listbox"]')
@@ -186,6 +210,8 @@ function ResidentsView() {
 			filterSenior === undefined &&
 			filterVoter === undefined &&
 			filterSingleParent === undefined &&
+			filterUnemployed === undefined &&
+			filterDeceased === undefined &&
 			!selectedGender &&
 			currentPage === 1;
 
@@ -206,9 +232,13 @@ function ResidentsView() {
 					isSenior: filterSenior,
 					isRegisteredVoter: filterVoter,
 					isSingleParent: filterSingleParent,
+					isUnemployed: filterUnemployed,
+					isDeceased: filterDeceased,
 					gender: selectedGender || undefined,
 					page: currentPage,
 					limit: pageSize,
+					sortBy: sorting[0]?.id,
+					sortDesc: sorting[0]?.desc,
 				},
 			});
 			const result = data as unknown as { items: Resident[]; total: number };
@@ -229,9 +259,12 @@ function ResidentsView() {
 		filterSenior,
 		filterVoter,
 		filterSingleParent,
+		filterUnemployed,
+		filterDeceased,
 		selectedGender,
 		currentPage,
 		pageSize,
+		sorting,
 	]);
 
 	const loadPuroks = useCallback(async () => {
@@ -313,7 +346,7 @@ function ResidentsView() {
 			Gender: r.gender || "",
 			"Contact Number": r.contactNumber || "",
 			"Purok/Address": r.purok,
-			"Household ID": r.householdId || "",
+			"Blk / Lot": (r.block || r.lot) ? `Blk ${r.block || "-"} Lot ${r.lot || "-"}` : "",
 			"Relationship to Head": r.relationshipToHead || "",
 			"Is PWD": r.isPwd ? "Yes" : "No",
 			"Disability Type": r.pwdType || "",
@@ -353,9 +386,45 @@ function ResidentsView() {
 	const columns = useMemo<ColumnDef<Resident>[]>(
 		() => [
 			{
-				id: "fullName",
-				accessorKey: "fullName",
-				header: "Name",
+				id: "select",
+				header: ({ table }) => (
+					<Checkbox
+						checked={
+							table.getIsAllPageRowsSelected() ||
+							(table.getIsSomePageRowsSelected() && "indeterminate")
+						}
+						onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+						aria-label="Select all"
+						className="border-neutral-700 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+					/>
+				),
+				cell: ({ row }) => (
+					<Checkbox
+						checked={row.getIsSelected()}
+						onCheckedChange={(value) => row.toggleSelected(!!value)}
+						aria-label="Select row"
+						className="border-neutral-700 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600 mt-1"
+					/>
+				),
+				enableSorting: false,
+				enableHiding: false,
+			},
+			{
+				id: "residentId",
+				accessorKey: "residentId",
+				header: "ID",
+				enableSorting: false,
+				enableHiding: false,
+				cell: ({ row }) => (
+					<span className="text-xs font-mono text-neutral-400">
+						{row.original.residentId || "—"}
+					</span>
+				),
+			},
+			{
+				id: "lastName",
+				accessorKey: "lastName",
+				header: "Last Name",
 				enableSorting: true,
 				enableHiding: false,
 				sortingFn: "alphanumeric",
@@ -364,7 +433,7 @@ function ResidentsView() {
 					return (
 						<div className="flex flex-col min-w-0">
 							<span className="font-semibold text-neutral-100 text-sm leading-snug truncate">
-								{r.fullName}
+								{r.lastName} {r.suffix ? ` ${r.suffix}` : ""}
 							</span>
 							{r.contactNumber && (
 								<span className="text-[11px] text-neutral-500 leading-none mt-0.5 sm:hidden">
@@ -374,6 +443,28 @@ function ResidentsView() {
 						</div>
 					);
 				},
+			},
+			{
+				id: "firstName",
+				accessorKey: "firstName",
+				header: "First Name",
+				enableSorting: true,
+				enableHiding: false,
+				sortingFn: "alphanumeric",
+				cell: ({ row }) => (
+					<span className="text-neutral-100 text-sm">{row.original.firstName}</span>
+				),
+			},
+			{
+				id: "middleName",
+				accessorKey: "middleName",
+				header: "Middle Name",
+				enableSorting: true,
+				enableHiding: false,
+				sortingFn: "alphanumeric",
+				cell: ({ row }) => (
+					<span className="text-neutral-300 text-sm">{row.original.middleName || "—"}</span>
+				),
 			},
 			{
 				id: "age",
@@ -413,36 +504,28 @@ function ResidentsView() {
 							<span className="text-sm font-medium text-neutral-200 leading-snug">
 								{r.purok}
 							</span>
-							<span className="text-[11px] text-neutral-500 leading-none mt-0.5 hidden sm:block">
-								{r.contactNumber || "No contact"}
-							</span>
 						</div>
 					);
 				},
 			},
 			{
-				id: "household",
-				header: "Household",
+				id: "blkLot",
+				header: "Blk / Lot",
 				enableSorting: false,
 				enableHiding: true,
 				cell: ({ row }) => {
 					const r = row.original;
 					return (
 						<div className="flex flex-col">
-							{r.householdId ? (
+							{r.block || r.lot ? (
 								<span className="text-sm font-medium text-neutral-200 leading-snug">
-									Blk/Lot: {r.householdId}
+									Blk {r.block || "-"} Lot {r.lot || "-"}
 								</span>
 							) : (
-								<span className="text-sm font-medium text-neutral-500 leading-snug">
-									Unassigned
+								<span className="text-sm font-medium text-neutral-500 italic">
+									{r.householdId ? `Fam. ${r.lastName}` : "—"}
 								</span>
 							)}
-							<span className="text-[11px] text-neutral-500 leading-none mt-0.5">
-								{r.isHeadOfHousehold
-									? "Head"
-									: r.relationshipToHead || "Member"}
-							</span>
 						</div>
 					);
 				},
@@ -458,11 +541,27 @@ function ResidentsView() {
 						r.isPwd ||
 						r.isSeniorCitizen ||
 						r.isRegisteredVoter ||
-						r.isSingleParent;
+						r.isSingleParent ||
+						r.isDeceased ||
+						r.isBedBound ||
+						r.isWheelchairBound ||
+						r.isDialysisPatient ||
+						r.isCancerPatient ||
+						r.isNationalPensioner ||
+						r.isLocalPensioner ||
+						r.isOfw ||
+						r.isOsy ||
+						r.isIp ||
+						r.isMigrant;
 					if (!hasTag)
 						return <span className="text-neutral-600 text-xs">—</span>;
 					return (
 						<div className="flex flex-wrap gap-1">
+							{r.isDeceased && (
+								<span className="rounded-full bg-neutral-800 border border-neutral-700 px-2 py-0.5 text-[10px] font-semibold text-neutral-400">
+									Deceased
+								</span>
+							)}
 							{r.isPwd && (
 								<span
 									className="rounded-full bg-purple-950/40 border border-purple-800/30 px-2 py-0.5 text-[10px] font-semibold text-purple-400"
@@ -486,6 +585,51 @@ function ResidentsView() {
 									Solo Parent
 								</span>
 							)}
+							{r.isBedBound && (
+								<span className="rounded-full bg-red-950/40 border border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-400">
+									Bed Bound
+								</span>
+							)}
+							{r.isWheelchairBound && (
+								<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
+									Wheelchair
+								</span>
+							)}
+							{r.isDialysisPatient && (
+								<span className="rounded-full bg-orange-950/40 border border-orange-800/30 px-2 py-0.5 text-[10px] font-semibold text-orange-400">
+									Dialysis
+								</span>
+							)}
+							{r.isCancerPatient && (
+								<span className="rounded-full bg-rose-950/40 border border-rose-800/30 px-2 py-0.5 text-[10px] font-semibold text-rose-400">
+									Cancer
+								</span>
+							)}
+							{(r.isNationalPensioner || r.isLocalPensioner) && (
+								<span className="rounded-full bg-teal-950/40 border border-teal-800/30 px-2 py-0.5 text-[10px] font-semibold text-teal-400">
+									Pensioner
+								</span>
+							)}
+							{r.isOfw && (
+								<span className="rounded-full bg-indigo-950/40 border border-indigo-800/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-400">
+									OFW
+								</span>
+							)}
+							{r.isOsy && (
+								<span className="rounded-full bg-yellow-950/40 border border-yellow-800/30 px-2 py-0.5 text-[10px] font-semibold text-yellow-400">
+									OSY
+								</span>
+							)}
+							{r.isIp && (
+								<span className="rounded-full bg-lime-950/40 border border-lime-800/30 px-2 py-0.5 text-[10px] font-semibold text-lime-400">
+									IP
+								</span>
+							)}
+							{r.isMigrant && (
+								<span className="rounded-full bg-cyan-950/40 border border-cyan-800/30 px-2 py-0.5 text-[10px] font-semibold text-cyan-400">
+									Migrant
+								</span>
+							)}
 						</div>
 					);
 				},
@@ -497,9 +641,36 @@ function ResidentsView() {
 				enableHiding: false,
 				cell: ({ row }) => {
 					const r = row.original;
+					const hasSelection = Object.keys(rowSelection).length > 0;
 					return (
-						<div className="flex items-center justify-end gap-1">
-							{/* The row itself is clickable to view the profile */}
+						<div className="flex items-center justify-end gap-1 group">
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={(e) => {
+									e.stopPropagation();
+									setDrawerResident(r);
+								}}
+								disabled={hasSelection}
+								className="h-7 w-7 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700 disabled:opacity-30"
+							>
+								<Eye className="h-3.5 w-3.5" />
+							</Button>
+							{!r.isDeceased && (
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={(e) => {
+										e.stopPropagation();
+										setArchiveModalIds([r.id]);
+									}}
+									disabled={hasSelection}
+									title="Mark as Deceased"
+									className="h-7 w-7 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-lg disabled:opacity-30"
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>
+								</Button>
+							)}
 							<Button
 								variant="ghost"
 								size="sm"
@@ -507,31 +678,90 @@ function ResidentsView() {
 									e.stopPropagation();
 									handleDeleteClick(r.id);
 								}}
-								className="h-8 px-2 text-red-400/80 hover:text-red-400 hover:bg-red-950/40 rounded-lg gap-1.5"
+								disabled={hasSelection}
+								className="h-7 w-7 text-red-400/80 hover:text-red-400 hover:bg-red-950/40 rounded-lg gap-1.5 disabled:opacity-30"
 							>
 								<Trash2 className="h-3.5 w-3.5" />
-								<span className="sr-only sm:not-sr-only sm:text-xs">
-									Delete
-								</span>
 							</Button>
 						</div>
 					);
 				},
 			},
 		],
-		[handleDeleteClick, calculateAge],
+		[handleDeleteClick, calculateAge, rowSelection],
 	);
 
 	const table = useReactTable({
 		data: residentsList,
 		columns,
-		state: { sorting, columnVisibility },
+		state: { sorting, columnVisibility, rowSelection },
+		enableRowSelection: true,
+		onRowSelectionChange: setRowSelection,
 		onSortingChange: setSorting,
 		onColumnVisibilityChange: setColumnVisibility,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		manualPagination: true,
 	});
+
+	const selectedIds = useMemo(() => {
+		return Object.keys(rowSelection)
+			.filter((key) => rowSelection[key as keyof typeof rowSelection])
+			.map((key) => residentsList[parseInt(key)]?.id)
+			.filter(Boolean);
+	}, [rowSelection, residentsList]);
+
+	const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
+	const confirmBulkDelete = async () => {
+		if (!selectedIds.length) return;
+		
+		const res = await bulkDeleteResidents({ data: selectedIds });
+		if (res.success) {
+			toast.success(`Deleted ${selectedIds.length} residents.`);
+			setRowSelection({});
+			setIsBulkDeleteModalOpen(false);
+			invalidateResidentsCache();
+			invalidateHouseholdsCache();
+			loadData();
+			loadPuroks();
+		} else {
+			toast.error("Failed to delete residents.");
+		}
+	};
+
+	const [archiveModalIds, setArchiveModalIds] = useState<number[] | null>(null);
+	const confirmArchive = async () => {
+		if (!archiveModalIds?.length) return;
+		
+		const res = await markResidentDeceased({ data: archiveModalIds });
+		if (res.success) {
+			toast.success(`Marked ${archiveModalIds.length} resident(s) as deceased.`);
+			setRowSelection({});
+			setArchiveModalIds(null);
+			invalidateResidentsCache();
+			invalidateHouseholdsCache();
+			loadData();
+			loadPuroks();
+		} else {
+			toast.error("Failed to update residents.");
+		}
+	};
+
+	const [bulkPurokToUpdate, setBulkPurokToUpdate] = useState<string | null>(null);
+	const [bulkPurokOpen, setBulkPurokOpen] = useState(false);
+	
+	const confirmBulkUpdatePurok = async () => {
+		if (!selectedIds.length || !bulkPurokToUpdate) return;
+		const res = await bulkUpdatePurok({ data: { ids: selectedIds, purok: bulkPurokToUpdate } });
+		if (res.success) {
+			toast.success(`Moved ${selectedIds.length} residents to ${bulkPurokToUpdate}.`);
+			setBulkPurokToUpdate(null);
+			setRowSelection({});
+			loadData();
+		} else {
+			toast.error("Failed to update Purok.");
+		}
+	};
 
 	return (
 		<div className="space-y-6 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -628,31 +858,38 @@ function ResidentsView() {
 							{
 								label: "PWD",
 								active: filterPwd === true,
-								color: "purple",
+								color: "bg-purple-950/40 text-purple-400 border-purple-800/50",
 								fn: () => setFilterPwd(filterPwd === true ? undefined : true),
 							},
 							{
 								label: "Senior",
 								active: filterSenior === true,
-								color: "amber",
-								fn: () =>
-									setFilterSenior(filterSenior === true ? undefined : true),
+								color: "bg-amber-950/40 text-amber-400 border-amber-800/50",
+								fn: () => setFilterSenior(filterSenior === true ? undefined : true),
 							},
 							{
 								label: "Voter",
 								active: filterVoter === true,
-								color: "emerald",
-								fn: () =>
-									setFilterVoter(filterVoter === true ? undefined : true),
+								color: "bg-emerald-950/40 text-emerald-400 border-emerald-800/50",
+								fn: () => setFilterVoter(filterVoter === true ? undefined : true),
 							},
 							{
 								label: "Solo Parent",
 								active: filterSingleParent === true,
-								color: "pink",
-								fn: () =>
-									setFilterSingleParent(
-										filterSingleParent === true ? undefined : true,
-									),
+								color: "bg-pink-950/40 text-pink-400 border-pink-800/50",
+								fn: () => setFilterSingleParent(filterSingleParent === true ? undefined : true),
+							},
+							{
+								label: "Unemployed",
+								active: filterUnemployed === true,
+								color: "bg-red-950/40 text-red-400 border-red-800/50",
+								fn: () => setFilterUnemployed(filterUnemployed === true ? undefined : true),
+							},
+							{
+								label: "Deceased",
+								active: filterDeceased === true,
+								color: "bg-neutral-800/80 text-neutral-300 border-neutral-700/50",
+								fn: () => setFilterDeceased(filterDeceased === true ? undefined : true),
 							},
 						] as const
 					).map(({ label, active, color, fn }) => (
@@ -662,19 +899,21 @@ function ResidentsView() {
 							onClick={fn}
 							className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${
 								active
-									? `bg-${color}-950/40 text-${color}-400 border-${color}-800/50`
+									? color
 									: "bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700"
 							}`}
 						>
 							{label}
 						</button>
 					))}
-					{(selectedPurok ||
-						search ||
+					{(search ||
+						selectedPurok ||
 						filterPwd !== undefined ||
 						filterSenior !== undefined ||
 						filterVoter !== undefined ||
 						filterSingleParent !== undefined ||
+						filterDeceased !== undefined ||
+						filterUnemployed !== undefined ||
 						selectedGender) && (
 						<button
 							type="button"
@@ -686,6 +925,8 @@ function ResidentsView() {
 								setFilterSenior(undefined);
 								setFilterVoter(undefined);
 								setFilterSingleParent(undefined);
+								setFilterDeceased(undefined);
+								setFilterUnemployed(undefined);
 								setSelectedGender("");
 							}}
 							className="px-2.5 py-1 rounded-full text-xs font-semibold bg-neutral-800 hover:bg-neutral-700 text-neutral-400 border border-neutral-700"
@@ -707,7 +948,8 @@ function ResidentsView() {
 						</div>
 					) : residentsList.length > 0 ? (
 						<>
-							<Table>
+							<div className="flex-1 overflow-y-auto custom-scrollbar">
+								<Table>
 								<TableHeader className="bg-neutral-900/80 border-b border-neutral-800">
 									{table.getHeaderGroups().map((hg) => (
 										<TableRow
@@ -757,14 +999,20 @@ function ResidentsView() {
 										<TableRow
 											key={row.id}
 											data-state={row.getIsSelected() ? "selected" : undefined}
-											className={`border-b border-neutral-800/60 transition-colors cursor-pointer ${
+											className={`border-b border-neutral-800/60 transition-colors cursor-pointer group ${
 												drawerResident?.id === row.original.id
 													? "bg-neutral-800/60 hover:bg-neutral-800/60"
 													: row.getIsSelected()
 														? "bg-emerald-950/20"
 														: "hover:bg-neutral-900/40"
 											}`}
-											onClick={() => setDrawerResident(row.original)}
+											onClick={() => {
+												if (Object.keys(rowSelection).length > 0) {
+													row.toggleSelected();
+												} else {
+													setDrawerResident(row.original);
+												}
+											}}
 										>
 											{row.getVisibleCells().map((cell) => (
 												<TableCell
@@ -781,10 +1029,11 @@ function ResidentsView() {
 									))}
 								</TableBody>
 							</Table>
+						</div>
 
 							{/* Pagination controls */}
 							{totalCount > 0 && (
-								<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-neutral-800/60 bg-neutral-900/10">
+								<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-neutral-800/60 bg-neutral-900/10 shrink-0">
 									<div className="text-xs text-neutral-400 select-none">
 										<span className="font-semibold text-neutral-200">
 											{(currentPage - 1) * pageSize + 1}–
@@ -949,6 +1198,160 @@ function ResidentsView() {
 								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
 							>
 								Delete Profile
+							</Button>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
+
+			{/* Floating Bulk Action Bar */}
+			{selectedIds.length > 0 && (
+				<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10 fade-in duration-300">
+					<div className="bg-neutral-900 border border-neutral-700 shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-4">
+						<span className="text-sm font-medium text-emerald-400 whitespace-nowrap">
+							{selectedIds.length} selected
+						</span>
+						<div className="h-4 w-px bg-neutral-700"></div>
+						<div className="flex items-center gap-2">
+							<Select
+								open={bulkPurokOpen}
+								onOpenChange={setBulkPurokOpen}
+								onValueChange={(val) => {
+									setBulkPurokToUpdate(val);
+									setBulkPurokOpen(false);
+								}}
+							>
+								<SelectTrigger className="h-8 text-xs bg-neutral-800 border-neutral-700 hover:bg-neutral-700 w-[140px]">
+									<SelectValue placeholder="Change Purok" />
+								</SelectTrigger>
+								<SelectContent className="bg-neutral-900 border-neutral-800">
+									{purokOptions.map((p) => (
+										<SelectItem key={p} value={p} className="text-xs">
+											{p}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<Button
+								size="sm"
+								variant="outline"
+								onClick={() => setArchiveModalIds(selectedIds)}
+								className="h-8 text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700"
+							>
+								Archive
+							</Button>
+							<Button
+								size="sm"
+								variant="destructive"
+								onClick={() => setIsBulkDeleteModalOpen(true)}
+								className="h-8 text-xs bg-red-950/40 text-red-400 hover:bg-red-900 hover:text-red-300 border border-red-900/50"
+							>
+								<Trash2 className="w-3.5 h-3.5 mr-1.5" />
+								Delete
+							</Button>
+							<Button
+								size="sm"
+								variant="ghost"
+								onClick={() => setRowSelection({})}
+								className="h-8 w-8 p-0 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-full ml-1"
+							>
+								<X className="w-4 h-4" />
+							</Button>
+						</div>
+					</div>
+				</div>
+			)}
+			
+			{/* BULK DELETE CONFIRMATION DIALOG */}
+			<Dialog open={isBulkDeleteModalOpen} onOpenChange={setIsBulkDeleteModalOpen}>
+				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+					<DialogHeader>
+						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
+							<AlertTriangle className="h-5 w-5 text-red-500" />
+							<span>Confirm Bulk Deletion</span>
+						</DialogTitle>
+					</DialogHeader>
+					<div className="mt-4 space-y-4">
+						<p className="text-sm text-neutral-300">
+							Are you sure you want to delete <strong className="text-white">{selectedIds.length}</strong> selected residents? This action is permanent and cannot be undone.
+						</p>
+						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+							<Button
+								type="button"
+								onClick={() => setIsBulkDeleteModalOpen(false)}
+								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+							>
+								Cancel
+							</Button>
+							<Button
+								onClick={confirmBulkDelete}
+								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
+							>
+								Delete {selectedIds.length} Profiles
+							</Button>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
+			
+			{/* BULK PUROK CONFIRMATION DIALOG */}
+			<Dialog open={!!bulkPurokToUpdate} onOpenChange={(open) => !open && setBulkPurokToUpdate(null)}>
+				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+					<DialogHeader>
+						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
+							<Map className="h-5 w-5 text-emerald-500" />
+							<span>Confirm Purok Update</span>
+						</DialogTitle>
+					</DialogHeader>
+					<div className="mt-4 space-y-4">
+						<p className="text-sm text-neutral-300">
+							Are you sure you want to move <strong className="text-white">{selectedIds.length}</strong> residents to <strong className="text-white">{bulkPurokToUpdate}</strong>?
+						</p>
+						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+							<Button
+								type="button"
+								onClick={() => setBulkPurokToUpdate(null)}
+								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+							>
+								Cancel
+							</Button>
+							<Button
+								onClick={confirmBulkUpdatePurok}
+								className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5"
+							>
+								Update Purok
+							</Button>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
+			
+			{/* ARCHIVE CONFIRMATION DIALOG */}
+			<Dialog open={!!archiveModalIds} onOpenChange={(open) => !open && setArchiveModalIds(null)}>
+				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+					<DialogHeader>
+						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x text-amber-500"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>
+							<span>Confirm Archiving</span>
+						</DialogTitle>
+					</DialogHeader>
+					<div className="mt-4 space-y-4">
+						<p className="text-sm text-neutral-300">
+							Are you sure you want to mark <strong className="text-white">{archiveModalIds?.length}</strong> resident(s) as deceased? They will be moved to the archive and hidden from standard statistics.
+						</p>
+						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+							<Button
+								type="button"
+								onClick={() => setArchiveModalIds(null)}
+								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+							>
+								Cancel
+							</Button>
+							<Button
+								onClick={confirmArchive}
+								className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl px-5"
+							>
+								Archive {archiveModalIds?.length} Profile(s)
 							</Button>
 						</div>
 					</div>

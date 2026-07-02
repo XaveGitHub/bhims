@@ -13,6 +13,10 @@ import * as XLSX from "xlsx";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
+import { getUniquePuroks } from "../lib/residents-service";
+import { invalidateResidentsCache } from "./residents";
+import { invalidateHouseholdsCache } from "./households";
 import {
 	Select,
 	SelectContent,
@@ -32,6 +36,10 @@ import {
 } from "../lib/import-service";
 
 export const Route = createFileRoute("/import")({
+	loader: async () => {
+		const puroks = await getUniquePuroks();
+		return { puroks };
+	},
 	component: ImportView,
 });
 
@@ -39,7 +47,12 @@ export const Route = createFileRoute("/import")({
 // Converts underscores to spaces, trims, lowercases so that
 // "last_name", "Last Name", "LAST NAME" all match the same synonym.
 function normalizeHeader(h: string): string {
-	return h.toLowerCase().replace(/_/g, " ").trim();
+	return h
+		.toLowerCase()
+		.replace(/_/g, " ")
+		.replace(/[^a-z0-9\s]/g, " ") // Replace punctuation with space to avoid squishing words
+		.replace(/\s+/g, " ") // Collapse multiple spaces
+		.trim();
 }
 
 // Database fields that require mapping
@@ -74,10 +87,10 @@ const DB_FIELDS = [
 	},
 	{
 		key: "purok",
-		label: "Purok *",
+		label: "Purok",
 		desc: "Purok number or name",
-		required: true,
-		synonyms: ["purok", "zone", "sitio"],
+		required: false,
+		synonyms: ["purok", "zone", "sitio", "address", "purok zone", "purok address"],
 	},
 	{
 		key: "block",
@@ -306,32 +319,47 @@ const DB_FIELDS = [
 		label: "Is Cancer Patient",
 		desc: "True/Yes if cancer patient",
 		required: false,
-		synonyms: ["is cancer patient", "cancer patient", "is_cancer_patient"],
+		synonyms: ["is cancer patient", "cancer patient", "cancer", "is cancer"],
 	},
 	{
 		key: "isNationalPensioner",
 		label: "Is National Pensioner",
 		desc: "True/Yes if SSS/GSIS pensioner",
 		required: false,
-		synonyms: ["is national pensioner", "national pensioner", "is_national_pensioner"],
+		synonyms: ["is national pensioner", "national pensioner", "sss gsis", "sss", "gsis", "pensioner national"],
 	},
 	{
 		key: "isLocalPensioner",
 		label: "Is Local Pensioner",
 		desc: "True/Yes if local pensioner",
 		required: false,
-		synonyms: ["is local pensioner", "local pensioner", "is_local_pensioner"],
+		synonyms: ["is local pensioner", "local pensioner", "pensioner local", "lgu pensioner"],
 	},
 	{
 		key: "relationshipToHead",
 		label: "Relationship to Head",
 		desc: "Head, Spouse, Child, etc.",
 		required: false,
-		synonyms: ["relationship", "relation", "relationship to head", "rel", "relationship_to_head"],
+		synonyms: ["relationship", "relation", "relationship to head", "rel", "family relationship"],
 	},
 ];
 
+// Calculate age helper for preview table
+const calculateAge = (dateString: string | null | undefined) => {
+	if (!dateString || dateString === "—") return "—";
+	const today = new Date();
+	const birthDate = new Date(dateString);
+	if (isNaN(birthDate.getTime())) return "—";
+	let age = today.getFullYear() - birthDate.getFullYear();
+	const m = today.getMonth() - birthDate.getMonth();
+	if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
+	return age < 0 ? 0 : age;
+};
+
 function ImportView() {
+	const { puroks } = Route.useLoaderData();
 	const navigate = useNavigate();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -347,7 +375,10 @@ function ImportView() {
 	// Loading & error
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
-	const [importedCount, setImportedCount] = useState(0);
+	const [defaultPurok, setDefaultPurok] = useState("");
+	const [importedCount, setImportedCount] = useState<number>(0);
+	const [skippedCount, setSkippedCount] = useState<number>(0);
+	const [skippedNames, setSkippedNames] = useState<string[]>([]);
 
 	// Handle file reading
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -366,13 +397,17 @@ function ImportView() {
 			try {
 				const data = new Uint8Array(e.target?.result as ArrayBuffer);
 				const workbook = XLSX.read(data, { type: "array" });
-				const firstSheetName = workbook.SheetNames[0];
-				const worksheet = workbook.Sheets[firstSheetName];
+				// Combine data from ALL sheets in the workbook
+				let combinedJson: any[] = [];
+				for (const sheetName of workbook.SheetNames) {
+					const worksheet = workbook.Sheets[sheetName];
+					const sheetJson = XLSX.utils.sheet_to_json(worksheet, {
+						defval: "",
+					}) as any[];
+					combinedJson = combinedJson.concat(sheetJson);
+				}
 
-				// Convert worksheet to JSON (include empty values as empty strings)
-				const json = XLSX.utils.sheet_to_json(worksheet, {
-					defval: "",
-				}) as any[];
+				const json = combinedJson;
 
 				if (json.length === 0) {
 					setError("The uploaded Excel file is empty.");
@@ -449,7 +484,6 @@ function ImportView() {
 	};
 
 	const handleExecuteImport = async () => {
-		// Validate required fields are mapped
 		const missingFields = DB_FIELDS.filter(
 			(f) => f.required && !mappings[f.key],
 		);
@@ -457,6 +491,11 @@ function ImportView() {
 			setError(
 				`Please map all required fields: ${missingFields.map((f) => f.label).join(", ")}`,
 			);
+			return;
+		}
+
+		if (!mappings.purok && !defaultPurok.trim()) {
+			setError("Please specify a Default Purok for this import, or map the Purok column.");
 			return;
 		}
 
@@ -476,7 +515,10 @@ function ImportView() {
 			// String fields — pass raw so server normalizes
 			const strField = (key: string): string | null => {
 				const v = get(key);
-				if (v === null || v === undefined || v === "") return null;
+				if (v === null || v === undefined || v === "") {
+					if (key === "purok" && !mappings.purok) return defaultPurok.trim();
+					return null;
+				}
 				return String(v);
 			};
 
@@ -536,10 +578,12 @@ function ImportView() {
 			} as ImportRow;
 		});
 
-		// Filter out rows with no name at all
-		const validPayload = payload.filter(
-			(r) => r.firstName || r.lastName || r.fullName,
-		);
+		// Filter out rows with no name at all or that are just placeholders like (RENTER)
+		const validPayload = payload.filter((r) => {
+			const combined = [r.firstName, r.lastName, r.fullName].filter(Boolean).join(" ").trim().toLowerCase();
+			const isPlaceholder = /^\s*\(?(renter|vacant|none|n\/a|unknown)\)?\s*$/.test(combined);
+			return combined.length > 0 && !isPlaceholder;
+		});
 
 		if (validPayload.length === 0) {
 			setError("No valid resident records (with names) could be parsed.");
@@ -550,7 +594,13 @@ function ImportView() {
 		try {
 			const result = await importResidents({ data: validPayload });
 			if (result.success) {
+				invalidateResidentsCache();
+				invalidateHouseholdsCache();
 				setImportedCount(result.count ?? 0);
+				// @ts-ignore
+				setSkippedCount(result.skippedCount ?? 0);
+				// @ts-ignore
+				setSkippedNames(result.skippedNames ?? []);
 				setStep(3);
 			} else {
 				setError(result.error || "Failed to import data.");
@@ -585,23 +635,44 @@ function ImportView() {
 			const purok = normalizePurok(purokRaw) || "—";
 			const block = str("block") || "";
 			const lot = str("lot") || "";
-			const hhKey =
-				block && lot && purok !== "—"
-					? `Blk ${block} Lot ${lot}, ${purok}`
-					: purok;
+			let hhKey = "—";
+			if (block && lot && purok !== "—") {
+				hhKey = `Blk ${block} Lot ${lot}, ${purok}`;
+			} else if (lastName && purok !== "—") {
+				hhKey = `Fam ${lastName}, ${purok}`;
+			} else {
+				hhKey = `Individual Row`;
+			}
 
 			return {
+				firstName,
+				middleName,
+				lastName,
+				suffix,
+				contactNumber: str("contactNumber") || "",
 				fullName,
 				purok,
+				block,
+				lot,
 				hhKey,
 				birthDate: parseBirthDate(get("birthDate")) || "—",
-				gender: normalizeGender(str("gender")) || "—",
+				gender: normalizeGender(str("gender")) || "Unknown",
 				civilStatus: normalizeCivilStatus(str("civilStatus")) || "—",
 				education: normalizeEducation(str("educationalAttainment")) || "—",
 				isPwd: parseBoolean(get("isPwd")),
 				isSeniorCitizen: parseBoolean(get("isSeniorCitizen")),
 				isRegisteredVoter: parseBoolean(get("isRegisteredVoter")),
 				isSingleParent: parseBoolean(get("isSingleParent")),
+				isBedBound: parseBoolean(get("isBedBound")),
+				isWheelchairBound: parseBoolean(get("isWheelchairBound")),
+				isDialysisPatient: parseBoolean(get("isDialysisPatient")),
+				isCancerPatient: parseBoolean(get("isCancerPatient")),
+				isNationalPensioner: parseBoolean(get("isNationalPensioner")),
+				isLocalPensioner: parseBoolean(get("isLocalPensioner")),
+				isOfw: parseBoolean(get("isOfw")),
+				isOsy: parseBoolean(get("isOsy")),
+				isIp: parseBoolean(get("isIp")),
+				isMigrant: parseBoolean(get("isMigrant")),
 			};
 		});
 	};
@@ -768,13 +839,30 @@ function ImportView() {
 								</div>
 							))}
 						</div>
+
+						{!mappings.purok && (
+							<div className="mt-4 p-4 rounded-xl border border-amber-500/20 bg-amber-500/10 flex flex-col gap-2 max-w-xl">
+								<Label className="text-amber-500 font-bold">Default Purok / Phase for this Import *</Label>
+								<p className="text-xs text-amber-500/80">Since you didn't map a Purok column, please type the Purok or Phase that all these residents belong to.</p>
+								<Input 
+									list="purok-suggestions"
+									value={defaultPurok} 
+									onChange={(e: any) => setDefaultPurok(e.target.value)} 
+									placeholder="e.g. Purok 1, Phase 4..." 
+									className="border-amber-500/30 focus-visible:ring-amber-500 mt-1 bg-amber-500/5 text-amber-100" 
+								/>
+								<datalist id="purok-suggestions">
+									{puroks.map(p => <option key={p} value={p} />)}
+								</datalist>
+							</div>
+						)}
 					</Card>
 
 					{/* Mapped Data Preview */}
 					<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-8 space-y-5">
 						<div>
 							<h4 className="font-bold text-sm text-neutral-200">
-								Import Preview (First 3 Rows)
+								Import Preview (First 3 Rows) 
 							</h4>
 							<p className="text-[10px] text-neutral-500 mt-0.5">
 								Review how your spreadsheet columns will translate into database
@@ -786,12 +874,13 @@ function ImportView() {
 							<table className="w-full text-left text-xs text-neutral-300">
 								<thead className="bg-neutral-900 border-b border-neutral-800 text-neutral-400 font-semibold">
 									<tr>
-										<th className="px-4 py-3">Full Name</th>
-										<th className="px-4 py-3">Household (Blk/Lot/Zone)</th>
-										<th className="px-4 py-3">Birthdate</th>
-										<th className="px-4 py-3">Gender</th>
-										<th className="px-4 py-3">Education</th>
-										<th className="px-4 py-3">Flags</th>
+										<th className="px-4 py-3">Last Name</th>
+										<th className="px-4 py-3">First Name</th>
+										<th className="px-4 py-3">Middle Name</th>
+										<th className="px-4 py-3">Age / Gender</th>
+										<th className="px-4 py-3">Purok</th>
+										<th className="px-4 py-3">Blk / Lot</th>
+										<th className="px-4 py-3">Tags</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-neutral-900">
@@ -800,35 +889,122 @@ function ImportView() {
 											key={`preview-${idx}`}
 											className="hover:bg-neutral-900/20"
 										>
-											<td className="px-4 py-3 font-semibold text-neutral-200 whitespace-nowrap">
-												{row.fullName}
+											<td className="px-4 py-3">
+												<div className="flex flex-col min-w-0">
+													<span className="font-semibold text-neutral-100 text-sm leading-snug truncate">
+														{row.lastName || "—"} {row.suffix ? ` ${row.suffix}` : ""}
+													</span>
+													{row.contactNumber && (
+														<span className="text-[11px] text-neutral-500 leading-none mt-0.5 sm:hidden">
+															{row.contactNumber}
+														</span>
+													)}
+												</div>
 											</td>
-											<td className="px-4 py-3 text-neutral-400 text-[11px] whitespace-nowrap">
-												{row.hhKey}
+											<td className="px-4 py-3">
+												<span className="text-neutral-100 text-sm">{row.firstName || "—"}</span>
 											</td>
-											<td className="px-4 py-3 tabular-nums">{row.birthDate}</td>
-											<td className="px-4 py-3">{row.gender}</td>
-											<td className="px-4 py-3 text-[11px] text-neutral-400">{row.education}</td>
+											<td className="px-4 py-3">
+												<span className="text-neutral-300 text-sm">{row.middleName || "—"}</span>
+											</td>
+											<td className="px-4 py-3">
+												<div className="flex flex-col">
+													<span className="text-sm text-neutral-200 leading-snug">
+														{calculateAge(row.birthDate)} yrs
+													</span>
+													<span className="text-[11px] text-neutral-500 leading-none mt-0.5">
+														{row.gender}
+													</span>
+												</div>
+											</td>
+											<td className="px-4 py-3">
+												<div className="flex flex-col">
+													<span className="text-sm font-medium text-neutral-200 leading-snug">
+														{row.purok}
+													</span>
+												</div>
+											</td>
+											<td className="px-4 py-3">
+												<div className="flex flex-col">
+													{row.block || row.lot ? (
+														<span className="text-sm font-medium text-neutral-200 leading-snug">
+															Blk {row.block || "-"} Lot {row.lot || "-"}
+														</span>
+													) : (
+														<span className="text-sm font-medium text-neutral-500 italic">
+															{row.lastName && row.purok !== "—" ? `Fam. ${row.lastName}` : "—"}
+														</span>
+													)}
+												</div>
+											</td>
 											<td className="px-4 py-3">
 												<div className="flex flex-wrap gap-1">
 													{row.isPwd && (
-														<span className="bg-purple-950/40 border border-purple-900/30 text-purple-400 text-[8px] px-1.5 py-0.5 rounded">
+														<span
+															className="rounded-full bg-purple-950/40 border border-purple-800/30 px-2 py-0.5 text-[10px] font-semibold text-purple-400"
+															title="PWD"
+														>
 															PWD
 														</span>
 													)}
 													{row.isSeniorCitizen && (
-														<span className="bg-amber-950/40 border border-amber-900/30 text-amber-400 text-[8px] px-1.5 py-0.5 rounded">
+														<span className="rounded-full bg-amber-950/40 border border-amber-800/30 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
 															Senior
 														</span>
 													)}
 													{row.isRegisteredVoter && (
-														<span className="bg-cyan-950/40 border border-cyan-900/30 text-cyan-400 text-[8px] px-1.5 py-0.5 rounded">
+														<span className="rounded-full bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
 															Voter
 														</span>
 													)}
 													{row.isSingleParent && (
-														<span className="bg-pink-950/40 border border-pink-900/30 text-pink-400 text-[8px] px-1.5 py-0.5 rounded">
+														<span className="rounded-full bg-pink-950/40 border border-pink-800/30 px-2 py-0.5 text-[10px] font-semibold text-pink-400">
 															Solo Parent
+														</span>
+													)}
+													{row.isBedBound && (
+														<span className="rounded-full bg-red-950/40 border border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-400">
+															Bed Bound
+														</span>
+													)}
+													{row.isWheelchairBound && (
+														<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
+															Wheelchair
+														</span>
+													)}
+													{row.isDialysisPatient && (
+														<span className="rounded-full bg-orange-950/40 border border-orange-800/30 px-2 py-0.5 text-[10px] font-semibold text-orange-400">
+															Dialysis
+														</span>
+													)}
+													{row.isCancerPatient && (
+														<span className="rounded-full bg-rose-950/40 border border-rose-800/30 px-2 py-0.5 text-[10px] font-semibold text-rose-400">
+															Cancer
+														</span>
+													)}
+													{(row.isNationalPensioner || row.isLocalPensioner) && (
+														<span className="rounded-full bg-teal-950/40 border border-teal-800/30 px-2 py-0.5 text-[10px] font-semibold text-teal-400">
+															Pensioner
+														</span>
+													)}
+													{row.isOfw && (
+														<span className="rounded-full bg-indigo-950/40 border border-indigo-800/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-400">
+															OFW
+														</span>
+													)}
+													{row.isOsy && (
+														<span className="rounded-full bg-yellow-950/40 border border-yellow-800/30 px-2 py-0.5 text-[10px] font-semibold text-yellow-400">
+															OSY
+														</span>
+													)}
+													{row.isIp && (
+														<span className="rounded-full bg-lime-950/40 border border-lime-800/30 px-2 py-0.5 text-[10px] font-semibold text-lime-400">
+															IP
+														</span>
+													)}
+													{row.isMigrant && (
+														<span className="rounded-full bg-cyan-950/40 border border-cyan-800/30 px-2 py-0.5 text-[10px] font-semibold text-cyan-400">
+															Migrant
 														</span>
 													)}
 												</div>
@@ -850,6 +1026,8 @@ function ImportView() {
 								setExcelHeaders([]);
 								setMappings({});
 								setFileName("");
+								setSkippedCount(0);
+								setSkippedNames([]);
 							}}
 							className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-6 py-2.5 text-sm font-semibold"
 						>
@@ -884,7 +1062,7 @@ function ImportView() {
 						<CheckCircle className="h-10 w-10" />
 					</div>
 
-					<div className="space-y-2">
+					<div className="space-y-4">
 						<h3 className="font-extrabold text-2xl text-neutral-100">
 							Import Completed Successfully!
 						</h3>
@@ -896,6 +1074,21 @@ function ImportView() {
 							</span>{" "}
 							residents into the database.
 						</p>
+
+						{skippedCount > 0 && (
+							<div className="bg-amber-950/30 border border-amber-900/40 p-4 rounded-xl text-left inline-block max-w-full overflow-hidden">
+								<p className="text-sm text-amber-400/90 m-0 font-medium mb-2">
+									Skipped {skippedCount.toLocaleString()} duplicate residents:
+								</p>
+								<div className="max-h-24 overflow-y-auto pr-2 custom-scrollbar">
+									<ul className="list-disc list-inside text-xs text-amber-500/80 space-y-1">
+										{skippedNames.map((name, i) => (
+											<li key={i} className="truncate" title={name}>{name}</li>
+										))}
+									</ul>
+								</div>
+							</div>
+						)}
 					</div>
 
 					<div className="flex gap-2">
@@ -906,6 +1099,8 @@ function ImportView() {
 								setExcelHeaders([]);
 								setMappings({});
 								setFileName("");
+								setSkippedCount(0);
+								setSkippedNames([]);
 							}}
 							className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5 text-xs font-semibold"
 						>

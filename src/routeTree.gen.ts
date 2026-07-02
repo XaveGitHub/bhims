@@ -9,13 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResidentsRouteImport } from './routes/residents'
+import { Route as QueueRouteImport } from './routes/queue'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as KioskRouteImport } from './routes/kiosk'
 import { Route as ImportRouteImport } from './routes/import'
 import { Route as HouseholdsRouteImport } from './routes/households'
+import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -26,9 +35,19 @@ const ResidentsRoute = ResidentsRouteImport.update({
   path: '/residents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QueueRoute = QueueRouteImport.update({
+  id: '/queue',
+  path: '/queue',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KioskRoute = KioskRouteImport.update({
+  id: '/kiosk',
+  path: '/kiosk',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImportRoute = ImportRouteImport.update({
@@ -41,6 +60,11 @@ const HouseholdsRoute = HouseholdsRouteImport.update({
   path: '/households',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountsRoute = AccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,61 +73,102 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
+  '/kiosk': typeof KioskRoute
   '/login': typeof LoginRoute
+  '/queue': typeof QueueRoute
   '/residents': typeof ResidentsRoute
   '/settings': typeof SettingsRoute
+  '/templates': typeof TemplatesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
+  '/kiosk': typeof KioskRoute
   '/login': typeof LoginRoute
+  '/queue': typeof QueueRoute
   '/residents': typeof ResidentsRoute
   '/settings': typeof SettingsRoute
+  '/templates': typeof TemplatesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
+  '/kiosk': typeof KioskRoute
   '/login': typeof LoginRoute
+  '/queue': typeof QueueRoute
   '/residents': typeof ResidentsRoute
   '/settings': typeof SettingsRoute
+  '/templates': typeof TemplatesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/accounts'
     | '/households'
     | '/import'
+    | '/kiosk'
     | '/login'
+    | '/queue'
     | '/residents'
     | '/settings'
+    | '/templates'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/households' | '/import' | '/login' | '/residents' | '/settings'
+  to:
+    | '/'
+    | '/accounts'
+    | '/households'
+    | '/import'
+    | '/kiosk'
+    | '/login'
+    | '/queue'
+    | '/residents'
+    | '/settings'
+    | '/templates'
   id:
     | '__root__'
     | '/'
+    | '/accounts'
     | '/households'
     | '/import'
+    | '/kiosk'
     | '/login'
+    | '/queue'
     | '/residents'
     | '/settings'
+    | '/templates'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountsRoute: typeof AccountsRoute
   HouseholdsRoute: typeof HouseholdsRoute
   ImportRoute: typeof ImportRoute
+  KioskRoute: typeof KioskRoute
   LoginRoute: typeof LoginRoute
+  QueueRoute: typeof QueueRoute
   ResidentsRoute: typeof ResidentsRoute
   SettingsRoute: typeof SettingsRoute
+  TemplatesRoute: typeof TemplatesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -118,11 +183,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResidentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/queue': {
+      id: '/queue'
+      path: '/queue'
+      fullPath: '/queue'
+      preLoaderRoute: typeof QueueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kiosk': {
+      id: '/kiosk'
+      path: '/kiosk'
+      fullPath: '/kiosk'
+      preLoaderRoute: typeof KioskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/import': {
@@ -139,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HouseholdsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/accounts': {
+      id: '/accounts'
+      path: '/accounts'
+      fullPath: '/accounts'
+      preLoaderRoute: typeof AccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -151,11 +237,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountsRoute: AccountsRoute,
   HouseholdsRoute: HouseholdsRoute,
   ImportRoute: ImportRoute,
+  KioskRoute: KioskRoute,
   LoginRoute: LoginRoute,
+  QueueRoute: QueueRoute,
   ResidentsRoute: ResidentsRoute,
   SettingsRoute: SettingsRoute,
+  TemplatesRoute: TemplatesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

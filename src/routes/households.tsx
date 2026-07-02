@@ -38,13 +38,20 @@ import {
 	updateHouseholdDetails,
 } from "../lib/households-service";
 import { getUniquePuroks } from "../lib/residents-service";
+import { formatHouseholdId } from "../lib/utils";
 import type { Resident } from "./residents";
 import { invalidateResidentsCache } from "./residents";
 
+type HouseholdsSearch = {
+	householdId?: string;
+	purok?: string;
+};
+
 export const Route = createFileRoute("/households")({
-	validateSearch: (search: Record<string, unknown>) => {
+	validateSearch: (search: Record<string, unknown>): HouseholdsSearch => {
 		return {
 			householdId: search.householdId as string | undefined,
+			purok: search.purok as string | undefined,
 		};
 	},
 	component: HouseholdsView,
@@ -78,16 +85,19 @@ function HouseholdsView() {
 	// Floating Profile Pane State
 	const [drawerResident, setDrawerResident] = useState<Resident | null>(null);
 	const dragNodeRef = useRef<HTMLDivElement>(null);
+	const canvasDragRef = useRef<HTMLDivElement>(null);
 
 	// Edit Modal State
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const [editHouseholdId, setEditHouseholdId] = useState("");
+	const [zoom, setZoom] = useState(1);
+	const [editBlock, setEditBlock] = useState("");
+	const [editLot, setEditLot] = useState("");
 	const [editPurok, setEditPurok] = useState("");
 	const [editHeadId, setEditHeadId] = useState<string>("");
 
 	// Filters
 	const [search, setSearch] = useState("");
-	const [selectedPurok, setSelectedPurok] = useState("");
+	const [selectedPurok, setSelectedPurok] = useState(searchParams.purok || "");
 	const [purokOptions, setPurokOptions] = useState<string[]>([]);
 
 	const loadList = useCallback(async () => {
@@ -175,6 +185,7 @@ function HouseholdsView() {
 				const target = event.target as HTMLElement;
 				if (
 					target.closest('[role="dialog"]') ||
+					target.closest('[data-slot="dialog-overlay"]') ||
 					target.closest("[data-radix-popper-content-wrapper]") ||
 					target.closest("[data-radix-select-content]") ||
 					target.closest('[role="listbox"]')
@@ -195,7 +206,8 @@ function HouseholdsView() {
 
 	const handleOpenEdit = () => {
 		if (!detail) return;
-		setEditHouseholdId(detail.householdId);
+		setEditBlock(detail.block || "");
+		setEditLot(detail.lot || "");
 		setEditPurok(detail.purok);
 		setEditHeadId(detail.head?.id.toString() || "");
 		setIsEditModalOpen(true);
@@ -209,31 +221,35 @@ function HouseholdsView() {
 			const result = await updateHouseholdDetails({
 				data: {
 					oldHouseholdId: detail.householdId,
-					newHouseholdId: editHouseholdId,
 					purok: editPurok,
+					block: editBlock || null,
+					lot: editLot || null,
 					newHeadId: editHeadId ? parseInt(editHeadId) : undefined,
 				},
 			});
 
 			if (result.success) {
-				toast.success("Household updated successfully!");
 				setIsEditModalOpen(false);
 
 				// Invalidate caches and reload
 				invalidateHouseholdsCache();
 				invalidateResidentsCache();
 
-				// Explicitly clear local cache to bypass any circular dependency state issues
-				householdDetailCache[editHouseholdId] = null;
-				if (detail.householdId !== editHouseholdId) {
-					householdDetailCache[detail.householdId] = null;
+				// Invalidate cache for BOTH old and new household IDs
+				householdDetailCache[detail.householdId] = null;
+				if (result.newHouseholdId && detail.householdId !== result.newHouseholdId) {
+					householdDetailCache[result.newHouseholdId] = null;
 				}
 
-				loadList();
-				if (editHouseholdId !== detail.householdId) {
-					setSelectedId(editHouseholdId);
+				toast.success("Household updated successfully.");
+
+				if (result.newHouseholdId && result.newHouseholdId !== detail.householdId) {
+					setSelectedId(result.newHouseholdId);
+					loadList(); // Refresh list to get new ID
+					loadDetail(result.newHouseholdId);
 				} else {
-					loadDetail(editHouseholdId);
+					loadList();
+					loadDetail(detail.householdId, true);
 				}
 			} else {
 				toast.error(result.error || "Failed to update household.");
@@ -320,6 +336,11 @@ function HouseholdsView() {
 							Solo
 						</span>
 					)}
+					{member.isDeceased && (
+						<span className="inline-flex items-center rounded-full bg-neutral-500/10 px-2 py-0.5 text-[10px] font-semibold text-neutral-400 border border-neutral-500/20">
+							Deceased
+						</span>
+					)}
 				</div>
 			</div>
 		);
@@ -395,7 +416,7 @@ function HouseholdsView() {
 								<div className="h-5 w-5 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
 							</div>
 						) : filteredHouseholds.length > 0 ? (
-							filteredHouseholds.map((h) => (
+							filteredHouseholds.slice(0, 100).map((h) => (
 								<button
 									type="button"
 									key={h.householdId}
@@ -413,10 +434,15 @@ function HouseholdsView() {
 										>
 											{h.headName}
 										</h4>
-										<div className="flex items-center gap-2 text-[11px] text-neutral-500">
+										<div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-500 mt-1">
 											<span className="bg-neutral-900 border border-neutral-800/80 px-2 py-0.5 rounded-full truncate">
 												{h.purok}
 											</span>
+											{(h.block || h.lot) && (
+												<span className="bg-neutral-900 border border-neutral-800/80 px-2 py-0.5 rounded-full truncate">
+													{h.block ? `Blk ${h.block}` : ""} {h.lot ? `Lot ${h.lot}` : ""}
+												</span>
+											)}
 											<span className="truncate">
 												{h.memberCount} members ({h.adultsCount} Adults,{" "}
 												{h.childrenCount} Children)
@@ -429,7 +455,7 @@ function HouseholdsView() {
 								</button>
 							))
 						) : (
-							<div className="flex flex-col items-center justify-center p-8 text-center h-40">
+							<div className="flex-1 flex flex-col items-center justify-center p-8 text-center opacity-50">
 								<AlertCircle className="h-6 w-6 text-neutral-600 mb-1" />
 								<p className="text-xs font-semibold text-neutral-500">
 									No Households Found
@@ -476,8 +502,13 @@ function HouseholdsView() {
 											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-950/40 text-emerald-500 border border-emerald-900/30">
 												Purok: {detail.purok}
 											</span>
+											{(detail.block || detail.lot) && (
+												<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-neutral-900 text-neutral-400 border border-neutral-800">
+													{detail.block ? `Blk ${detail.block}` : ""} {detail.lot ? `Lot ${detail.lot}` : ""}
+												</span>
+											)}
 											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-neutral-900 text-neutral-400 border border-neutral-800">
-												Code: {detail.householdId}
+												Code: {formatHouseholdId(detail.householdId)}
 											</span>
 										</div>
 									</div>
@@ -493,81 +524,189 @@ function HouseholdsView() {
 									</div>
 								</div>
 
-								{/* Tree Area (Scrollable) */}
-								<div className="flex-1 overflow-auto p-8 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/20 via-neutral-950 to-neutral-950 flex flex-col items-center min-w-max">
-									<div className="flex flex-col items-center min-h-full justify-center py-6">
-										{/* 1. Parent Layer (Head + Spouse) */}
-										<div className="flex items-center gap-16 relative">
-											{detail.head && (
-												<MemberCard
-													member={detail.head}
-													roleColor="bg-emerald-950/50 text-emerald-400 border border-emerald-900/30"
-												/>
-											)}
-
-											{detail.spouse && (
-												<>
-													{/* Connection bar between spouses */}
-													<div className="absolute left-[13.5rem] right-[13.5rem] h-[2px] bg-neutral-800 z-0 top-1/2 -translate-y-1/2" />
-
-													{/* Vertical drop line from the spouses bar down to the children crossbar */}
-													{detail.children.length > 0 && (
-														<div className="absolute left-1/2 -translate-x-1/2 top-1/2 w-[2px] h-[calc(50%+32px)] bg-neutral-800 z-0" />
-													)}
-
-													<MemberCard
-														member={detail.spouse}
-														roleColor="bg-emerald-950/50 text-emerald-400 border border-emerald-900/30"
-													/>
-												</>
-											)}
-
-											{/* If there are children but NO spouse, drop the line from the head directly */}
-											{!detail.spouse && detail.children.length > 0 && (
-												<div className="absolute left-1/2 -translate-x-1/2 top-full w-[2px] h-[32px] bg-neutral-800 z-0" />
-											)}
-										</div>
-
-										{/* 3. Children Layer */}
-										{detail.children.length > 0 && (
-											<div className="flex flex-wrap justify-center gap-6 max-w-4xl relative pt-6 mt-8">
-												{/* Horizontal crossbar connecting the first row */}
-												<div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] bg-neutral-800 w-[calc(100%-14rem)] min-w-[2px] max-w-full z-0" />
-
-												{detail.children.map((child) => (
-													<div
-														key={child.id}
-														className="flex flex-col items-center relative z-10"
-													>
-														{/* Drop line from horizontal crossbar to child card */}
-														<div className="absolute -top-6 h-6 w-[2px] bg-neutral-800" />
-														<MemberCard
-															member={child}
-															roleColor="bg-pink-950/50 text-pink-400 border border-pink-900/30"
-														/>
-													</div>
-												))}
-											</div>
-										)}
-
-										{/* 4. Others Layer (Extended Family / Other members in household) */}
-										{detail.others.length > 0 && (
-											<div className="mt-8 border-t border-neutral-800/80 pt-8 w-full flex flex-col items-center">
-												<div className="inline-flex items-center gap-2 rounded-full bg-neutral-900 border border-neutral-800 px-3 py-1 text-xs text-neutral-400 mb-6 font-semibold">
-													Extended family / Other residents
-												</div>
-												<div className="flex items-center gap-6 flex-wrap justify-center max-w-2xl">
-													{detail.others.map((other) => (
-														<MemberCard
-															key={other.id}
-															member={other}
-															roleColor="bg-neutral-850 text-neutral-400 border border-neutral-800"
-														/>
-													))}
-												</div>
-											</div>
-										)}
+								{/* Interactive Family Tree Canvas */}
+								<div className="flex-1 overflow-hidden relative bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/20 via-neutral-950 to-neutral-950">
+									{/* Zoom Controls */}
+									<div className="absolute bottom-6 right-6 z-50 flex flex-col gap-2 bg-neutral-900/80 backdrop-blur-md p-2 rounded-xl border border-neutral-800 shadow-xl pointer-events-auto">
+										<button type="button" onClick={() => setZoom(z => Math.min(z + 0.1, 2))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold">+</button>
+										<button type="button" onClick={() => setZoom(1)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold">1x</button>
+										<button type="button" onClick={() => setZoom(z => Math.max(z - 0.1, 0.3))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold">-</button>
 									</div>
+
+									<Draggable nodeRef={canvasDragRef}>
+										<div 
+											ref={canvasDragRef} 
+											className="absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing"
+											onWheel={(e) => {
+												if (e.deltaY > 0) setZoom(z => Math.max(z - 0.1, 0.3));
+												else setZoom(z => Math.min(z + 0.1, 2));
+											}}
+										>
+											<div className="transition-transform duration-200 ease-out flex flex-col items-center" style={{ transform: `scale(${zoom})`, transformOrigin: "center center" }}>
+												{(() => {
+													const isAscendant = (rel: string) => ['parent', 'father', 'mother', 'grandparent', 'grandfather', 'grandmother'].includes(rel?.toLowerCase());
+													const isSibling = (rel: string) => ['sibling', 'brother', 'sister'].includes(rel?.toLowerCase());
+													const isDescendant = (rel: string) => ['nephew', 'niece', 'grandchild', 'grandson', 'granddaughter'].includes(rel?.toLowerCase());
+
+													const ascendants = detail.others.filter(m => isAscendant(m.relationshipToHead || ""));
+													const siblings = detail.others.filter(m => isSibling(m.relationshipToHead || ""));
+													const descendants = detail.others.filter(m => isDescendant(m.relationshipToHead || ""));
+													const otherExtended = detail.others.filter(m => !isAscendant(m.relationshipToHead || "") && !isSibling(m.relationshipToHead || "") && !isDescendant(m.relationshipToHead || ""));
+
+													return (
+														<>
+															{/* TIER 1: Ascendants */}
+															{ascendants.length > 0 && (
+																<div className="flex flex-col items-center">
+																	<div className="flex justify-center gap-6 relative">
+																		{/* Horizontal crossbar at the bottom */}
+																		{ascendants.length > 1 && (
+																			<div className="absolute bottom-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																		)}
+																		{ascendants.map(m => (
+																			<div key={m.id} className="flex flex-col items-center h-full">
+																				<MemberCard member={m} roleColor="bg-amber-950/50 text-amber-400 border-amber-900/30" />
+																				{/* Drop line stretches to bottom crossbar */}
+																				<div className="flex-1 min-h-[1.5rem] w-[2px] bg-neutral-800" />
+																			</div>
+																		))}
+																	</div>
+																	{/* Trunk down to Core */}
+																	<div className="h-[1.5rem] w-[2px] bg-neutral-800" />
+																</div>
+															)}
+
+															{/* TIER 2: Core (Head, Spouse, Siblings) */}
+															<div className="flex flex-col items-center">
+																<div className="flex items-center justify-center gap-[4rem] relative">
+																	
+																	{/* Siblings */}
+																	{siblings.length > 0 && (
+																		<div className="absolute right-full top-1/2 -translate-y-1/2 flex items-center gap-6 mr-[4rem]">
+																			{/* Connection to head */}
+																			<div className="absolute top-1/2 -right-[4rem] h-[2px] w-[4rem] bg-neutral-800 -translate-y-1/2" />
+																			
+																			{siblings.map((m, index) => (
+																				<div key={m.id} className="relative flex items-center">
+																					{index < siblings.length - 1 && (
+																						<div className="absolute top-1/2 -right-[1.5rem] h-[2px] w-[1.5rem] bg-neutral-800 -translate-y-1/2" />
+																					)}
+																					<MemberCard member={m} roleColor="bg-blue-950/50 text-blue-400 border border-blue-900/30" />
+																				</div>
+																			))}
+																		</div>
+																	)}
+
+																	{/* Head */}
+																	{detail.head && (
+																		<MemberCard member={detail.head} roleColor="bg-emerald-950/50 text-emerald-400 border border-emerald-900/30" />
+																	)}
+
+																	{/* Spouse */}
+																	{detail.spouse && (
+																		<>
+																			<div className="absolute left-[14rem] w-[4rem] h-[2px] bg-neutral-800 top-1/2 -translate-y-1/2" />
+																			<MemberCard member={detail.spouse} roleColor="bg-emerald-950/50 text-emerald-400 border border-emerald-900/30" />
+																		</>
+																	)}
+
+																	{/* Connection from Tier 1 trunk down to marriage line */}
+																	{ascendants.length > 0 && detail.spouse && (
+																		<div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-1/2 w-[2px] bg-neutral-800 z-0" />
+																	)}
+
+																	{/* Drop line from center of marriage to bottom of Core container */}
+																	{((detail.children.length > 0) || (descendants.length > 0)) && detail.spouse && (
+																		<div className="absolute left-1/2 -translate-x-1/2 top-1/2 bottom-0 w-[2px] bg-neutral-800 z-0" />
+																	)}
+																</div>
+																
+																{/* Trunk down to Children */}
+																{((detail.children.length > 0) || (descendants.length > 0)) && (
+																	<div className="h-[1.5rem] w-[2px] bg-neutral-800" />
+																)}
+															</div>
+
+															{/* TIER 3: Children */}
+															{detail.children.length > 0 && (
+																<div className="flex flex-col items-center">
+																	<div className="flex justify-center gap-6 relative">
+																		{/* Top crossbar */}
+																		{detail.children.length > 1 && (
+																			<div className="absolute top-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																		)}
+																		
+																		{/* Bottom crossbar for descendants */}
+																		{descendants.length > 0 && detail.children.length > 1 && (
+																			<div className="absolute bottom-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																		)}
+
+																		{detail.children.map((child) => (
+																			<div key={child.id} className="flex flex-col items-center h-full">
+																				<div className="h-[1.5rem] shrink-0 w-[2px] bg-neutral-800" />
+																				<MemberCard member={child} roleColor="bg-pink-950/50 text-pink-400 border border-pink-900/30" />
+																				{descendants.length > 0 && (
+																					<div className="flex-1 min-h-[1.5rem] w-[2px] bg-neutral-800" />
+																				)}
+																			</div>
+																		))}
+																	</div>
+																	{/* Trunk to descendants */}
+																	{descendants.length > 0 && (
+																		<div className="w-[2px] h-[1.5rem] bg-neutral-800" />
+																	)}
+																</div>
+															)}
+
+															{/* TIER 4: Descendants */}
+															{descendants.length > 0 && (
+																<div className="flex flex-col items-center">
+																	<div className="flex justify-center gap-6 relative">
+																		{/* Top crossbar */}
+																		{descendants.length > 1 && (
+																			<div className="absolute top-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																		)}
+																		{descendants.map((m) => (
+																			<div key={m.id} className="flex flex-col items-center">
+																				<div className="h-[1.5rem] w-[2px] bg-neutral-800" />
+																				<MemberCard member={m} roleColor="bg-purple-950/50 text-purple-400 border border-purple-900/30" />
+																			</div>
+																		))}
+																	</div>
+																</div>
+															)}
+
+															{/* TIER 5: Others */}
+															{otherExtended.length > 0 && (
+																<div className="flex flex-col items-center w-full max-w-4xl mt-12">
+																	<div className="inline-flex items-center gap-2 rounded-full bg-neutral-900 border border-neutral-800 px-3 py-1 text-xs text-neutral-400 font-semibold z-10 relative">
+																		Distant Relatives & Others
+																	</div>
+																	
+																	{/* Dashed trunk from pill down to crossbar */}
+																	<div className="h-[1.5rem] w-[2px] border-l-[2px] border-dashed border-neutral-600/50" />
+																	
+																	<div className="flex justify-center gap-6 relative z-10 w-full">
+																		{/* Top dashed crossbar */}
+																		{otherExtended.length > 1 && (
+																			<div className="absolute top-0 left-[7rem] right-[7rem] h-[2px] border-t-[2px] border-dashed border-neutral-600/50" />
+																		)}
+																		
+																		{otherExtended.map((other) => (
+																			<div key={other.id} className="flex flex-col items-center">
+																				<div className="h-[1.5rem] w-[2px] border-l-[2px] border-dashed border-neutral-600/50" />
+																				<MemberCard member={other} roleColor="bg-neutral-850 text-neutral-400 border border-neutral-800" />
+																			</div>
+																		))}
+																	</div>
+																</div>
+															)}
+														</>
+													);
+												})()}
+											</div>
+										</div>
+									</Draggable>
 								</div>
 							</div>
 						) : (
@@ -622,18 +761,26 @@ function HouseholdsView() {
 							</DialogTitle>
 						</DialogHeader>
 						<div className="grid gap-4 py-6">
-							<div className="grid gap-2">
-								<Label htmlFor="householdId" className="text-neutral-300">
-									Household Code
-								</Label>
+							<div className="space-y-1.5">
+								<Label className="text-neutral-400 text-xs">Block</Label>
 								<Input
-									id="householdId"
-									value={editHouseholdId}
-									onChange={(e) => setEditHouseholdId(e.target.value)}
-									className="bg-neutral-900 border-neutral-800"
-									required
+									value={editBlock}
+									onChange={(e) => setEditBlock(e.target.value)}
+									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+									placeholder="e.g. 5"
 								/>
 							</div>
+
+							<div className="space-y-1.5">
+								<Label className="text-neutral-400 text-xs">Lot</Label>
+								<Input
+									value={editLot}
+									onChange={(e) => setEditLot(e.target.value)}
+									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+									placeholder="e.g. 12"
+								/>
+							</div>
+
 							<div className="grid gap-2">
 								<Label htmlFor="purok" className="text-neutral-300">
 									Purok

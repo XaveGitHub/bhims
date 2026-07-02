@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const households = sqliteTable("households", {
 	id: text("id").primaryKey(), // Using the household string code as PK
@@ -18,8 +18,24 @@ export const households = sqliteTable("households", {
 	),
 });
 
+export const users = sqliteTable("users", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	username: text("username").notNull().unique(),
+	password: text("password").notNull(),
+	role: text("role").notNull().default("staff"), // 'admin' or 'staff'
+	name: text("name").notNull(),
+	createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
+	updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
+});
+
 export const residents = sqliteTable("residents", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
+	residentId: text("resident_id").unique(), // 8-digit unique code
+	photoBase64: text("photo_base64"), // Base64 encoded resident photo
 	// Name
 	fullName: text("full_name").notNull(), // Kept for computed display/search
 	lastName: text("last_name"),
@@ -66,6 +82,8 @@ export const residents = sqliteTable("residents", {
 	isWheelchairBound: integer("is_wheelchair_bound", { mode: "boolean" }).default(false),
 	isDialysisPatient: integer("is_dialysis_patient", { mode: "boolean" }).default(false),
 	isCancerPatient: integer("is_cancer_patient", { mode: "boolean" }).default(false),
+	// Archiving
+	isDeceased: integer("is_deceased", { mode: "boolean" }).default(false),
 	// Timestamps
 	createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
 		() => new Date(),
@@ -78,4 +96,34 @@ export const residents = sqliteTable("residents", {
 export const settings = sqliteTable("settings", {
 	key: text("key").primaryKey().notNull(),
 	value: text("value").notNull(),
+});
+
+export const documentTemplates = sqliteTable("document_templates", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	name: text("name").notNull(), // e.g., "Barangay Clearance"
+	price: real("price").default(0),
+	isActive: integer("is_active", { mode: "boolean" }).default(true),
+	imageBase64: text("image_base64"), // The background template image
+	fieldMappings: text("field_mappings", { mode: "json" }), // Drag-and-drop field configurations
+	createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
+});
+
+export const transactions = sqliteTable("transactions", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	queueNumber: integer("queue_number").notNull(),
+	residentId: integer("resident_id").notNull(),
+	templateId: integer("template_id").notNull(),
+	purpose: text("purpose"),
+	totalPrice: real("total_price").notNull(),
+	status: text("status").default("Pending").notNull(), // Pending, Released, Cancelled
+	processedBy: text("processed_by"), // Name of staff
+	remarks: text("remarks"),
+	createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
+	updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
 });

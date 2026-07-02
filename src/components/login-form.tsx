@@ -1,184 +1,122 @@
-import { useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff, Loader2, Lock, ShieldAlert } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "#/components/ui/button.tsx";
-import { FieldGroup } from "#/components/ui/field.tsx";
+import { useState } from "react"
+import { useNavigate } from "@tanstack/react-router"
+import { cn } from "../lib/utils.ts"
+import { Button } from "../components/ui/button.tsx"
 import {
-	getBarangayName,
-	getClientAuth,
-	login,
-	setClientAuth,
-} from "#/lib/auth-service.ts";
-import { cn } from "#/lib/utils.ts";
+  Field,
+  FieldGroup,
+  FieldLabel,
+} from "../components/ui/field.tsx"
+import { Input } from "../components/ui/input.tsx"
+import { login, setClientAuth } from "../lib/auth-service.ts"
+import { Loader2 } from "lucide-react"
 
 export function LoginForm({
-	className,
-	...props
-}: React.ComponentProps<"div">) {
-	const navigate = useNavigate();
-	const inputRef = useRef<HTMLInputElement>(null);
+  className,
+  ...props
+}: React.ComponentProps<"form">) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  
+  // Validation states
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [generalError, setGeneralError] = useState("");
+  
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-	const [pin, setPin] = useState("");
-	const [error, setError] = useState("");
-	const [loading, setLoading] = useState(false);
-	const [brgyName, setBrgyName] = useState("Barangay Handumanan");
-	const [shake, setShake] = useState(false);
-	const [showPin, setShowPin] = useState(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Reset errors
+    setUsernameError("");
+    setPasswordError("");
+    setGeneralError("");
+    
+    let hasError = false;
+    if (!username.trim()) {
+      setUsernameError("Username is required");
+      hasError = true;
+    }
+    if (!password) {
+      setPasswordError("Password is required");
+      hasError = true;
+    }
+    
+    if (hasError) return;
 
-	// Focus helper
-	const focusInput = useCallback(() => {
-		if (!loading) {
-			inputRef.current?.focus();
-		}
-	}, [loading]);
+    setLoading(true);
 
-	// Load state and check auth on load
-	useEffect(() => {
-		getBarangayName().then(setBrgyName);
-		getClientAuth().then((isAuthenticated) => {
-			if (isAuthenticated) {
-				navigate({ to: "/" });
-			}
-		});
-	}, [navigate]);
+    try {
+      const res = await login({ data: { username, password } });
+      if (res.success) {
+        setClientAuth(true);
+        navigate({ to: "/" });
+      } else {
+        setGeneralError(res.error || "Invalid credentials");
+      }
+    } catch (err) {
+      setGeneralError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-	// Handle focus
-	useEffect(() => {
-		focusInput();
-	}, [focusInput]);
+  return (
+    <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} noValidate {...props}>
+      <FieldGroup>
+        <div className="flex flex-col items-center text-center -mb-2">
+          <div className="relative">
+            {/* Green glowing background behind the logo */}
+            <div className="absolute inset-0 bg-emerald-500/30 blur-xl rounded-full scale-150 z-0 animate-pulse" />
+            <img src="/barangay_logo.png" alt="Barangay Logo" className="relative z-10 w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-[0.15em] text-white drop-shadow-sm leading-none pt-2">BHIMS</h1>
+        </div>
+        
+        <Field>
+          <FieldLabel htmlFor="username">Username</FieldLabel>
+          <Input 
+            id="username" 
+            type="text" 
+            placeholder="" 
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              if (usernameError) setUsernameError("");
+              if (generalError) setGeneralError("");
+            }}
+            className={cn(usernameError && "border-red-500 focus-visible:ring-red-500")}
+            autoFocus
+          />
+          {usernameError && <p className="text-xs text-red-500 font-medium mt-1">{usernameError}</p>}
+        </Field>
 
-	// Handle login request
-	const handleLoginSubmit = useCallback(
-		async (currentPin: string) => {
-			if (currentPin.length === 0) return;
-			setLoading(true);
-			setError("");
-
-			try {
-				const result = await login({ data: currentPin });
-				if (result.success) {
-					setClientAuth(true);
-					navigate({ to: "/" });
-				} else {
-					setError(result.error || "Invalid login PIN");
-					setShake(true);
-					setTimeout(() => setShake(false), 500);
-					setPin("");
-					focusInput();
-				}
-			} catch (_err) {
-				setError("Connection failed. Please try again.");
-				setShake(true);
-				setTimeout(() => setShake(false), 500);
-				setPin("");
-				focusInput();
-			} finally {
-				setLoading(false);
-			}
-		},
-		[navigate, focusInput],
-	);
-
-	const handleSubmitForm = (e: React.FormEvent) => {
-		e.preventDefault();
-		handleLoginSubmit(pin);
-	};
-
-	return (
-		<div className={cn("w-full max-w-sm mx-auto", className)} {...props}>
-			<form
-				onSubmit={handleSubmitForm}
-				className={cn("space-y-6", shake && "animate-shake")}
-			>
-				<FieldGroup>
-					{/* 1. Header Block */}
-					<div className="flex flex-col items-center text-center space-y-3">
-						<div className="relative group">
-							{/* Glowing ring under Barangay seal */}
-							<div className="absolute -inset-1.5 rounded-full bg-emerald-500/20 blur-lg group-hover:bg-emerald-500/35 transition duration-300" />
-							<img
-								src="/barangay_logo.png"
-								alt="Barangay Handumanan Council Seal"
-								className="relative size-20 rounded-full object-cover border border-white/10 drop-shadow-[0_4px_10px_rgba(16,185,129,0.25)] select-none"
-							/>
-						</div>
-
-						<div className="space-y-1">
-							<h1 className="text-lg font-bold tracking-tight text-neutral-100">
-								{brgyName}
-							</h1>
-							<p className="text-xs text-neutral-400">
-								Information Management System
-							</p>
-						</div>
-					</div>
-
-					{/* 2. Credentials Input Area */}
-					<div className="space-y-4">
-						<div className="space-y-2">
-							<div className="flex items-center justify-between px-0.5">
-								<label
-									htmlFor="pin-input"
-									className="text-xs font-semibold text-neutral-400"
-								>
-									Access Key
-								</label>
-							</div>
-
-							<div className="relative">
-								{/* Leading Lock Icon */}
-								<div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
-									<Lock className="size-4" />
-								</div>
-
-								<input
-									id="pin-input"
-									ref={inputRef}
-									type={showPin ? "text" : "password"}
-									maxLength={32}
-									value={pin}
-									onChange={(e) => setPin(e.target.value)}
-									placeholder="Enter Access Key"
-									disabled={loading}
-									className="w-full bg-neutral-950/40 border border-white/5 border-t-white/10 rounded-xl py-3 pl-10 pr-10 text-center text-base font-semibold tracking-wide text-emerald-400 placeholder:text-neutral-600 placeholder:tracking-normal focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-none disabled:opacity-50"
-								/>
-
-								{/* Trailing Eye/EyeOff toggle button */}
-								<button
-									type="button"
-									onClick={() => setShowPin(!showPin)}
-									className="absolute right-3 top-1/2 -translate-y-1/2 size-8 flex items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-800/50 hover:text-neutral-200 transition-colors focus:outline-none"
-								>
-									{showPin ? (
-										<EyeOff className="size-4" />
-									) : (
-										<Eye className="size-4" />
-									)}
-								</button>
-							</div>
-						</div>
-
-						{error && (
-							<div className="flex items-center gap-2 rounded-xl bg-red-950/20 border border-red-900/30 p-3 text-xs text-red-400 animate-in fade-in slide-in-from-top-1 duration-150">
-								<ShieldAlert className="h-4 w-4 shrink-0" />
-								<span className="font-medium">{error}</span>
-							</div>
-						)}
-					</div>
-
-					{/* 3. Action Buttons */}
-					<div className="space-y-4 pt-1">
-						<Button
-							type="submit"
-							disabled={loading || pin.length === 0}
-							className="w-full bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3.5 font-semibold transition-all duration-150 flex items-center justify-center gap-2 active:scale-[0.98] shadow-md shadow-emerald-950/40 disabled:opacity-50 disabled:pointer-events-none"
-						>
-							<span>{loading ? "Logging in..." : "Login"}</span>
-							{loading && <Loader2 className="size-4 animate-spin" />}
-						</Button>
-					</div>
-				</FieldGroup>
-			</form>
-		</div>
-	);
+        <Field>
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <Input 
+            id="password" 
+            type="password" 
+            placeholder="••••••••" 
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (passwordError) setPasswordError("");
+              if (generalError) setGeneralError("");
+            }}
+            className={cn(passwordError && "border-red-500 focus-visible:ring-red-500")}
+          />
+          {passwordError && <p className="text-xs text-red-500 font-medium mt-1">{passwordError}</p>}
+          {generalError && <p className="text-sm text-red-500 font-medium text-center mt-2">{generalError}</p>}
+        </Field>
+        
+        <Field className="pt-2">
+          <Button type="submit" disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign In"}
+          </Button>
+        </Field>
+      </FieldGroup>
+    </form>
+  )
 }

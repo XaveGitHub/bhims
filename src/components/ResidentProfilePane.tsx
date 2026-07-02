@@ -1,26 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import { format, parseISO } from "date-fns";
-import {
-	Calendar as CalendarIcon,
-	Edit2,
-	GripHorizontal,
-	Home,
-	Loader2,
-	MapPin,
-	User,
-	X,
-} from "lucide-react";
+import { Calendar as CalendarIcon, Edit2, GripHorizontal, Home, Loader2, MapPin, User, X, Printer, Download } from "lucide-react";
+import { ResidentIdCard } from "./residents/resident-id-card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { Resident } from "#/routes/residents.tsx";
+import type { z } from "zod";
 import { residentSchema } from "./AddResidentModal";
-import { cn } from "#/lib/utils.ts";
 import { getUniquePuroks, updateResident } from "../lib/residents-service";
+import { cn } from "../lib/utils";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { HouseholdCombobox } from "./HouseholdCombobox";
+type ResidentInputForm = z.infer<typeof residentSchema>;
 
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar as CalendarComponent } from "./ui/calendar";
@@ -50,8 +46,9 @@ export function ResidentProfilePane({
 	const [isEditing, setIsEditing] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [purokOptions, setPurokOptions] = useState<string[]>([]);
-	const [formData, setFormData] = useState<Partial<Resident>>({});
+	const [formData, setFormData] = useState<Partial<ResidentInputForm>>({});
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
 
 	useEffect(() => {
 		if (resident) {
@@ -86,6 +83,14 @@ export function ResidentProfilePane({
 				const path = issue.path[0] as string;
 				newErrors[path] = issue.message;
 			}
+			
+			if (!formData.isNewHousehold && !formData.householdId) {
+				newErrors.householdId = "Household is required";
+			}
+			if (formData.isNewHousehold && !formData.purok) {
+				newErrors.purok = "Purok is required";
+			}
+
 			setErrors(newErrors);
 			toast.error("Please fill in all required fields correctly.");
 			return;
@@ -131,7 +136,7 @@ export function ResidentProfilePane({
 		}
 	};
 
-	const updateField = (key: keyof Resident, value: any) => {
+	const updateField = (key: keyof ResidentInputForm, value: any) => {
 		setFormData((prev) => ({ ...prev, [key]: value }));
 		if (errors[key]) {
 			setErrors((prev) => {
@@ -139,6 +144,31 @@ export function ResidentProfilePane({
 				delete copy[key];
 				return copy;
 			});
+		}
+	};
+
+	const [isDownloading, setIsDownloading] = useState(false);
+	const [showPreview, setShowPreview] = useState(false);
+
+	const downloadID = async () => {
+		try {
+			setIsDownloading(true);
+			const element = document.getElementById(`id-card-${resident.id}`);
+			if (!element) return;
+			
+			const { toPng } = await import('html-to-image');
+			const image = await toPng(element, { pixelRatio: 2 });
+			
+			const link = document.createElement('a');
+			link.download = `ID_${resident.firstName}_${resident.lastName}.png`.replace(/\s+/g, '_');
+			link.href = image;
+			link.click();
+			toast.success("ID Card downloaded successfully!");
+		} catch (error) {
+			console.error("Failed to generate ID:", error);
+			toast.error("Failed to generate ID card image");
+		} finally {
+			setIsDownloading(false);
 		}
 	};
 
@@ -441,10 +471,12 @@ export function ResidentProfilePane({
 								</div>
 								<div>
 									<p className="text-[11px] text-neutral-500 mb-0.5">
-										Household ID
+										Block & Lot
 									</p>
 									<p className="text-sm font-medium text-neutral-200">
-										{resident.householdId || "—"}
+										{resident.block || resident.lot
+											? `Blk ${resident.block || "-"} Lot ${resident.lot || "-"}`
+											: "—"}
 									</p>
 								</div>
 								<div className="col-span-2">
@@ -673,11 +705,11 @@ export function ResidentProfilePane({
 											className={cn(
 												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
 												errors.firstName &&
-													"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+													"border-red-500 focus-visible:ring-red-500",
 											)}
 										/>
 										{errors.firstName && (
-											<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.firstName}</p>
+											<p className="text-xs text-red-500 font-medium mt-1">{errors.firstName}</p>
 										)}
 									</div>
 									<div className="space-y-1.5">
@@ -688,11 +720,11 @@ export function ResidentProfilePane({
 											className={cn(
 												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
 												errors.lastName &&
-													"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+													"border-red-500 focus-visible:ring-red-500",
 											)}
 										/>
 										{errors.lastName && (
-											<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.lastName}</p>
+											<p className="text-xs text-red-500 font-medium mt-1">{errors.lastName}</p>
 										)}
 									</div>
 									<div className="space-y-1.5">
@@ -724,9 +756,10 @@ export function ResidentProfilePane({
 								<div className="space-y-4">
 									<div className="space-y-1.5">
 										<Label className="text-xs text-neutral-400">Birthdate</Label>
-										<Popover>
+										<Popover open={isDatePopoverOpen} onOpenChange={setIsDatePopoverOpen}>
 											<PopoverTrigger asChild>
 												<Button
+													type="button"
 													variant="outline"
 													className="w-full justify-start text-left font-normal bg-neutral-900 border-neutral-800 text-neutral-200 hover:bg-neutral-800 hover:text-neutral-100 h-9"
 												>
@@ -738,7 +771,7 @@ export function ResidentProfilePane({
 													)}
 												</Button>
 											</PopoverTrigger>
-											<PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-800 text-neutral-200">
+											<PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-800 text-neutral-200" align="start">
 												<CalendarComponent
 													mode="single"
 													selected={
@@ -746,12 +779,21 @@ export function ResidentProfilePane({
 															? parseISO(formData.birthDate)
 															: undefined
 													}
-													onSelect={(date) =>
+													defaultMonth={
+														formData.birthDate
+															? parseISO(formData.birthDate)
+															: undefined
+													}
+													captionLayout="dropdown"
+													startMonth={new Date(1900, 0)}
+													endMonth={new Date()}
+													onSelect={(date) => {
 														updateField(
 															"birthDate",
 															date ? format(date, "yyyy-MM-dd") : "",
-														)
-													}
+														);
+														setIsDatePopoverOpen(false);
+													}}
 												/>
 											</PopoverContent>
 										</Popover>
@@ -759,7 +801,7 @@ export function ResidentProfilePane({
 									<div className="space-y-1.5">
 										<Label className="text-xs text-neutral-400">Gender</Label>
 										<Select
-											value={formData.gender || ""}
+											value={formData.gender || undefined}
 											onValueChange={(val) => updateField("gender", val)}
 										>
 											<SelectTrigger className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200">
@@ -774,7 +816,7 @@ export function ResidentProfilePane({
 									<div className="space-y-1.5">
 										<Label className="text-xs text-neutral-400">Civil Status</Label>
 										<Select
-											value={formData.civilStatus || ""}
+											value={formData.civilStatus || undefined}
 											onValueChange={(val) => updateField("civilStatus", val)}
 										>
 											<SelectTrigger className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200">
@@ -824,11 +866,11 @@ export function ResidentProfilePane({
 											className={cn(
 												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
 												errors.email &&
-													"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+													"border-red-500 focus-visible:ring-red-500",
 											)}
 										/>
 										{errors.email && (
-											<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.email}</p>
+											<p className="text-xs text-red-500 font-medium mt-1">{errors.email}</p>
 										)}
 									</div>
 								</div>
@@ -971,47 +1013,100 @@ export function ResidentProfilePane({
 								<h3 className="text-sm font-semibold text-neutral-400">
 									Location & Household
 								</h3>
-								<div className="grid grid-cols-2 gap-4">
-									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Purok *</Label>
-										<Input
-											value={formData.purok || ""}
-											onChange={(e) => updateField("purok", e.target.value)}
-											placeholder="e.g. Purok 1"
-											className={cn(
-												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
-												errors.purok &&
-													"border-rose-500/80 focus-visible:ring-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+								<div className="space-y-4">
+									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+										<div className="space-y-1.5">
+											<Label className="text-xs text-neutral-400">Purok *</Label>
+											<Input
+												list="purok-options"
+												value={formData.purok || ""}
+												onChange={(e) => {
+													updateField("purok", e.target.value);
+													if (formData.householdId && formData.householdId !== "NEW") {
+														updateField("householdId", undefined);
+													}
+												}}
+												placeholder="Select or type Purok..."
+												className={cn("bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+											/>
+											<datalist id="purok-options">
+												{purokOptions.map((p) => <option key={p} value={p} />)}
+											</datalist>
+											{errors.purok && (
+												<p className="text-xs text-red-500 font-medium mt-1">{errors.purok}</p>
 											)}
-										/>
-										{errors.purok && (
-											<p className="text-sm text-rose-400 font-semibold mt-1.5">{errors.purok}</p>
-										)}
+										</div>
+
+										<div className="space-y-1.5">
+											<Label className="text-xs text-neutral-400">
+												Household *
+											</Label>
+											<HouseholdCombobox
+												purok={formData.purok || ""}
+												value={formData.isNewHousehold ? "NEW" : (formData.householdId || undefined)}
+												onChange={(val) => {
+													if (val === "NEW") {
+														updateField("isNewHousehold", true);
+														updateField("householdId", undefined);
+													} else {
+														updateField("isNewHousehold", false);
+														updateField("householdId", val);
+													}
+												}}
+												error={!!errors.householdId}
+											/>
+											{errors.householdId && (
+												<p className="text-xs text-red-500 font-medium mt-1">{errors.householdId}</p>
+											)}
+										</div>
 									</div>
-									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">
-											Household ID
-										</Label>
-										<Input
-											value={formData.householdId || ""}
-											onChange={(e) =>
-												updateField("householdId", e.target.value)
-											}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
-										/>
-									</div>
-									<div className="col-span-2 space-y-1.5">
+									
+									{formData.isNewHousehold && (
+										<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-neutral-950/50 p-3 rounded-lg border border-neutral-800/80">
+											<div className="space-y-1.5">
+												<Label className="text-xs text-neutral-400">Block</Label>
+												<Input
+													value={formData.newHouseholdBlock || ""}
+													onChange={(e) => updateField("newHouseholdBlock", e.target.value)}
+													className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+												/>
+											</div>
+											<div className="space-y-1.5">
+												<Label className="text-xs text-neutral-400">Lot</Label>
+												<Input
+													value={formData.newHouseholdLot || ""}
+													onChange={(e) => updateField("newHouseholdLot", e.target.value)}
+													className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+												/>
+											</div>
+										</div>
+									)}
+
+									<div className="space-y-1.5 mt-4">
 										<Label className="text-xs text-neutral-400">
 											Relationship to Head
 										</Label>
-										<Input
-											value={formData.relationshipToHead || ""}
-											onChange={(e) =>
-												updateField("relationshipToHead", e.target.value)
+										<Select
+											value={formData.relationshipToHead || undefined}
+											onValueChange={(val) =>
+												updateField("relationshipToHead", val)
 											}
-											placeholder="Head, Spouse, Child, Member"
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
-										/>
+										>
+											<SelectTrigger className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200">
+												<SelectValue placeholder="Select relationship" />
+											</SelectTrigger>
+											<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+												<SelectItem value="Head">Head</SelectItem>
+												<SelectItem value="Spouse">Spouse</SelectItem>
+												<SelectItem value="Son">Son</SelectItem>
+												<SelectItem value="Daughter">Daughter</SelectItem>
+												<SelectItem value="Parent">Parent</SelectItem>
+												<SelectItem value="Sibling">Sibling</SelectItem>
+												<SelectItem value="Grandchild">Grandchild</SelectItem>
+												<SelectItem value="Relative">Relative</SelectItem>
+												<SelectItem value="Other">Other</SelectItem>
+											</SelectContent>
+										</Select>
 									</div>
 								</div>
 							</CardContent>
@@ -1180,6 +1275,7 @@ export function ResidentProfilePane({
 	);
 
 	return (
+		<>
 		<Card className="flex flex-col bg-neutral-950/80 backdrop-blur-2xl border-white/10 shadow-2xl overflow-hidden rounded-2xl h-[calc(100vh-16rem)] lg:h-[calc(100vh-12rem)] p-0 gap-0 w-full transition-all duration-300 pointer-events-auto">
 			{/* Header */}
 			<div
@@ -1197,14 +1293,26 @@ export function ResidentProfilePane({
 
 				<div className="absolute top-4 right-4 flex items-center gap-1 no-drag">
 					{!isEditing && (
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={() => setIsEditing(true)}
-							className="h-8 w-8 text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-full"
-						>
-							<Edit2 className="h-4 w-4" />
-						</Button>
+						<>
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setShowPreview(true)}
+								className="h-8 w-8 text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-full"
+								title="Preview & Print ID Card"
+							>
+								<Printer className="h-4 w-4" />
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setIsEditing(true)}
+								className="h-8 w-8 text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-full"
+								title="Edit Profile"
+							>
+								<Edit2 className="h-4 w-4" />
+							</Button>
+						</>
 					)}
 					<Button
 						variant="ghost"
@@ -1215,7 +1323,7 @@ export function ResidentProfilePane({
 						<X className="h-4 w-4" />
 					</Button>
 				</div>
-				<div className="flex items-start gap-4 mt-2">
+				<div className="flex items-start gap-4 mt-6">
 					<div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-inner">
 						<User className="h-8 w-8 text-emerald-400" />
 					</div>
@@ -1226,7 +1334,7 @@ export function ResidentProfilePane({
 							</h2>
 						) : (
 							<>
-								<h2 className="text-xl font-bold text-neutral-100 leading-tight truncate">
+								<h2 className="text-xl font-bold text-neutral-100 leading-tight">
 									{resident.fullName}
 								</h2>
 								<div className="flex items-center gap-2 mt-1.5 text-xs text-neutral-400">
@@ -1234,7 +1342,9 @@ export function ResidentProfilePane({
 										variant="outline"
 										className="bg-neutral-900 border-neutral-800 text-neutral-300 font-normal px-2 py-0"
 									>
-										ID: {resident.id.toString().padStart(4, "0")}
+										<span className="text-emerald-400/90 font-mono tracking-wider ml-1">
+											ID: {resident.residentId || resident.id.toString().padStart(4, "0")}
+										</span>
 									</Badge>
 									<span className="flex items-center">
 										<MapPin className="h-3 w-3 mr-1 opacity-70" />
@@ -1286,16 +1396,21 @@ export function ResidentProfilePane({
 						variant="ghost"
 						onClick={() => {
 							setIsEditing(false);
-							setFormData({ ...resident });
+							setFormData({
+								...resident,
+								firstName: resident.firstName || "",
+								lastName: resident.lastName || "",
+								purok: resident.purok || "",
+							});
 						}}
-						className="text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800"
+						className="text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-xl"
 					>
 						Cancel
 					</Button>
 					<Button
 						onClick={handleSave}
 						disabled={isSaving}
-						className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20"
+						className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 rounded-xl"
 					>
 						{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 						Save Changes
@@ -1303,5 +1418,35 @@ export function ResidentProfilePane({
 				</div>
 			)}
 		</Card>
+
+		{/* ID Preview Dialog */}
+		<Dialog open={showPreview} onOpenChange={setShowPreview}>
+			<DialogContent className="max-w-6xl w-fit bg-neutral-950 border-white/10 p-0 overflow-hidden shadow-2xl">
+				<DialogHeader className="p-4 border-b border-white/5 bg-neutral-900/50 flex flex-row items-center justify-between">
+					<DialogTitle className="text-2xl font-bold tracking-tight text-white/90 flex-1">
+						ID Card Preview
+					</DialogTitle>
+					<div className="flex gap-2 mr-6 mt-0!">
+						<Button 
+							className="bg-blue-600 hover:bg-blue-500 text-white"
+							onClick={downloadID}
+							disabled={isDownloading}
+						>
+							{isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+							Download PNG Image
+						</Button>
+					</div>
+				</DialogHeader>
+				
+				<div className="p-8 bg-neutral-900/50 flex items-center justify-center overflow-auto min-h-[400px]">
+					{/* The actual ID card element to be rendered and captured */}
+					<div className="relative shadow-2xl rounded-sm overflow-hidden" style={{ width: 1012, height: 318 }}>
+						<ResidentIdCard resident={resident} />
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
+
+		</>
 	);
 }

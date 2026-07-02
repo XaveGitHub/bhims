@@ -28,7 +28,7 @@ import {
 import { getDashboardData } from "../lib/dashboard-service";
 import { getUniquePuroks } from "../lib/residents-service";
 import { z } from "zod";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 import {
 	Select,
 	SelectContent,
@@ -106,6 +106,8 @@ function DashboardView() {
 			accent: "emerald",
 			glow: "from-emerald-500/10",
 			iconCls: "text-emerald-400 bg-emerald-950/40 border-emerald-800/40",
+			to: "/residents",
+			search: { purok },
 		},
 		{
 			title: "Total Households",
@@ -115,6 +117,8 @@ function DashboardView() {
 			accent: "teal",
 			glow: "from-teal-500/10",
 			iconCls: "text-teal-400 bg-teal-950/40 border-teal-800/40",
+			to: "/households",
+			search: { purok },
 		},
 		{
 			title: "Registered Voters",
@@ -124,6 +128,8 @@ function DashboardView() {
 			accent: "cyan",
 			glow: "from-cyan-500/10",
 			iconCls: "text-cyan-400 bg-cyan-950/40 border-cyan-800/40",
+			to: "/residents",
+			search: { filterVoter: true, purok },
 		},
 		{
 			title: "Senior Citizens",
@@ -133,6 +139,8 @@ function DashboardView() {
 			accent: "amber",
 			glow: "from-amber-500/10",
 			iconCls: "text-amber-400 bg-amber-950/40 border-amber-800/40",
+			to: "/residents",
+			search: { filterSenior: true, purok },
 		},
 		{
 			title: "PWD",
@@ -142,6 +150,8 @@ function DashboardView() {
 			accent: "purple",
 			glow: "from-purple-500/10",
 			iconCls: "text-purple-400 bg-purple-950/40 border-purple-800/40",
+			to: "/residents",
+			search: { filterPwd: true, purok },
 		},
 		{
 			title: "Single Parents",
@@ -151,6 +161,8 @@ function DashboardView() {
 			accent: "pink",
 			glow: "from-pink-500/10",
 			iconCls: "text-pink-400 bg-pink-950/40 border-pink-800/40",
+			to: "/residents",
+			search: { filterSingleParent: true, purok },
 		},
 	];
 
@@ -266,36 +278,42 @@ function DashboardView() {
 			{/* ── Key Metrics (2x3 grid) ──────────────────────────────── */}
 			<div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
 				{heroCards.map((card) => (
-					<Card
+					<Link
 						key={card.title}
-						className="relative overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300"
+						to={card.to as any}
+						search={card.search as any}
+						className="block outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl"
 					>
-						<div
-							className={`absolute inset-0 bg-gradient-to-br ${card.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-						/>
-						<CardContent className="p-4 relative z-10">
-							<div className="flex items-start justify-between gap-3">
-								<div className="min-w-0 flex-1">
-									<h3
-										className="text-sm font-bold text-neutral-300 mb-1.5 truncate"
-										title={card.title}
+						<Card
+							className="relative h-full overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+						>
+							<div
+								className={`absolute inset-0 bg-gradient-to-br ${card.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+							/>
+							<CardContent className="p-4 relative z-10">
+								<div className="flex items-start justify-between gap-3">
+									<div className="min-w-0 flex-1">
+										<h3
+											className="text-sm font-bold text-neutral-300 mb-1.5 truncate"
+											title={card.title}
+										>
+											{card.title}
+										</h3>
+										<div className="flex items-baseline gap-2 truncate">
+											<span className="text-3xl font-black tracking-tighter text-neutral-100">
+												{card.value.toLocaleString()}
+											</span>
+										</div>
+									</div>
+									<div
+										className={`p-2.5 rounded-xl border ${card.iconCls} shrink-0`}
 									>
-										{card.title}
-									</h3>
-									<div className="flex items-baseline gap-2 truncate">
-										<span className="text-3xl font-black tracking-tighter text-neutral-100">
-											{card.value.toLocaleString()}
-										</span>
+										<card.icon className="h-5 w-5" />
 									</div>
 								</div>
-								<div
-									className={`p-2.5 rounded-xl border ${card.iconCls} shrink-0`}
-								>
-									<card.icon className="h-5 w-5" />
-								</div>
-							</div>
-						</CardContent>
-					</Card>
+							</CardContent>
+						</Card>
+					</Link>
 				))}
 			</div>
 

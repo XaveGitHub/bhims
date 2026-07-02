@@ -20,7 +20,7 @@ if (!fs.existsSync(dbDir)) {
 
 console.log(`[Database] Connecting to SQLite at: ${dbPath}`);
 
-const sqlite = new Database(dbPath);
+export const sqlite = new Database(dbPath);
 
 // Enable WAL mode for performance
 sqlite.pragma("journal_mode = WAL");
@@ -109,5 +109,5 @@ export function runMigrations() {
 
 // Automatically run migrations on database module load
 runMigrations();
-// Trigger reload comment to apply new schema
+// Trigger reload comment to apply new schema v2
 
