@@ -42,11 +42,6 @@ export function AppSidebar({
 				icon: IconDashboard,
 			},
 			{
-				title: "Staff Queue",
-				url: "/queue",
-				icon: IconClipboardList,
-			},
-			{
 				title: "Residents",
 				url: "/residents",
 				icon: IconUsers,
@@ -57,12 +52,22 @@ export function AppSidebar({
 				icon: IconFolder,
 			},
 			{
+				title: "Staff Queue",
+				url: "/queue",
+				icon: IconClipboardList,
+			},
+			{
 				title: "Document Templates",
 				url: "/templates",
 				icon: IconFileCertificate,
 			},
 		],
 		documents: [
+			{
+				name: "Data Extraction",
+				url: "/extraction",
+				icon: IconFileCertificate,
+			},
 			{
 				name: "Excel Import",
 				url: "/import",

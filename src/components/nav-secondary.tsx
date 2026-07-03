@@ -35,11 +35,11 @@ export function NavSecondary({
 									}}
 									activeProps={{
 										className:
-											"bg-emerald-950/40 text-emerald-400 border border-emerald-900/30",
+											"bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 hover:bg-emerald-900/40 hover:text-emerald-300",
 									}}
 									inactiveProps={{
 										className:
-											"text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-200 border border-transparent",
+											"text-neutral-400 hover:bg-white/5 hover:text-neutral-100 border border-transparent",
 									}}
 									className="flex w-full items-center gap-3 transition-all group/link duration-200"
 								>

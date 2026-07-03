@@ -35,7 +35,7 @@ export function NavUser({ user }: { user: UserInfo }) {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="data-[state=open]:bg-neutral-900 data-[state=open]:text-neutral-200 text-neutral-200 border border-neutral-800 bg-neutral-950/20 hover:bg-neutral-900 rounded-xl mb-2"
+							className="data-[state=open]:bg-neutral-900 data-[state=open]:text-neutral-200 text-neutral-200 border border-neutral-800 bg-neutral-950/20 hover:bg-white/5 rounded-xl mb-2"
 						>
 							<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-emerald-600/10 text-emerald-400 border border-emerald-900/30">
 								<Shield className="size-4" />

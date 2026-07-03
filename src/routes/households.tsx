@@ -394,10 +394,10 @@ function HouseholdsView() {
 									setSelectedPurok(val === "ALL" ? "" : val)
 								}
 							>
-								<SelectTrigger className="w-full bg-neutral-950 border-neutral-800 text-xs text-neutral-300 px-3 py-2 rounded-xl focus:border-emerald-500 h-9">
+								<SelectTrigger className="w-full bg-neutral-900 border-neutral-800 text-xs text-neutral-300 px-3 py-2 rounded-xl focus:border-emerald-500 h-9">
 									<SelectValue placeholder="All Puroks" />
 								</SelectTrigger>
-								<SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
+								<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
 									<SelectItem value="ALL">All Puroks</SelectItem>
 									{purokOptions.map((p) => (
 										<SelectItem key={p} value={p}>
@@ -766,7 +766,7 @@ function HouseholdsView() {
 								<Input
 									value={editBlock}
 									onChange={(e) => setEditBlock(e.target.value)}
-									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200 rounded-xl"
 									placeholder="e.g. 5"
 								/>
 							</div>
@@ -776,7 +776,7 @@ function HouseholdsView() {
 								<Input
 									value={editLot}
 									onChange={(e) => setEditLot(e.target.value)}
-									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200 rounded-xl"
 									placeholder="e.g. 12"
 								/>
 							</div>
@@ -786,7 +786,7 @@ function HouseholdsView() {
 									Purok
 								</Label>
 								<Select value={editPurok} onValueChange={setEditPurok} required>
-									<SelectTrigger className="bg-neutral-900 border-neutral-800">
+									<SelectTrigger className="bg-neutral-900 border-neutral-800 rounded-xl">
 										<SelectValue placeholder="Select purok" />
 									</SelectTrigger>
 									<SelectContent className="bg-neutral-900 border-neutral-800">
@@ -803,7 +803,7 @@ function HouseholdsView() {
 									Head of Household
 								</Label>
 								<Select value={editHeadId} onValueChange={setEditHeadId}>
-									<SelectTrigger className="bg-neutral-900 border-neutral-800">
+									<SelectTrigger className="bg-neutral-900 border-neutral-800 rounded-xl">
 										<SelectValue placeholder="Select head" />
 									</SelectTrigger>
 									<SelectContent className="bg-neutral-900 border-neutral-800">
@@ -824,7 +824,7 @@ function HouseholdsView() {
 								</Select>
 							</div>
 						</div>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setIsEditModalOpen(false)}

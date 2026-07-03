@@ -1428,7 +1428,7 @@ export function ResidentProfilePane({
 					</DialogTitle>
 					<div className="flex gap-2 mr-6 mt-0!">
 						<Button 
-							className="bg-blue-600 hover:bg-blue-500 text-white"
+							className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl"
 							onClick={downloadID}
 							disabled={isDownloading}
 						>

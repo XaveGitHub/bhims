@@ -166,7 +166,15 @@ function QueueDashboard() {
 									</div>
 								</div>
 
-								<div className="pt-4 mt-4 border-t border-white/5 flex gap-2 w-full">
+								<div className="mt-4 flex gap-2 w-full">
+									<Button 
+										variant="outline" 
+										className="border-neutral-800 text-neutral-400 hover:bg-red-950/30 hover:text-red-400 hover:border-red-900/50 shrink-0 px-3 rounded-xl"
+										onClick={() => setCancelBatch(item)}
+									>
+										Cancel
+									</Button>
+
 									{item.status === 'Pending' && (
 										<Button 
 											className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
@@ -197,14 +205,6 @@ function QueueDashboard() {
 											Mark as Claimed
 										</Button>
 									)}
-									
-									<Button 
-										variant="outline" 
-										className="border-neutral-800 text-neutral-400 hover:bg-red-950/30 hover:text-red-400 hover:border-red-900/50 shrink-0 px-3 rounded-xl"
-										onClick={() => setCancelBatch(item)}
-									>
-										Cancel
-									</Button>
 								</div>
 							</CardContent>
 						</Card>
@@ -244,7 +244,7 @@ function QueueDashboard() {
 						<p className="text-sm text-neutral-300">
 							Are you absolutely sure you want to cancel this queue request? This action cannot be undone.
 						</p>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button 
 								type="button" 
 								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5" 

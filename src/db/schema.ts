@@ -1,5 +1,17 @@
 import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
+export const puroks = sqliteTable("puroks", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	name: text("name").notNull().unique(),
+	orderIndex: integer("order_index").notNull().default(0),
+	createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
+	updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
+});
+
 export const households = sqliteTable("households", {
 	id: text("id").primaryKey(), // Using the household string code as PK
 	purok: text("purok").notNull(),

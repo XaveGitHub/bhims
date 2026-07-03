@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { and, or, eq, like, sql, getTableColumns, desc, asc, inArray } from "drizzle-orm";
 import { db } from "../db";
-import { residents, households } from "../db/schema";
+import { residents, households, puroks } from "../db/schema";
+
 
 export interface ResidentInput {
 	// Name
@@ -156,8 +157,12 @@ export const getResidents = createServerFn({
 			sortColumn = residents.birthDate;
 		} else if (params.sortBy === "purok") {
 			sortColumn = residents.purok;
-		} else if (params.sortBy === "fullName") {
-			sortColumn = residents.fullName;
+		} else if (params.sortBy === "firstName") {
+			sortColumn = residents.firstName;
+		} else if (params.sortBy === "middleName") {
+			sortColumn = residents.middleName;
+		} else if (params.sortBy === "lastName") {
+			sortColumn = residents.lastName;
 		}
 
 		// When sorting by age visually, we flip the desc since smaller birthDate = higher age
@@ -320,6 +325,88 @@ export const bulkUpdatePurok = createServerFn({
 		}
 	});
 
+// Add a new Purok
+export const addPurok = createServerFn({
+	method: "POST",
+})
+	.validator((name: string) => name)
+	.handler(async ({ data: name }) => {
+		try {
+			const result = db.insert(puroks).values({ name }).returning().get();
+			return { success: true, purok: result };
+		} catch (err: any) {
+			return { success: false, error: err.message };
+		}
+	});
+
+// Update a Purok and cascade changes
+export const updatePurok = createServerFn({
+	method: "POST",
+})
+	.validator((params: { id: number; oldName: string; newName: string }) => params)
+	.handler(async ({ data: { id, oldName, newName } }) => {
+		try {
+			db.transaction((tx) => {
+				// Update the purok record
+				tx.update(puroks).set({ name: newName, updatedAt: new Date() }).where(eq(puroks.id, id)).run();
+				
+				// Cascade to residents
+				tx.update(residents).set({ purok: newName }).where(eq(residents.purok, oldName)).run();
+				
+				// Cascade to households
+				tx.update(households).set({ purok: newName }).where(eq(households.purok, oldName)).run();
+			});
+			return { success: true };
+		} catch (err: any) {
+			return { success: false, error: err.message };
+		}
+	});
+
+// Delete a Purok
+export const deletePurok = createServerFn({
+	method: "POST",
+})
+	.validator((id: number) => id)
+	.handler(async ({ data: id }) => {
+		try {
+			db.delete(puroks).where(eq(puroks.id, id)).run();
+			return { success: true };
+		} catch (err: any) {
+			return { success: false, error: err.message };
+		}
+	});
+
+// Update Purok order
+export const updatePurokOrder = createServerFn({
+	method: "POST",
+})
+	.validator((items: { id: number; orderIndex: number }[]) => items)
+	.handler(async ({ data: items }) => {
+		try {
+			db.transaction((tx) => {
+				for (const item of items) {
+					tx.update(puroks).set({ orderIndex: item.orderIndex }).where(eq(puroks.id, item.id)).run();
+				}
+			});
+			return { success: true };
+		} catch (err: any) {
+			return { success: false, error: err.message };
+		}
+	});
+
+// Get all Puroks
+export const getPuroks = createServerFn({
+	method: "GET",
+}).handler(async () => {
+	try {
+		const allPuroks = db.select().from(puroks).orderBy(puroks.orderIndex, puroks.name).all();
+		return allPuroks;
+	} catch (error) {
+		console.error("Failed to fetch puroks:", error);
+		return [];
+	}
+});
+
 // Update a resident
 export const updateResident = createServerFn({
 	method: "POST",
@@ -381,9 +468,6 @@ export const deleteResident = createServerFn({
 export const getUniquePuroks = createServerFn({
 	method: "POST",
 }).handler(async () => {
-	const results = db.select({ purok: residents.purok }).from(residents).all();
-	const uniquePuroks = Array.from(
-		new Set(results.map((r) => r.purok).filter(Boolean)),
-	);
-	return uniquePuroks.sort();
+	const results = db.select().from(puroks).orderBy(puroks.orderIndex, puroks.name).all();
+	return results.map((r) => r.name);
 });

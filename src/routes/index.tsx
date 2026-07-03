@@ -479,55 +479,48 @@ function DashboardView() {
 							</p>
 						</CardHeader>
 						<CardContent className="px-5 pb-5">
-							{stats && stats.totalWithBirthdate > 0 ? (
+							{stats && stats.totalWithBirthdate > 0 && stats.ageBrackets ? (
 								<div className="space-y-4 mt-2">
-									<div className="flex items-center justify-between text-sm mb-1.5">
-										<div className="flex items-center gap-2">
-											<span className="h-2.5 w-2.5 rounded-full bg-cyan-400 shrink-0" />
-											<span className="font-semibold text-neutral-300">
-												Minors (0-17)
-											</span>
-										</div>
-										<span className="font-bold text-neutral-100">
-											{(stats?.totalMinors ?? 0).toLocaleString()}
-										</span>
+									<div className="grid grid-cols-2 gap-x-4 gap-y-2">
+										{[
+											{ label: "0-5 yrs", count: stats.ageBrackets["0-5"], color: "bg-sky-400" },
+											{ label: "6-12 yrs", count: stats.ageBrackets["6-12"], color: "bg-cyan-400" },
+											{ label: "13-17 yrs", count: stats.ageBrackets["13-17"], color: "bg-indigo-400" },
+											{ label: "18-35 yrs", count: stats.ageBrackets["18-35"], color: "bg-violet-400" },
+											{ label: "36-50 yrs", count: stats.ageBrackets["36-50"], color: "bg-purple-400" },
+											{ label: "51-65+ yrs", count: stats.ageBrackets["51-65+"], color: "bg-amber-400" },
+										].map((bracket) => (
+											<div key={bracket.label} className="flex items-center justify-between text-sm">
+												<div className="flex items-center gap-2">
+													<span className={`h-2.5 w-2.5 rounded-full ${bracket.color} shrink-0`} />
+													<span className="font-semibold text-neutral-300">
+														{bracket.label}
+													</span>
+												</div>
+												<span className="font-bold text-neutral-100">
+													{bracket.count.toLocaleString()}
+												</span>
+											</div>
+										))}
 									</div>
-									<div className="flex items-center justify-between text-sm mb-1.5">
-										<div className="flex items-center gap-2">
-											<span className="h-2.5 w-2.5 rounded-full bg-indigo-400 shrink-0" />
-											<span className="font-semibold text-neutral-300">
-												Adults (18-59)
-											</span>
-										</div>
-										<span className="font-bold text-neutral-100">
-											{(stats?.totalAdults ?? 0).toLocaleString()}
-										</span>
-									</div>
-									<div className="flex items-center justify-between text-sm mb-1.5">
-										<div className="flex items-center gap-2">
-											<span className="h-2.5 w-2.5 rounded-full bg-amber-400 shrink-0" />
-											<span className="font-semibold text-neutral-300">
-												Seniors (60+)
-											</span>
-										</div>
-										<span className="font-bold text-neutral-100">
-											{(stats?.totalSeniorsAge ?? 0).toLocaleString()}
-										</span>
-									</div>
+									
 									{/* Split bar */}
-									<div className="flex rounded-full overflow-hidden h-2 mt-4 border border-white/5">
-										<div
-											className="bg-cyan-500 transition-all duration-700"
-											style={{ width: `${((stats?.totalMinors ?? 0) / (stats.totalWithBirthdate || 1)) * 100}%` }}
-										/>
-										<div
-											className="bg-indigo-500 transition-all duration-700"
-											style={{ width: `${((stats?.totalAdults ?? 0) / (stats.totalWithBirthdate || 1)) * 100}%` }}
-										/>
-										<div
-											className="bg-amber-500 transition-all duration-700"
-											style={{ width: `${((stats?.totalSeniorsAge ?? 0) / (stats.totalWithBirthdate || 1)) * 100}%` }}
-										/>
+									<div className="flex rounded-full overflow-hidden h-2.5 mt-4 border border-white/5 bg-neutral-900">
+										{[
+											{ count: stats.ageBrackets["0-5"], color: "bg-sky-500" },
+											{ count: stats.ageBrackets["6-12"], color: "bg-cyan-500" },
+											{ count: stats.ageBrackets["13-17"], color: "bg-indigo-500" },
+											{ count: stats.ageBrackets["18-35"], color: "bg-violet-500" },
+											{ count: stats.ageBrackets["36-50"], color: "bg-purple-500" },
+											{ count: stats.ageBrackets["51-65+"], color: "bg-amber-500" },
+										].map((bracket, i) => (
+											<div
+												key={i}
+												className={`${bracket.color} transition-all duration-700 hover:brightness-110 cursor-pointer`}
+												style={{ width: `${(bracket.count / (stats.totalWithBirthdate || 1)) * 100}%` }}
+												title={`${bracket.count} residents`}
+											/>
+										))}
 									</div>
 								</div>
 							) : (

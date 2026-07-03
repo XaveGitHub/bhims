@@ -224,7 +224,7 @@ export function AddResidentModal({
 				>
 					<Tabs
 						defaultValue="personal"
-						className="w-full h-full flex flex-col min-h-0"
+						className="w-full flex-1 flex flex-col min-h-0 overflow-hidden"
 					>
 						<TabsList className="w-full grid grid-cols-3 bg-neutral-950 !p-0 border-b border-neutral-800 !rounded-none !h-12 shrink-0 items-stretch">
 							<TabsTrigger
@@ -387,7 +387,7 @@ export function AddResidentModal({
 												value={formData.gender || undefined}
 												onValueChange={(val) => updateField("gender", val)}
 											>
-												<SelectTrigger className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200">
+												<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
 													<SelectValue placeholder="Select gender" />
 												</SelectTrigger>
 												<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
@@ -404,7 +404,7 @@ export function AddResidentModal({
 												value={formData.civilStatus || undefined}
 												onValueChange={(val) => updateField("civilStatus", val)}
 											>
-												<SelectTrigger className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200">
+												<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
 													<SelectValue placeholder="Select status" />
 												</SelectTrigger>
 												<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
@@ -676,7 +676,7 @@ export function AddResidentModal({
 														updateField("relationshipToHead", val)
 													}
 												>
-													<SelectTrigger className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200">
+													<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
 														<SelectValue placeholder="Select relationship" />
 													</SelectTrigger>
 													<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
@@ -722,7 +722,7 @@ export function AddResidentModal({
 														updateField("employmentStatus", val)
 													}
 												>
-													<SelectTrigger className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200">
+													<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
 														<SelectValue placeholder="Select status" />
 													</SelectTrigger>
 													<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">

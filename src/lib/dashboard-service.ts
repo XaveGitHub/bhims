@@ -26,9 +26,14 @@ export interface DashboardStats {
 	totalMale: number;
 	totalFemale: number;
 	totalOtherGender: number;
-	totalMinors: number;
-	totalAdults: number;
-	totalSeniorsAge: number; // age-calculated seniors (60+)
+	ageBrackets: {
+		"0-5": number;
+		"6-12": number;
+		"13-17": number;
+		"18-35": number;
+		"36-50": number;
+		"51-65+": number;
+	};
 	totalWithBirthdate: number; // residents with a birth date set
 	avgHouseholdSize: number;
 	dataCompletenessPct: number;
@@ -84,10 +89,16 @@ export const getDashboardData = createServerFn({
 		totalHouseholds > 0 ? residentsInHouseholds / totalHouseholds : 0;
 
 	// Age Demographics & Data Completeness
-	let totalMinors = 0;
-	let totalAdults = 0;
-	let totalSeniorsAge = 0;
+	const ageBrackets = {
+		"0-5": 0,
+		"6-12": 0,
+		"13-17": 0,
+		"18-35": 0,
+		"36-50": 0,
+		"51-65+": 0,
+	};
 	let completeProfiles = 0;
+	let totalWithBirthdate = 0;
 
 	const today = new Date();
 	for (const r of allResidents) {
@@ -98,6 +109,7 @@ export const getDashboardData = createServerFn({
 
 		// Age check
 		if (r.birthDate) {
+			totalWithBirthdate++;
 			const birthDate = new Date(r.birthDate);
 			let age = today.getFullYear() - birthDate.getFullYear();
 			const m = today.getMonth() - birthDate.getMonth();
@@ -105,12 +117,18 @@ export const getDashboardData = createServerFn({
 				age--;
 			}
 
-			if (age < 18) {
-				totalMinors++;
-			} else if (age >= 18 && age < 60) {
-				totalAdults++;
+			if (age <= 5) {
+				ageBrackets["0-5"]++;
+			} else if (age <= 12) {
+				ageBrackets["6-12"]++;
+			} else if (age <= 17) {
+				ageBrackets["13-17"]++;
+			} else if (age <= 35) {
+				ageBrackets["18-35"]++;
+			} else if (age <= 50) {
+				ageBrackets["36-50"]++;
 			} else {
-				totalSeniorsAge++;
+				ageBrackets["51-65+"]++;
 			}
 		}
 	}
@@ -186,8 +204,6 @@ export const getDashboardData = createServerFn({
 		// fallback silently
 	}
 
-	const totalWithBirthdate = totalMinors + totalAdults + totalSeniorsAge;
-
 	return {
 		totalResidents,
 		totalPwd,
@@ -198,9 +214,7 @@ export const getDashboardData = createServerFn({
 		totalMale,
 		totalFemale,
 		totalOtherGender,
-		totalMinors,
-		totalAdults,
-		totalSeniorsAge,
+		ageBrackets,
 		totalWithBirthdate,
 		avgHouseholdSize,
 		dataCompletenessPct,

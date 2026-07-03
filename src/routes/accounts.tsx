@@ -18,6 +18,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/ui/select";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "../components/ui/table";
 import { Trash2 } from "lucide-react";
 import { getUsers, updateUserAccount, createUserAccount, deleteUserAccount } from "../lib/auth-service";
 
@@ -197,7 +205,7 @@ function AccountsView() {
 	}
 
 	return (
-		<div className="space-y-8 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
+		<div className="space-y-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
@@ -216,42 +224,56 @@ function AccountsView() {
 				</Button>
 			</div>
 
-			<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-6 space-y-6">
-				<div className="space-y-4">
-					{usersList.map((user) => (
-						<div key={user.id} className="flex items-center justify-between p-4 rounded-xl border border-neutral-800/80 bg-neutral-950/20">
-							<div className="space-y-1">
-								<h4 className="font-bold text-sm text-neutral-200">
-									{user.name} <span className="text-neutral-500 font-normal">(@{user.username})</span>
-								</h4>
-								<div className="flex items-center gap-2">
-									<span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold capitalize ${user.role === 'admin' ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30' : 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'}`}>
+			<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-0 space-y-0 overflow-hidden">
+				<Table>
+					<TableHeader className="bg-neutral-950/50">
+						<TableRow className="border-neutral-800/60 hover:bg-transparent">
+							<TableHead className="text-neutral-400 font-bold h-14 px-6">Name</TableHead>
+							<TableHead className="text-neutral-400 font-bold h-14 px-6">Username</TableHead>
+							<TableHead className="text-neutral-400 font-bold h-14 px-6">Role</TableHead>
+							<TableHead className="text-neutral-400 font-bold h-14 px-6 text-right">Actions</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{usersList.map((user) => (
+							<TableRow key={user.id} className="border-neutral-800/40 hover:bg-neutral-900/40 transition-colors">
+								<TableCell className="font-bold text-neutral-200 px-6 py-4">
+									{user.name}
+								</TableCell>
+								<TableCell className="text-neutral-400 px-6 py-4">
+									@{user.username}
+								</TableCell>
+								<TableCell className="px-6 py-4">
+									<span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${user.role === 'admin' ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30' : 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'}`}>
 										{user.role}
 									</span>
-								</div>
-							</div>
-							<div className="flex items-center gap-2">
-								<Button
-									type="button"
-									variant="outline"
-									onClick={() => handleEditAccountClick(user)}
-									className="bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border-neutral-800 rounded-xl px-4 text-xs font-semibold"
-								>
-									Edit Account
-								</Button>
-								<Button
-									type="button"
-									variant="outline"
-									onClick={() => handleDeleteClick(user.id)}
-									className="bg-red-950/20 hover:bg-red-900/40 text-red-400 border-red-900/30 rounded-xl px-3"
-									title="Delete Account"
-								>
-									<Trash2 className="h-4 w-4" />
-								</Button>
-							</div>
-						</div>
-					))}
-				</div>
+								</TableCell>
+								<TableCell className="text-right px-6 py-4">
+									<div className="flex items-center justify-end gap-2">
+										<Button
+											type="button"
+											variant="outline"
+											onClick={() => handleEditAccountClick(user)}
+											className="bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border-neutral-800 rounded-xl px-4 text-xs font-semibold"
+										>
+											Edit
+										</Button>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={() => handleDeleteClick(user.id)}
+											className="h-8 w-8 text-red-400/80 hover:text-red-400 hover:bg-red-950/40 rounded-xl gap-1.5"
+											title="Delete Account"
+										>
+											<Trash2 className="h-4 w-4" />
+										</Button>
+									</div>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
 			</Card>
 
 			{/* EDIT ACCOUNT DIALOG */}
@@ -299,12 +321,11 @@ function AccountsView() {
 								className="bg-neutral-950 border-neutral-800 text-white focus:border-emerald-500 rounded-xl"
 							/>
 						</div>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
-								variant="ghost"
 								onClick={() => setIsAccountModalOpen(false)}
-								className="text-neutral-300 hover:text-white"
+								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
@@ -381,12 +402,11 @@ function AccountsView() {
 								required
 							/>
 						</div>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
-								variant="ghost"
 								onClick={() => setIsCreateModalOpen(false)}
-								className="text-neutral-300 hover:text-white"
+								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
@@ -407,7 +427,7 @@ function AccountsView() {
 				open={isDeleteModalOpen}
 				onOpenChange={setIsDeleteModalOpen}
 			>
-				<DialogContent className="max-w-sm bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-red-500 flex items-center gap-2">
 							<Trash2 className="h-5 w-5" />
@@ -417,12 +437,11 @@ function AccountsView() {
 					<div className="mt-4 text-neutral-300 text-sm">
 						Are you sure you want to delete this account? This action cannot be undone.
 					</div>
-					<div className="flex items-center justify-end gap-2 pt-6">
+					<div className="flex items-center justify-end gap-2 mt-4">
 						<Button
 							type="button"
-							variant="ghost"
 							onClick={() => setIsDeleteModalOpen(false)}
-							className="text-neutral-300 hover:text-white"
+							className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
 						>
 							Cancel
 						</Button>

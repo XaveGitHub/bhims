@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import * as XLSX from "xlsx";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import {
@@ -50,7 +49,7 @@ import {
 	TableRow,
 } from "../components/ui/table";
 import { Checkbox } from "../components/ui/checkbox";
-
+import { ManagePuroksModal } from "../components/ManagePuroksModal";
 import { AddResidentModal } from "../components/AddResidentModal";
 
 import {
@@ -153,6 +152,7 @@ function ResidentsView() {
 	}, []);
 
 	const [purokOptions, setPurokOptions] = useState<string[]>([]);
+	const [isManagePuroksOpen, setIsManagePuroksOpen] = useState(false);
 
 	// Modals state
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -336,44 +336,6 @@ function ResidentsView() {
 		}
 	};
 
-	const exportToExcel = () => {
-		if (residentsList.length === 0) return;
-
-		// Map list to human-friendly structure for Excel columns
-		const mapped = residentsList.map((r) => ({
-			"Full Name": r.fullName,
-			Birthdate: r.birthDate || "",
-			Gender: r.gender || "",
-			"Contact Number": r.contactNumber || "",
-			"Purok/Address": r.purok,
-			"Blk / Lot": (r.block || r.lot) ? `Blk ${r.block || "-"} Lot ${r.lot || "-"}` : "",
-			"Relationship to Head": r.relationshipToHead || "",
-			"Is PWD": r.isPwd ? "Yes" : "No",
-			"Disability Type": r.pwdType || "",
-			"Is Senior Citizen": r.isSeniorCitizen ? "Yes" : "No",
-			"Registered Voter": r.isRegisteredVoter ? "Yes" : "No",
-			"Single Parent": r.isSingleParent ? "Yes" : "No",
-		}));
-
-		const worksheet = XLSX.utils.json_to_sheet(mapped);
-		const workbook = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(workbook, worksheet, "Residents");
-
-		// Auto-fit column widths
-		const maxLens = Object.keys(mapped[0] || {}).map((key) => {
-			const lengths = mapped.map(
-				(row) => String(row[key as keyof typeof row]).length,
-			);
-			return { wch: Math.max(key.length, ...lengths) + 2 };
-		});
-		worksheet["!cols"] = maxLens;
-
-		XLSX.writeFile(
-			workbook,
-			`BHIMS_Residents_${new Date().toISOString().split("T")[0]}.xlsx`,
-		);
-	};
-
 	const calculateAge = useCallback((birthdateStr: string | null) => {
 		if (!birthdateStr) return "N/A";
 		const birth = new Date(birthdateStr);
@@ -468,7 +430,7 @@ function ResidentsView() {
 			},
 			{
 				id: "age",
-				header: "Age / Gender",
+				header: () => <div className="text-center">Age / Gender</div>,
 				enableSorting: true,
 				enableHiding: true,
 				accessorFn: (row) =>
@@ -479,7 +441,7 @@ function ResidentsView() {
 				cell: ({ row }) => {
 					const r = row.original;
 					return (
-						<div className="flex flex-col">
+						<div className="flex flex-col items-center">
 							<span className="text-sm text-neutral-200 leading-snug">
 								{calculateAge(r.birthDate)} yrs
 							</span>
@@ -493,14 +455,14 @@ function ResidentsView() {
 			{
 				id: "purok",
 				accessorKey: "purok",
-				header: "Purok",
+				header: () => <div className="text-center">Purok</div>,
 				enableSorting: true,
 				enableHiding: true,
 				sortingFn: "alphanumeric",
 				cell: ({ row }) => {
 					const r = row.original;
 					return (
-						<div className="flex flex-col">
+						<div className="flex flex-col items-center">
 							<span className="text-sm font-medium text-neutral-200 leading-snug">
 								{r.purok}
 							</span>
@@ -510,13 +472,13 @@ function ResidentsView() {
 			},
 			{
 				id: "blkLot",
-				header: "Blk / Lot",
+				header: () => <div className="text-center">Blk / Lot</div>,
 				enableSorting: false,
 				enableHiding: true,
 				cell: ({ row }) => {
 					const r = row.original;
 					return (
-						<div className="flex flex-col">
+						<div className="flex flex-col items-center">
 							{r.block || r.lot ? (
 								<span className="text-sm font-medium text-neutral-200 leading-snug">
 									Blk {r.block || "-"} Lot {r.lot || "-"}
@@ -700,8 +662,8 @@ function ResidentsView() {
 		onSortingChange: setSorting,
 		onColumnVisibilityChange: setColumnVisibility,
 		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
 		manualPagination: true,
+		manualSorting: true,
 	});
 
 	const selectedIds = useMemo(() => {
@@ -777,13 +739,12 @@ function ResidentsView() {
 				</div>
 				<div className="flex items-center gap-2 shrink-0">
 					<Button
-						onClick={exportToExcel}
-						disabled={residentsList.length === 0}
 						variant="outline"
+						onClick={() => setIsManagePuroksOpen(true)}
 						className="bg-neutral-900 border-neutral-800 text-neutral-300 hover:bg-neutral-800 hover:text-neutral-100 rounded-xl px-4"
 					>
-						<Download className="h-4 w-4" />
-						<span className="hidden sm:inline">Export</span>
+						<Map className="h-4 w-4 mr-2" />
+						<span className="hidden sm:inline">Manage Puroks</span>
 					</Button>
 					<Button
 						onClick={() => {
@@ -816,10 +777,10 @@ function ResidentsView() {
 						value={selectedPurok || "ALL"}
 						onValueChange={(v) => setSelectedPurok(v === "ALL" ? "" : v)}
 					>
-						<SelectTrigger className="w-full sm:w-36 bg-neutral-950 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
+						<SelectTrigger className="w-full sm:w-36 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
 							<SelectValue placeholder="All Puroks" />
 						</SelectTrigger>
-						<SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
+						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
 							<SelectItem value="ALL">All Puroks</SelectItem>
 							{purokOptions.map((p) => (
 								<SelectItem key={p} value={p}>
@@ -839,10 +800,10 @@ function ResidentsView() {
 						value={selectedGender || "ALL"}
 						onValueChange={(v) => setSelectedGender(v === "ALL" ? "" : v)}
 					>
-						<SelectTrigger className="w-full sm:w-32 bg-neutral-950 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
-							<SelectValue placeholder="All Genders" />
+						<SelectTrigger className="w-full sm:w-32 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
+							<SelectValue placeholder="All Categories" />
 						</SelectTrigger>
-						<SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
+						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
 							<SelectItem value="ALL">All Genders</SelectItem>
 							<SelectItem value="Male">Male</SelectItem>
 							<SelectItem value="Female">Female</SelectItem>
@@ -852,7 +813,7 @@ function ResidentsView() {
 				</div>
 
 				{/* Quick filter pills */}
-				<div className="flex flex-wrap gap-1.5 pt-2 border-t border-neutral-800/60">
+				<div className="flex flex-wrap gap-1.5 mt-2">
 					{(
 						[
 							{
@@ -942,15 +903,14 @@ function ResidentsView() {
 				className="flex flex-col md:flex-row gap-6 h-[calc(100vh-16rem)] overflow-hidden"
 			>
 				<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden h-full p-0 gap-0 flex-1 min-w-0">
-					{loading ? (
+					{loading && residentsList.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
 							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-emerald-600 border-t-transparent" />
 						</div>
 					) : residentsList.length > 0 ? (
 						<>
-							<div className="flex-1 overflow-y-auto custom-scrollbar">
-								<Table>
-								<TableHeader className="bg-neutral-900/80 border-b border-neutral-800">
+								<Table wrapperClassName={`flex-1 overflow-y-auto custom-scrollbar transition-opacity duration-200 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+								<TableHeader className="sticky top-0 z-10 bg-neutral-900/80 backdrop-blur-md border-b border-neutral-800">
 									{table.getHeaderGroups().map((hg) => (
 										<TableRow
 											key={hg.id}
@@ -962,13 +922,24 @@ function ResidentsView() {
 												return (
 													<TableHead
 														key={header.id}
-														className="px-3 sm:px-5 py-3 text-xs font-semibold text-neutral-400 select-none whitespace-nowrap"
+														style={{
+															width: header.getSize() !== 150 ? header.getSize() : undefined,
+														}}
+														className={`text-neutral-400 font-medium h-10 px-5 whitespace-nowrap bg-neutral-900/60 ${
+															["age", "purok", "blkLot", "demographics"].includes(header.column.id) 
+															? "text-center" 
+															: "text-left"
+														}`}
 													>
 														{header.isPlaceholder ? null : canSort ? (
 															<button
 																type="button"
 																onClick={header.column.getToggleSortingHandler()}
-																className="flex items-center gap-1.5 hover:text-neutral-200 transition-colors outline-none"
+																className={`flex items-center gap-1.5 hover:text-neutral-200 transition-colors outline-none ${
+																	["age", "purok", "blkLot"].includes(header.column.id) 
+																	? "w-full justify-center" 
+																	: ""
+																}`}
 															>
 																{flexRender(
 																	header.column.columnDef.header,
@@ -1029,24 +1000,12 @@ function ResidentsView() {
 									))}
 								</TableBody>
 							</Table>
-						</div>
 
 							{/* Pagination controls */}
 							{totalCount > 0 && (
 								<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-neutral-800/60 bg-neutral-900/10 shrink-0">
-									<div className="text-xs text-neutral-400 select-none">
-										<span className="font-semibold text-neutral-200">
-											{(currentPage - 1) * pageSize + 1}–
-											{Math.min(currentPage * pageSize, totalCount)}
-										</span>{" "}
-										of{" "}
-										<span className="font-semibold text-neutral-200">
-											{totalCount}
-										</span>{" "}
-										residents
-									</div>
-
 									<div className="flex items-center gap-2">
+										<span className="text-sm text-neutral-400">Rows per page:</span>
 										<Select
 											value={String(pageSize)}
 											onValueChange={(val) => {
@@ -1054,60 +1013,38 @@ function ResidentsView() {
 												setCurrentPage(1);
 											}}
 										>
-											<SelectTrigger
-												size="sm"
-												className="bg-neutral-950 border-neutral-800 text-xs text-neutral-400 rounded-lg px-2.5 py-1 focus:outline-none focus:border-emerald-500 cursor-pointer w-[110px]"
-											>
-												<SelectValue placeholder="10 per page" />
+											<SelectTrigger className="w-24 h-8 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl">
+												<SelectValue />
 											</SelectTrigger>
-											<SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
-												<SelectItem value="10">10 per page</SelectItem>
-												<SelectItem value="25">25 per page</SelectItem>
-												<SelectItem value="50">50 per page</SelectItem>
-												<SelectItem value="100">100 per page</SelectItem>
+											<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+												<SelectItem value="10">10</SelectItem>
+												<SelectItem value="25">25</SelectItem>
+												<SelectItem value="50">50</SelectItem>
+												<SelectItem value="100">100</SelectItem>
 											</SelectContent>
 										</Select>
+									</div>
 
-										<div className="flex items-center gap-1">
+									<div className="flex items-center gap-4">
+										<div className="text-sm text-neutral-400">
+											Page {currentPage} of {Math.ceil(totalCount / pageSize)}
+										</div>
+										<div className="flex gap-2">
 											<Button
 												variant="outline"
 												size="sm"
-												onClick={() =>
-													setCurrentPage((prev) => Math.max(1, prev - 1))
-												}
-												disabled={currentPage === 1}
-												className="bg-neutral-950 border-neutral-800 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 px-3 py-1.5 h-8 text-xs disabled:opacity-30 rounded-xl cursor-pointer"
+												onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+												disabled={currentPage === 1 || loading}
+												className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800"
 											>
 												Previous
 											</Button>
-
-											<div className="text-xs text-neutral-400 px-2 select-none">
-												Page{" "}
-												<span className="font-semibold text-neutral-200">
-													{currentPage}
-												</span>{" "}
-												of{" "}
-												<span className="font-semibold text-neutral-200">
-													{Math.ceil(totalCount / pageSize)}
-												</span>
-											</div>
-
 											<Button
 												variant="outline"
 												size="sm"
-												onClick={() =>
-													setCurrentPage((prev) =>
-														Math.min(
-															Math.ceil(totalCount / pageSize),
-															prev + 1,
-														),
-													)
-												}
-												disabled={
-													currentPage === Math.ceil(totalCount / pageSize) ||
-													totalCount === 0
-												}
-												className="bg-neutral-950 border-neutral-800 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 px-3 py-1.5 h-8 text-xs disabled:opacity-30 rounded-xl cursor-pointer"
+												onClick={() => setCurrentPage((prev) => prev + 1)}
+												disabled={currentPage === Math.ceil(totalCount / pageSize) || loading}
+												className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800"
 											>
 												Next
 											</Button>
@@ -1182,7 +1119,7 @@ function ResidentsView() {
 							Are you sure you want to delete this resident record? This action
 							is permanent and cannot be undone.
 						</p>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => {
@@ -1275,7 +1212,7 @@ function ResidentsView() {
 						<p className="text-sm text-neutral-300">
 							Are you sure you want to delete <strong className="text-white">{selectedIds.length}</strong> selected residents? This action is permanent and cannot be undone.
 						</p>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setIsBulkDeleteModalOpen(false)}
@@ -1307,7 +1244,7 @@ function ResidentsView() {
 						<p className="text-sm text-neutral-300">
 							Are you sure you want to move <strong className="text-white">{selectedIds.length}</strong> residents to <strong className="text-white">{bulkPurokToUpdate}</strong>?
 						</p>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setBulkPurokToUpdate(null)}
@@ -1339,7 +1276,7 @@ function ResidentsView() {
 						<p className="text-sm text-neutral-300">
 							Are you sure you want to mark <strong className="text-white">{archiveModalIds?.length}</strong> resident(s) as deceased? They will be moved to the archive and hidden from standard statistics.
 						</p>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setArchiveModalIds(null)}
@@ -1357,6 +1294,14 @@ function ResidentsView() {
 					</div>
 				</DialogContent>
 			</Dialog>
+			<ManagePuroksModal
+				open={isManagePuroksOpen}
+				onOpenChange={setIsManagePuroksOpen}
+				onPuroksChanged={() => {
+					loadPuroks();
+					loadData();
+				}}
+			/>
 		</div>
 	);
 }

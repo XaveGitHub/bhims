@@ -137,7 +137,7 @@ function TemplatesPage() {
 								<Button size="sm" variant="secondary" onClick={() => openEdit(tpl)} className="h-9 px-4 rounded-xl font-bold shadow-xl">
 									<Edit className="h-4 w-4 mr-2" /> Edit
 								</Button>
-								<Button size="sm" variant="secondary" onClick={() => handleDelete(tpl.id)} className="h-9 w-9 p-0 rounded-xl bg-neutral-900 text-neutral-300 hover:!bg-red-600 hover:!text-white shadow-xl">
+								<Button size="sm" variant="ghost" onClick={() => handleDelete(tpl.id)} className="h-9 w-9 p-0 rounded-xl bg-neutral-900 text-neutral-300 hover:text-red-400 hover:bg-red-950/40 shadow-xl">
 									<Trash2 className="h-4 w-4" />
 								</Button>
 							</div>

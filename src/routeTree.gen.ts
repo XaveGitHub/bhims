@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as KioskRouteImport } from './routes/kiosk'
 import { Route as ImportRouteImport } from './routes/import'
 import { Route as HouseholdsRouteImport } from './routes/households'
+import { Route as ExtractionRouteImport } from './routes/extraction'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -60,6 +61,11 @@ const HouseholdsRoute = HouseholdsRouteImport.update({
   path: '/households',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExtractionRoute = ExtractionRouteImport.update({
+  id: '/extraction',
+  path: '/extraction',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountsRoute = AccountsRouteImport.update({
   id: '/accounts',
   path: '/accounts',
@@ -74,6 +80,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/extraction': typeof ExtractionRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
   '/kiosk': typeof KioskRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/extraction': typeof ExtractionRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
   '/kiosk': typeof KioskRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/extraction': typeof ExtractionRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
   '/kiosk': typeof KioskRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/accounts'
+    | '/extraction'
     | '/households'
     | '/import'
     | '/kiosk'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/accounts'
+    | '/extraction'
     | '/households'
     | '/import'
     | '/kiosk'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/accounts'
+    | '/extraction'
     | '/households'
     | '/import'
     | '/kiosk'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountsRoute: typeof AccountsRoute
+  ExtractionRoute: typeof ExtractionRoute
   HouseholdsRoute: typeof HouseholdsRoute
   ImportRoute: typeof ImportRoute
   KioskRoute: typeof KioskRoute
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HouseholdsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/extraction': {
+      id: '/extraction'
+      path: '/extraction'
+      fullPath: '/extraction'
+      preLoaderRoute: typeof ExtractionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accounts': {
       id: '/accounts'
       path: '/accounts'
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
+  ExtractionRoute: ExtractionRoute,
   HouseholdsRoute: HouseholdsRoute,
   ImportRoute: ImportRoute,
   KioskRoute: KioskRoute,

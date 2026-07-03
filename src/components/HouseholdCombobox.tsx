@@ -84,13 +84,13 @@ export function HouseholdCombobox({
 		: "Select a household...";
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover open={open} onOpenChange={setOpen} modal={true}>
 			<PopoverTrigger asChild>
 				<button
 					type="button"
 					disabled={disabled || !purok}
 					className={cn(
-						"flex w-full items-center justify-between rounded-md border bg-neutral-900 px-3 py-2 text-sm text-neutral-200 transition-all",
+						"flex w-full items-center justify-between rounded-xl border bg-neutral-900 px-3 py-2 text-sm text-neutral-200 transition-all",
 						error ? "border-red-500 focus:ring-red-500" : "border-neutral-800 focus:ring-emerald-500/20",
 						(!purok || disabled) && "opacity-50 cursor-not-allowed",
 						open && "ring-2 ring-emerald-500/20 border-emerald-500/50",
@@ -105,11 +105,11 @@ export function HouseholdCombobox({
 			</PopoverTrigger>
 
 			<PopoverContent 
-				className="p-0 w-[var(--radix-popover-trigger-width)] border-neutral-800 bg-neutral-900 shadow-xl overflow-hidden" 
+				className="p-0 w-[var(--radix-popover-trigger-width)] border-neutral-800 bg-neutral-900 shadow-xl overflow-hidden rounded-xl" 
 				align="start"
 			>
-				<div className="flex flex-col max-h-[300px]">
-					<div className="flex items-center border-b border-neutral-800/60 px-3 pb-1 pt-2">
+				<div className="flex flex-col">
+					<div className="flex items-center border-b border-neutral-800/60 px-3 pb-1 pt-2 shrink-0">
 						<Search className="mr-2 h-4 w-4 shrink-0 text-neutral-500" />
 						<input
 							autoFocus
@@ -120,10 +120,10 @@ export function HouseholdCombobox({
 						/>
 						{loading && <Loader2 className="h-4 w-4 animate-spin text-neutral-500 ml-2" />}
 					</div>
-					<div className="overflow-y-auto p-1 flex-1 max-h-[250px]">
+					<div className="overflow-y-auto p-1 max-h-[250px] overscroll-contain">
 						<button
 							type="button"
-							className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-neutral-800 hover:text-neutral-50 focus:bg-neutral-800 text-emerald-400 font-medium transition-colors"
+							className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-neutral-800 hover:text-neutral-50 focus:bg-neutral-800 text-emerald-400 font-medium transition-colors"
 							onClick={() => {
 								onChange("NEW");
 								setOpen(false);
@@ -154,7 +154,7 @@ export function HouseholdCombobox({
 								<button
 									key={hh.householdId}
 									type="button"
-									className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-neutral-800 hover:text-neutral-50 focus:bg-neutral-800 text-neutral-200 transition-colors"
+									className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-neutral-800 hover:text-neutral-50 focus:bg-neutral-800 text-neutral-200 transition-colors"
 									onClick={() => {
 										setSelectedValue(hh);
 										onChange(hh.householdId);

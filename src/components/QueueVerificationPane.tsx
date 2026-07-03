@@ -581,7 +581,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								</div>
 							</div>
 
-							<div className="pt-6 border-t border-neutral-800 space-y-3 mt-4">
+							<div className="space-y-3 mt-4">
 								<div className="flex gap-2">
 									<Button 
 										className="flex-1 h-11 text-base font-bold bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl transition-all border border-neutral-700"

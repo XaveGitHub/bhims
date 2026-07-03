@@ -467,12 +467,12 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
 const sidebarMenuButtonVariants = cva(
-	"peer/menu-button flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all hover:bg-neutral-800/60 hover:text-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 text-neutral-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-xl select-none cursor-pointer",
+	"peer/menu-button flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-xl select-none cursor-pointer",
 	{
 		variants: {
 			variant: {
-				default: "hover:bg-neutral-800/60 hover:text-neutral-100",
-				outline: "border border-neutral-800 hover:bg-neutral-800/60",
+				default: "",
+				outline: "border border-neutral-800",
 			},
 			size: {
 				default: "h-10 text-sm",
