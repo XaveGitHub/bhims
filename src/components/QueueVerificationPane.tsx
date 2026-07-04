@@ -212,8 +212,8 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								</p>
 							</div>
 						</div>
-						<Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-white/10 shrink-0 h-10 w-10 text-neutral-400">
-							<X className="w-5 h-5" />
+						<Button variant="ghost" size="icon" onClick={onClose} className="rounded-lg hover:bg-neutral-800 shrink-0 h-9 w-9 text-neutral-400 transition-all hover:text-red-400">
+							<X className="w-4 h-4" />
 						</Button>
 					</div>
 				</div>

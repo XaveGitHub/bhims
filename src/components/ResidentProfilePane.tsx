@@ -1298,7 +1298,7 @@ export function ResidentProfilePane({
 								variant="ghost"
 								size="icon"
 								onClick={() => setShowPreview(true)}
-								className="h-8 w-8 text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-full"
+								className="h-8 w-8 text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all"
 								title="Preview & Print ID Card"
 							>
 								<Printer className="h-4 w-4" />
@@ -1307,7 +1307,7 @@ export function ResidentProfilePane({
 								variant="ghost"
 								size="icon"
 								onClick={() => setIsEditing(true)}
-								className="h-8 w-8 text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-full"
+								className="h-8 w-8 text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-all"
 								title="Edit Profile"
 							>
 								<Edit2 className="h-4 w-4" />
@@ -1318,7 +1318,7 @@ export function ResidentProfilePane({
 						variant="ghost"
 						size="icon"
 						onClick={onClose}
-						className="h-8 w-8 text-neutral-400 hover:text-red-400 hover:bg-red-500/10 rounded-full"
+						className="h-8 w-8 text-neutral-400 hover:text-red-400 hover:bg-neutral-800 rounded-lg transition-all"
 					>
 						<X className="h-4 w-4" />
 					</Button>

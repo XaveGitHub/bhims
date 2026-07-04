@@ -614,7 +614,7 @@ function ResidentsView() {
 									setDrawerResident(r);
 								}}
 								disabled={hasSelection}
-								className="h-7 w-7 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700 disabled:opacity-30"
+								className="h-7 w-7 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-lg disabled:opacity-30 transition-all"
 							>
 								<Eye className="h-3.5 w-3.5" />
 							</Button>
