@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { format, parseISO } from "date-fns";
-import { Calendar as CalendarIcon, Edit2, GripHorizontal, Home, Loader2, MapPin, User, X, Printer, Download } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Edit2, FileText, GripHorizontal, Home, Loader2, MapPin, User, X, Printer, Download } from "lucide-react";
+import { getResidentTransactions } from "../lib/queue-service";
 import { ResidentIdCard } from "./residents/resident-id-card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { useEffect, useState } from "react";
@@ -49,6 +50,7 @@ export function ResidentProfilePane({
 	const [formData, setFormData] = useState<Partial<ResidentInputForm>>({});
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
+	const [historyTransactions, setHistoryTransactions] = useState<any[]>([]);
 
 	useEffect(() => {
 		if (resident) {
@@ -59,6 +61,10 @@ export function ResidentProfilePane({
 				purok: resident.purok || "",
 			});
 			setErrors({});
+			// Prefetch history
+			getResidentTransactions({ data: { residentId: resident.id } })
+				.then(setHistoryTransactions)
+				.catch(() => setHistoryTransactions([]));
 		}
 	}, [resident, isEditing]);
 
@@ -216,7 +222,7 @@ export function ResidentProfilePane({
 	// ── VIEW MODE RENDERING ──
 	const renderViewMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="w-full grid grid-cols-3 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-12 shrink-0 items-stretch">
+			<TabsList className="w-full grid grid-cols-4 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-12 shrink-0 items-stretch">
 				<TabsTrigger
 					value="personal"
 					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
@@ -234,6 +240,12 @@ export function ResidentProfilePane({
 					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					Household & Economic
+				</TabsTrigger>
+				<TabsTrigger
+					value="history"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+				>
+					History
 				</TabsTrigger>
 			</TabsList>
 
@@ -655,6 +667,10 @@ export function ResidentProfilePane({
 							</div>
 						</CardContent>
 					</Card>
+				</TabsContent>
+
+				<TabsContent value="history" className="m-0">
+					<ResidentHistoryTimeline transactions={historyTransactions} />
 				</TabsContent>
 			</div>
 		</Tabs>
@@ -1459,5 +1475,115 @@ export function ResidentProfilePane({
 		</Dialog>
 
 		</>
+	);
+}
+
+// ── HISTORY TIMELINE SUB-COMPONENT ──
+function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
+	if (transactions.length === 0) {
+		return (
+			<div className="flex flex-col items-center justify-center py-16 text-center">
+				<div className="h-12 w-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3">
+					<FileText className="h-6 w-6 text-neutral-600" />
+				</div>
+				<p className="text-sm font-semibold text-neutral-400">No Records Yet</p>
+				<p className="text-xs text-neutral-500 mt-1 max-w-[200px]">
+					This resident has no document request history.
+				</p>
+			</div>
+		);
+	}
+
+	// Group transactions by month
+	const grouped: Record<string, any[]> = {};
+	for (const tx of transactions) {
+		const date = tx.createdAt ? new Date(tx.createdAt) : new Date();
+		const key = format(date, "MMMM yyyy");
+		if (!grouped[key]) grouped[key] = [];
+		grouped[key].push(tx);
+	}
+
+	const statusConfig: Record<string, { dot: string; badge: string; label: string }> = {
+		"Ready to Claim": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Ready" },
+		"Completed": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Completed" },
+		"Released": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Released" },
+		"Processing": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Processing" },
+		"Pending": { dot: "bg-amber-500 shadow-amber-500/40", badge: "bg-amber-500/15 text-amber-400 border-amber-500/30", label: "Pending" },
+		"Cancelled": { dot: "bg-red-500 shadow-red-500/40", badge: "bg-red-500/15 text-red-400 border-red-500/30", label: "Cancelled" },
+	};
+
+	const getStatus = (status: string) =>
+		statusConfig[status] || { dot: "bg-neutral-500", badge: "bg-neutral-500/15 text-neutral-400 border-neutral-500/30", label: status };
+
+	return (
+		<div className="space-y-6">
+			{Object.entries(grouped).map(([month, items]) => (
+				<div key={month}>
+					<div className="flex items-center gap-2 mb-4">
+						<Clock className="h-3.5 w-3.5 text-neutral-500" />
+						<span className="text-[11px] font-bold text-neutral-500 tracking-wider">
+							{month}
+						</span>
+					</div>
+
+					<div className="relative pl-6">
+						{/* Vertical timeline line */}
+						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/40 via-emerald-500/20 to-transparent" />
+
+						<div className="space-y-4">
+							{items.map((tx: any, idx: number) => {
+								const config = getStatus(tx.status);
+								const date = tx.createdAt ? new Date(tx.createdAt) : new Date();
+								return (
+									<div key={tx.id} className="relative group">
+										{/* Timeline dot */}
+										<div className={`absolute -left-6 top-3 h-3.5 w-3.5 rounded-full border-2 border-neutral-950 ${config.dot} shadow-lg`} />
+
+										<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none hover:bg-neutral-900/60 transition-colors">
+											<CardContent className="p-3.5">
+												<div className="flex items-start justify-between gap-3">
+													<div className="min-w-0 flex-1">
+														<div className="flex items-center gap-2">
+															<FileText className="h-3.5 w-3.5 text-neutral-500 shrink-0" />
+															<span className="text-sm font-semibold text-neutral-200 truncate">
+																{tx.templateName || "Document"}
+															</span>
+														</div>
+														{tx.purpose && (
+															<p className="text-xs text-neutral-400 mt-1.5 ml-5.5 line-clamp-2">
+																{tx.purpose}
+															</p>
+														)}
+														<div className="flex items-center gap-3 mt-2 ml-5.5">
+															<span className="text-[11px] text-neutral-500">
+																{format(date, "MMM d, yyyy • h:mm a")}
+															</span>
+															{tx.totalPrice > 0 && (
+																<span className="text-[11px] text-neutral-500">
+																	₱{tx.totalPrice.toFixed(2)}
+																</span>
+															)}
+															<span className="text-[11px] text-neutral-600">
+																Q-{tx.queueNumber?.toString().padStart(4, "0")}
+															</span>
+														</div>
+													</div>
+													<Badge
+														variant="outline"
+														className={`${config.badge} text-[10px] font-bold px-2 py-0.5 shrink-0 rounded-full`}
+													>
+														{config.label}
+													</Badge>
+												</div>
+											</CardContent>
+										</Card>
+									</div>
+								);
+							})}
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
 	);
 }

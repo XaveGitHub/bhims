@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { eq, inArray, asc } from "drizzle-orm";
+import { eq, inArray, asc, desc } from "drizzle-orm";
 import { db } from "../db";
 import { transactions } from "../db/schema";
 import { residents } from "../db/schema";
@@ -119,4 +119,30 @@ export const updateResidentAndTransaction = createServerFn({
 			.run();
 
 		return { success: true };
+	});
+
+export const getResidentTransactions = createServerFn({
+	method: "POST",
+})
+	.validator((data: { residentId: number }) => data)
+	.handler(async ({ data: { residentId } }) => {
+		const results = db
+			.select({
+				id: transactions.id,
+				queueNumber: transactions.queueNumber,
+				purpose: transactions.purpose,
+				status: transactions.status,
+				totalPrice: transactions.totalPrice,
+				remarks: transactions.remarks,
+				createdAt: transactions.createdAt,
+				updatedAt: transactions.updatedAt,
+				templateName: documentTemplates.name,
+			})
+			.from(transactions)
+			.leftJoin(documentTemplates, eq(transactions.templateId, documentTemplates.id))
+			.where(eq(transactions.residentId, residentId))
+			.orderBy(desc(transactions.createdAt))
+			.all();
+
+		return results;
 	});
