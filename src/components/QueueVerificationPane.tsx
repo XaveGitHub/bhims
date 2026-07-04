@@ -80,6 +80,17 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 		}
 	}, [batch, activeItem]);
 
+	// Close on Escape key (skip if processing to prevent interrupting operations)
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && !isProcessing) {
+				onClose();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [onClose, isProcessing]);
+
 	if (!batch || !batch.items || batch.items.length === 0) return null;
 
 	const fieldMappings = activeItem?.template?.fieldMappings 

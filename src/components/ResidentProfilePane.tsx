@@ -70,6 +70,17 @@ export function ResidentProfilePane({
 		}
 	}, [isEditing, purokOptions.length]);
 
+	// Close on Escape key (skip if editing to prevent accidental data loss)
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && !isEditing) {
+				onClose();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [onClose, isEditing]);
+
 	if (!resident) return null;
 
 	const handleSave = async () => {

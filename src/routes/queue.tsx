@@ -214,22 +214,29 @@ function QueueDashboard() {
 
 			{/* Document Verification Pane */}
 			{selectedBatch && (
-				<Draggable
-					nodeRef={dragNodeRef}
-					handle=".drag-handle"
-					cancel=".no-drag"
-				>
+				<>
+					{/* Backdrop — click outside to close */}
 					<div
-						ref={dragNodeRef}
-						className="fixed top-[5vh] left-1/2 -translate-x-1/2 w-[1300px] h-[85vh] max-h-[900px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
+						className="fixed inset-0 z-40"
+						onClick={() => setSelectedBatch(null)}
+					/>
+					<Draggable
+						nodeRef={dragNodeRef}
+						handle=".drag-handle"
+						cancel=".no-drag"
 					>
-						<QueueVerificationPane
-							batch={selectedBatch}
-							onClose={() => setSelectedBatch(null)}
-							onStatusChange={handleStatusChange}
-						/>
-					</div>
-				</Draggable>
+						<div
+							ref={dragNodeRef}
+							className="fixed top-[5vh] left-1/2 -translate-x-1/2 w-[1300px] h-[85vh] max-h-[900px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
+						>
+							<QueueVerificationPane
+								batch={selectedBatch}
+								onClose={() => setSelectedBatch(null)}
+								onStatusChange={handleStatusChange}
+							/>
+						</div>
+					</Draggable>
+				</>
 			)}
 
 			<Dialog open={!!cancelBatch} onOpenChange={() => setCancelBatch(null)}>
