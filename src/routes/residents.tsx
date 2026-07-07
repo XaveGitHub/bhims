@@ -1076,7 +1076,7 @@ function ResidentsView() {
 					>
 						<div
 							ref={dragNodeRef}
-							className="fixed top-20 right-4 w-[450px] lg:w-[500px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
+							className="fixed top-20 right-4 w-[460px] lg:w-[520px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
 						>
 							<ResidentProfilePane
 								resident={drawerResident}

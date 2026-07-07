@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { db } from "../db";
 import { households, residents } from "../db/schema";
 import type { ResidentInput } from "./residents-service";
+import { requireAdmin } from "./security";
 
 // Define the full payload that comes from the Excel mapping
 export interface ImportRow extends ResidentInput {
@@ -251,7 +252,8 @@ export const importResidents = createServerFn({
 })
 	.validator((data: ImportRow[]) => data)
 	.handler(async ({ data: rows }) => {
-		if (rows.length === 0) return { success: true, count: 0 };
+		await requireAdmin();
+		if (!rows || rows.length === 0) return { success: false, error: "No data to import" };
 
 		try {
 			const result = db.transaction((tx) => {

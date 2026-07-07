@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import * as schema from "./schema";
@@ -102,6 +102,23 @@ export function runMigrations() {
 			db.insert(schema.settings).values({ key: "pin", value: "1234" }).run();
 			console.log("[Database] Initialized default PIN settings.");
 		}
+
+		// Initialize default Puroks if empty (for fresh app installs)
+		const existingPuroks = db.select({ count: sql<number>`count(*)` }).from(schema.puroks).get();
+		if (existingPuroks && existingPuroks.count === 0) {
+			const puroksList = [
+				"Zone 1", "Zone 2", "Zone 3", "Zone 4", "Zone 5", "Zone 6", "Zone 7", "Zone 8", "Zone 9", "Zone 10", "Zone 11", "Zone 12",
+				"Lucky Homes", "NGO", "NEDF", "St Ezekiel", "Villasor", "Paho", "Ceres", "Lubi", "Chico", "Mahogany", "Golden Risary",
+				"Narra", "Datiles", "Tapulanga", "Paghidaet", "Maniville", "Rosebell", "Cadena De Amor", "San Antonio", "Mabinuligon",
+				"GK Village", "Saturn", "Sto Niño", "Sto Domingo", "San Rowue 1", "San Roque2", "Kawayanan 1", "Kawayan 2"
+			];
+			console.log("[Database] Seeding default Puroks...");
+			for (let i = 0; i < puroksList.length; i++) {
+				db.insert(schema.puroks).values({ name: puroksList[i], orderIndex: i + 1 }).run();
+			}
+			console.log("[Database] Default Puroks seeded successfully.");
+		}
+
 	} catch (error) {
 		console.error("[Database] Migration failed:", error);
 	}

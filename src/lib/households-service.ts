@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { eq, like, and, or } from "drizzle-orm";
 import { db } from "../db";
 import { households, residents } from "../db/schema";
+import { requireAdmin, requireStaff } from "./security";
 
 export interface HouseholdMember {
 	id: number;
@@ -94,6 +95,7 @@ function getAge(birthDate: string | null): number | null {
 export const getHouseholds = createServerFn({
 	method: "POST",
 }).handler(async (): Promise<HouseholdSummary[]> => {
+	await requireStaff();
 	const allResidents = db.select({
 		id: residents.id,
 		householdId: residents.householdId,
@@ -165,6 +167,7 @@ export const getHouseholdDetails = createServerFn({
 })
 	.validator((householdId: string) => householdId)
 	.handler(async ({ data: householdId }): Promise<HouseholdDetail | null> => {
+		await requireStaff();
 		// Fetch the dwelling info
 		const dwelling = db
 			.select()
@@ -258,6 +261,7 @@ export const updateHouseholdDetails = createServerFn({
 		}) => data,
 	)
 	.handler(async ({ data }) => {
+		await requireAdmin();
 		const members = db
 			.select()
 			.from(residents)
@@ -341,6 +345,7 @@ export const searchHouseholds = createServerFn({
 })
 	.validator((params: { purok: string; query?: string }) => params)
 	.handler(async ({ data: { purok, query } }) => {
+		await requireStaff();
 		// First get matching households in the purok
 		const conditions = [eq(households.purok, purok)];
 		

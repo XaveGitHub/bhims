@@ -18,7 +18,8 @@ import {
 } from "../components/ui/sidebar";
 import { Toaster } from "../components/ui/sonner";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-import { getBarangayName, getClientAuth } from "../lib/auth-service";
+import { getBarangayName, isFirstRun } from "../lib/auth-service";
+import { getClientAuth, getClientUser } from "../lib/client-auth";
 import appCss from "../styles.css?url";
 import { TooltipProvider } from "../components/ui/tooltip";
 
@@ -48,13 +49,28 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		],
 	}),
 	loader: async ({ location }) => {
-		// Bypass auth check for login and kiosk pages
-		if (location.pathname === "/login" || location.pathname === "/kiosk") {
+		const firstRun = await isFirstRun();
+
+		// If trying to access setup but not first run, redirect to login
+		if (location.pathname === "/setup") {
+			if (!firstRun) throw redirect({ to: "/login" });
 			return;
 		}
 
+		// On first run (no users), redirect everything (except kiosk) to /setup
+		if (firstRun && location.pathname !== "/kiosk") {
+			throw redirect({ to: "/setup" });
+		}
+
 		const isAuthenticated = await getClientAuth();
-		if (!isAuthenticated) {
+		const user = await getClientUser();
+		const isPublicRoute = location.pathname === "/kiosk" || location.pathname === "/monitor" || location.pathname === "/login";
+		
+		// If we are already on login and not authenticated, just return early to prevent infinite redirect
+		if (location.pathname === "/login" && !isAuthenticated) {
+			return;
+		}
+		if (!isAuthenticated && !isPublicRoute) {
 			throw redirect({
 				to: "/login",
 				search: {
@@ -62,15 +78,24 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				},
 			});
 		}
+
+		if (user?.role === "staff" && location.pathname !== "/queue") {
+			throw redirect({ to: "/queue" });
+		}
+
+		return { user };
 	},
 	component: RootLayout,
 });
 
 function RootLayout() {
+	const { user } = Route.useLoaderData() || { user: null };
 	const location = useLocation();
 	const isLoginPage = location.pathname === "/login";
 	const isKioskPage = location.pathname === "/kiosk";
-	const isFullscreenPage = isLoginPage || isKioskPage;
+	const isMonitorPage = location.pathname === "/monitor";
+	const isSetupPage = location.pathname === "/setup";
+	const isFullscreenPage = isLoginPage || isKioskPage || isSetupPage || isMonitorPage;
 	const [brgyName, setBrgyName] = useState("Barangay Handumanan");
 
 	useEffect(() => {
@@ -110,7 +135,7 @@ function RootLayout() {
 
 			{/* SidebarProvider must wrap ONLY the sidebar + content so peer selectors work */}
 			<SidebarProvider defaultOpen={true}>
-				<AppSidebar brgyName={brgyName} />
+				<AppSidebar brgyName={brgyName} userRole={user?.role} />
 
 				{/* Main Content Area */}
 				<SidebarInset className="flex flex-col bg-transparent">

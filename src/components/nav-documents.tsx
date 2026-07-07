@@ -16,6 +16,8 @@ interface DocumentItem {
 }
 
 export function NavDocuments({ items }: { items: DocumentItem[] }) {
+	if (!items?.length) return null;
+
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel className="normal-case text-neutral-500 font-semibold text-xs mt-2">

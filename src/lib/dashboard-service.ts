@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { db } from "../db";
 import { households, residents } from "../db/schema";
 
@@ -49,104 +49,77 @@ export const getDashboardData = createServerFn({
 	.handler(async ({ data }): Promise<DashboardStats> => {
 	const purokFilter = data?.purok;
 
-	// Get residents
-	const allResidents = purokFilter 
-		? db.select().from(residents).where(eq(residents.purok, purokFilter)).all()
-		: db.select().from(residents).all();
+	const ageSql = sql`cast(strftime('%Y.%m%d', 'now') - strftime('%Y.%m%d', ${residents.birthDate}) as int)`;
 
-	// Get households
-	const allHouseholds = purokFilter
-		? db.select().from(households).where(eq(households.purok, purokFilter)).all()
-		: db.select().from(households).all();
+	const metricsQuery = db.select({
+		totalResidents: sql<number>`count(*)`,
+		totalPwd: sql<number>`sum(case when ${residents.isPwd} = 1 then 1 else 0 end)`,
+		totalSeniors: sql<number>`sum(case when ${residents.isSeniorCitizen} = 1 then 1 else 0 end)`,
+		totalVoters: sql<number>`sum(case when ${residents.isRegisteredVoter} = 1 then 1 else 0 end)`,
+		totalSingleParents: sql<number>`sum(case when ${residents.isSingleParent} = 1 then 1 else 0 end)`,
+		totalMale: sql<number>`sum(case when lower(${residents.gender}) = 'male' then 1 else 0 end)`,
+		totalFemale: sql<number>`sum(case when lower(${residents.gender}) = 'female' then 1 else 0 end)`,
+		totalOtherGender: sql<number>`sum(case when ${residents.gender} is not null and trim(${residents.gender}) != '' and lower(${residents.gender}) not in ('male', 'female') then 1 else 0 end)`,
+		totalWithHousehold: sql<number>`sum(case when ${residents.householdId} is not null then 1 else 0 end)`,
+		completeProfiles: sql<number>`sum(case when ${residents.contactNumber} is not null and trim(${residents.contactNumber}) != '' and ${residents.birthDate} is not null and trim(${residents.birthDate}) != '' then 1 else 0 end)`,
+		totalWithBirthdate: sql<number>`sum(case when ${residents.birthDate} is not null and trim(${residents.birthDate}) != '' then 1 else 0 end)`,
+		
+		age0_5: sql<number>`sum(case when ${ageSql} <= 5 then 1 else 0 end)`,
+		age6_12: sql<number>`sum(case when ${ageSql} between 6 and 12 then 1 else 0 end)`,
+		age13_17: sql<number>`sum(case when ${ageSql} between 13 and 17 then 1 else 0 end)`,
+		age18_35: sql<number>`sum(case when ${ageSql} between 18 and 35 then 1 else 0 end)`,
+		age36_50: sql<number>`sum(case when ${ageSql} between 36 and 50 then 1 else 0 end)`,
+		age51_65: sql<number>`sum(case when ${ageSql} >= 51 then 1 else 0 end)`
+	}).from(residents);
 
-	const totalResidents = allResidents.length;
-	const totalPwd = allResidents.filter((r) => r.isPwd).length;
-	const totalSeniors = allResidents.filter((r) => r.isSeniorCitizen).length;
-	const totalVoters = allResidents.filter((r) => r.isRegisteredVoter).length;
-	const totalSingleParents = allResidents.filter(
-		(r) => r.isSingleParent,
-	).length;
-
-	// Gender breakdown
-	const totalMale = allResidents.filter(
-		(r) => r.gender?.toLowerCase() === "male",
-	).length;
-	const totalFemale = allResidents.filter(
-		(r) => r.gender?.toLowerCase() === "female",
-	).length;
-	const totalOtherGender = allResidents.filter(
-		(r) => r.gender != null && r.gender.trim() !== "" && r.gender?.toLowerCase() !== "male" && r.gender?.toLowerCase() !== "female",
-	).length;
-
-	// Total households from the households table
-	const totalHouseholds = allHouseholds.length;
-
-	// Average Household Size
-	const residentsInHouseholds = allResidents.filter(
-		(r) => r.householdId,
-	).length;
-	const avgHouseholdSize =
-		totalHouseholds > 0 ? residentsInHouseholds / totalHouseholds : 0;
-
-	// Age Demographics & Data Completeness
-	const ageBrackets = {
-		"0-5": 0,
-		"6-12": 0,
-		"13-17": 0,
-		"18-35": 0,
-		"36-50": 0,
-		"51-65+": 0,
-	};
-	let completeProfiles = 0;
-	let totalWithBirthdate = 0;
-
-	const today = new Date();
-	for (const r of allResidents) {
-		// Completeness check
-		if (r.contactNumber && r.birthDate) {
-			completeProfiles++;
-		}
-
-		// Age check
-		if (r.birthDate) {
-			totalWithBirthdate++;
-			const birthDate = new Date(r.birthDate);
-			let age = today.getFullYear() - birthDate.getFullYear();
-			const m = today.getMonth() - birthDate.getMonth();
-			if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-				age--;
-			}
-
-			if (age <= 5) {
-				ageBrackets["0-5"]++;
-			} else if (age <= 12) {
-				ageBrackets["6-12"]++;
-			} else if (age <= 17) {
-				ageBrackets["13-17"]++;
-			} else if (age <= 35) {
-				ageBrackets["18-35"]++;
-			} else if (age <= 50) {
-				ageBrackets["36-50"]++;
-			} else {
-				ageBrackets["51-65+"]++;
-			}
-		}
+	if (purokFilter) {
+		metricsQuery.where(eq(residents.purok, purokFilter));
 	}
 
-	const dataCompletenessPct =
-		totalResidents > 0 ? (completeProfiles / totalResidents) * 100 : 0;
+	const rawMetrics = metricsQuery.get();
+	const metrics = {
+		totalResidents: rawMetrics?.totalResidents || 0,
+		totalPwd: rawMetrics?.totalPwd || 0,
+		totalSeniors: rawMetrics?.totalSeniors || 0,
+		totalVoters: rawMetrics?.totalVoters || 0,
+		totalSingleParents: rawMetrics?.totalSingleParents || 0,
+		totalMale: rawMetrics?.totalMale || 0,
+		totalFemale: rawMetrics?.totalFemale || 0,
+		totalOtherGender: rawMetrics?.totalOtherGender || 0,
+		totalWithHousehold: rawMetrics?.totalWithHousehold || 0,
+		completeProfiles: rawMetrics?.completeProfiles || 0,
+		totalWithBirthdate: rawMetrics?.totalWithBirthdate || 0,
+		age0_5: rawMetrics?.age0_5 || 0,
+		age6_12: rawMetrics?.age6_12 || 0,
+		age13_17: rawMetrics?.age13_17 || 0,
+		age18_35: rawMetrics?.age18_35 || 0,
+		age36_50: rawMetrics?.age36_50 || 0,
+		age51_65: rawMetrics?.age51_65 || 0,
+	};
+
+	const hhQuery = db.select({ count: sql<number>`count(*)` }).from(households);
+	if (purokFilter) {
+		hhQuery.where(eq(households.purok, purokFilter));
+	}
+	const totalHouseholds = hhQuery.get()?.count || 0;
+	
+	const avgHouseholdSize = totalHouseholds > 0 ? metrics.totalWithHousehold / totalHouseholds : 0;
+	const dataCompletenessPct = metrics.totalResidents > 0 ? (metrics.completeProfiles / metrics.totalResidents) * 100 : 0;
 
 	// Group by Purok
-	const purokCounts: Record<string, number> = {};
-	for (const r of allResidents) {
-		const p = r.purok || "Unknown";
-		purokCounts[p] = (purokCounts[p] || 0) + 1;
+	const purokQuery = db.select({
+		purok: sql<string>`coalesce(${residents.purok}, 'Unknown')`,
+		count: sql<number>`count(*)`
+	}).from(residents);
+	
+	if (purokFilter) {
+		purokQuery.where(eq(residents.purok, purokFilter));
 	}
-	const purokStats: PurokStat[] = Object.entries(purokCounts)
-		.map(([purok, count]) => ({ purok, count }))
-		.sort((a, b) => b.count - a.count);
+	purokQuery.groupBy(sql`coalesce(${residents.purok}, 'Unknown')`);
+	
+	const purokStats: PurokStat[] = purokQuery.all().sort((a, b) => b.count - a.count);
 
-	// Recent activity: last 8 records by updatedAt then createdAt
+	// Recent activity: last 8 records by updatedAt
 	const recent = db
 		.select()
 		.from(residents)
@@ -157,9 +130,7 @@ export const getDashboardData = createServerFn({
 	const recentActivity: RecentActivity[] = recent.map((r) => {
 		const createdTs = r.createdAt instanceof Date ? r.createdAt.getTime() : 0;
 		const updatedTs = r.updatedAt instanceof Date ? r.updatedAt.getTime() : 0;
-		// If updatedAt is significantly later than createdAt, it was updated
-		const wasUpdated =
-			updatedTs > 0 && createdTs > 0 && updatedTs - createdTs > 5000;
+		const wasUpdated = updatedTs > 0 && createdTs > 0 && updatedTs - createdTs > 5000;
 		return {
 			id: r.id,
 			fullName: r.fullName,
@@ -205,17 +176,24 @@ export const getDashboardData = createServerFn({
 	}
 
 	return {
-		totalResidents,
-		totalPwd,
-		totalSeniors,
-		totalVoters,
-		totalSingleParents,
+		totalResidents: metrics.totalResidents,
+		totalPwd: metrics.totalPwd,
+		totalSeniors: metrics.totalSeniors,
+		totalVoters: metrics.totalVoters,
+		totalSingleParents: metrics.totalSingleParents,
 		totalHouseholds,
-		totalMale,
-		totalFemale,
-		totalOtherGender,
-		ageBrackets,
-		totalWithBirthdate,
+		totalMale: metrics.totalMale,
+		totalFemale: metrics.totalFemale,
+		totalOtherGender: metrics.totalOtherGender,
+		ageBrackets: {
+			"0-5": metrics.age0_5,
+			"6-12": metrics.age6_12,
+			"13-17": metrics.age13_17,
+			"18-35": metrics.age18_35,
+			"36-50": metrics.age36_50,
+			"51-65+": metrics.age51_65,
+		},
+		totalWithBirthdate: metrics.totalWithBirthdate,
 		avgHouseholdSize,
 		dataCompletenessPct,
 		purokStats,

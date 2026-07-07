@@ -11,7 +11,7 @@ import { cn } from "../lib/utils";
 import { format, parseISO } from "date-fns";
 import { kioskLoginByBarcode, kioskLoginByName, submitKioskRequest } from "../lib/kiosk-service";
 import { getTemplates } from "../lib/document-templates-service";
-import { addResident, getUniquePuroks } from "../lib/residents-service";
+import { kioskRegisterResident, getUniquePuroks } from "../lib/residents-service";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/kiosk")({
@@ -177,7 +177,7 @@ function KioskPage() {
 				debilitatingDiseases: null,
 			};
 
-			const res = await addResident({ data: payload });
+			const res = await kioskRegisterResident({ data: payload });
 			if (res.success && res.resident) {
 				setError(null);
 				setActiveResident(res.resident);

@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
-import { getPuroks, addPurok, updatePurok, deletePurok, updatePurokOrder } from "../lib/residents-service";
+import { getPuroks, addPurok, updatePurok, deletePurok } from "../lib/residents-service";
 
 interface ManagePuroksModalProps {
 	open: boolean;

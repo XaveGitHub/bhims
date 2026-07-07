@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, asc, eq, inArray, isNotNull } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { residents, puroks } from "../db/schema";
 import { z } from "zod";
+import { requireAdmin } from "./security";
 
 const extractSchema = z.object({
 	purok: z.string().optional(),
@@ -17,6 +18,7 @@ export const extractResidents = createServerFn({
 })
 	.validator(extractSchema)
 	.handler(async ({ data }) => {
+		await requireAdmin();
 		try {
 			let query = db.select({
 				id: residents.id,

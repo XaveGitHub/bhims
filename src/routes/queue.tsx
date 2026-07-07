@@ -99,7 +99,7 @@ function QueueDashboard() {
 					<CheckCircle2 className="h-16 w-16 text-neutral-700 mb-4" />
 					<h3 className="text-xl font-medium text-neutral-300">All Caught Up!</h3>
 					<p className="text-neutral-500 mt-2 max-w-sm">
-						The queue is currently empty. Waiting for new requests from the Kiosk...
+						The queue is currently empty. Waiting for new requests from the Kiosk.
 					</p>
 				</div>
 			) : (

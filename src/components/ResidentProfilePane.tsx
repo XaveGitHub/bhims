@@ -222,7 +222,7 @@ export function ResidentProfilePane({
 	// ── VIEW MODE RENDERING ──
 	const renderViewMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="w-full grid grid-cols-4 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-12 shrink-0 items-stretch">
+			<TabsList className="w-full grid grid-cols-4 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-14 shrink-0 items-stretch">
 				<TabsTrigger
 					value="personal"
 					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
@@ -233,13 +233,13 @@ export function ResidentProfilePane({
 					value="health"
 					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
-					Health & Status
+					Health
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
 					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
-					Household & Economic
+					Household
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
@@ -249,7 +249,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 			</TabsList>
 
-			<div className="flex-1 overflow-y-auto p-6">
+			<div className="flex-1 overflow-y-auto p-7">
 				<TabsContent value="personal" className="m-0 space-y-6">
 					<div className="grid grid-cols-2 gap-4">
 						<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none col-span-2">
@@ -417,7 +417,7 @@ export function ResidentProfilePane({
 								</div>
 							</div>
 
-							<div className="pt-2 border-t border-neutral-800/60 mt-2">
+							<div className="pt-2 mt-2">
 								<p className="text-[11px] text-neutral-500 mb-1">
 									Debilitating Diseases
 								</p>
@@ -518,7 +518,7 @@ export function ResidentProfilePane({
 							</div>
 
 							{!hideFamilyTreeButton && resident.householdId && (
-								<div className="pt-3 border-t border-neutral-800/60 mt-3">
+								<div className="pt-2 mt-2">
 									<Button
 										asChild
 										variant="outline"
@@ -679,7 +679,7 @@ export function ResidentProfilePane({
 	// ── EDIT MODE RENDERING ──
 	const renderEditMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="w-full grid grid-cols-3 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-12 shrink-0 items-stretch">
+			<TabsList className="w-full grid grid-cols-3 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-14 shrink-0 items-stretch">
 				<TabsTrigger
 					value="personal"
 					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
@@ -1531,7 +1531,7 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/40 via-emerald-500/20 to-transparent" />
 
 						<div className="space-y-4">
-							{items.map((tx: any, idx: number) => {
+							{items.map((tx: any) => {
 								const config = getStatus(tx.status);
 								const date = tx.createdAt ? new Date(tx.createdAt) : new Date();
 								return (
@@ -1563,8 +1563,8 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 																	₱{tx.totalPrice.toFixed(2)}
 																</span>
 															)}
-															<span className="text-[11px] text-neutral-600">
-																Q-{tx.queueNumber?.toString().padStart(4, "0")}
+															<span className="text-[11px] text-neutral-600 font-mono">
+																TRX-{tx.id?.toString().padStart(5, "0")}
 															</span>
 														</div>
 													</div>

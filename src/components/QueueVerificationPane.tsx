@@ -102,15 +102,60 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 	const hasField = (id: string) => fieldMappings.some((m: any) => m.id === id);
 
 	const handlePrintSingle = async () => {
-		window.print();
-		
+		if (!previewContainerRef.current) return;
 		setIsProcessing(true);
+		
 		try {
-			await new Promise(resolve => setTimeout(resolve, 500));
+			const element = document.getElementById('print-document');
+			if (!element) throw new Error("Document not found");
+
+			// Generate high quality image
+			const dataUrl = await toPng(element, { 
+				quality: 1.0,
+				width: 794,
+				height: 1123,
+				pixelRatio: 2, // High res
+				style: {
+					transform: 'scale(1)',
+					transformOrigin: 'top left'
+				}
+			});
 			
-			// Immediately persist to backend so it doesn't get lost on close
-			await onStatusChange([activeItem.id], "Ready to Claim");
+			// Open a tiny invisible iframe to print the image
+			const iframe = document.createElement('iframe');
+			iframe.style.position = 'fixed';
+			iframe.style.right = '0';
+			iframe.style.bottom = '0';
+			iframe.style.width = '0';
+			iframe.style.height = '0';
+			iframe.style.border = '0';
+			document.body.appendChild(iframe);
 			
+			const contentWindow = iframe.contentWindow;
+			if (contentWindow) {
+				contentWindow.document.write(`
+					<html>
+						<head>
+							<title>Print Document</title>
+							<style>
+								@page { size: A4; margin: 0; }
+								body { margin: 0; padding: 0; }
+								img { width: 210mm; height: 297mm; display: block; }
+							</style>
+						</head>
+						<body>
+							<img src="${dataUrl}" onload="window.print();" />
+						</body>
+					</html>
+				`);
+				contentWindow.document.close();
+				
+				// Clean up iframe after printing dialog closes
+				setTimeout(() => {
+					document.body.removeChild(iframe);
+				}, 1000);
+			}
+
 			setPrintedItems((prev: any) => ({ ...prev, [activeItem.id]: true }));
 			
 			// Auto-advance if there are more
@@ -118,7 +163,8 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 				setSelectedIndex(selectedIndex + 1);
 			}
 		} catch (error) {
-			toast.error("Failed to mark as printed in database");
+			console.error("Print failed:", error);
+			toast.error("Failed to print document");
 		} finally {
 			setIsProcessing(false);
 		}
@@ -133,19 +179,16 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 			const element = document.getElementById('print-document');
 			if (!element) throw new Error("Document not found");
 
-			// Ensure we capture it at full 1:1 scale
-			const originalTransform = element.style.transform;
-			element.style.transform = 'scale(1)';
-			
 			const dataUrl = await toPng(element, { 
 				quality: 1.0,
 				width: 794,
 				height: 1123,
-				pixelRatio: 2 // High res
+				pixelRatio: 2, // High res
+				style: {
+					transform: 'scale(1)',
+					transformOrigin: 'top left'
+				}
 			});
-			
-			// Restore original scale
-			element.style.transform = originalTransform;
 			
 			const link = document.createElement('a');
 			link.download = `${batch.resident.lastName}_${activeItem.template?.name || 'Document'}.png`;

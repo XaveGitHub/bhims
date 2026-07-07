@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate } from "@tanstack/react-router"
+
 import { cn } from "../lib/utils.ts"
 import { Button } from "../components/ui/button.tsx"
 import {
@@ -8,7 +8,8 @@ import {
   FieldLabel,
 } from "../components/ui/field.tsx"
 import { Input } from "../components/ui/input.tsx"
-import { login, setClientAuth } from "../lib/auth-service.ts"
+import { login } from "../lib/auth-service.ts"
+import { clearClientAuth } from "../lib/client-auth.ts"
 import { Loader2 } from "lucide-react"
 
 export function LoginForm({
@@ -19,45 +20,52 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   
   // Validation states
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const [generalError, setGeneralError] = useState("");
   
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Reset errors
-    setUsernameError("");
-    setPasswordError("");
+    setUsernameError(false);
+    setPasswordError(false);
     setGeneralError("");
     
-    let hasError = false;
-    if (!username.trim()) {
-      setUsernameError("Username is required");
-      hasError = true;
+    const missingUsername = !username.trim();
+    const missingPassword = !password;
+
+    if (missingUsername || missingPassword) {
+      setUsernameError(missingUsername);
+      setPasswordError(missingPassword);
+      if (missingUsername && missingPassword) {
+        setGeneralError("Username and password are required");
+      } else if (missingUsername) {
+        setGeneralError("Username is required");
+      } else {
+        setGeneralError("Password is required");
+      }
+      return;
     }
-    if (!password) {
-      setPasswordError("Password is required");
-      hasError = true;
-    }
-    
-    if (hasError) return;
 
     setLoading(true);
 
     try {
       const res = await login({ data: { username, password } });
       if (res.success) {
-        setClientAuth(true);
-        navigate({ to: "/" });
+        clearClientAuth();
+        window.location.href = "/";
       } else {
         setGeneralError(res.error || "Invalid credentials");
+        setUsername("");
+        setPassword(""); // Clear password on error
       }
     } catch (err) {
       setGeneralError("An error occurred. Please try again.");
+      setUsername("");
+      setPassword("");
     } finally {
       setLoading(false);
     }
@@ -75,8 +83,14 @@ export function LoginForm({
           <h1 className="text-3xl font-bold tracking-[0.15em] text-white drop-shadow-sm leading-none pt-2">BHIMS</h1>
         </div>
         
+        {generalError && (
+          <p className="text-sm text-red-500 font-medium text-center">
+            {generalError}
+          </p>
+        )}
+
         <Field>
-          <FieldLabel htmlFor="username">Username</FieldLabel>
+          <FieldLabel htmlFor="username" className={cn((usernameError || generalError) && "text-red-500")}>Username</FieldLabel>
           <Input 
             id="username" 
             type="text" 
@@ -84,17 +98,16 @@ export function LoginForm({
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
-              if (usernameError) setUsernameError("");
+              if (usernameError) setUsernameError(false);
               if (generalError) setGeneralError("");
             }}
-            className={cn(usernameError && "border-red-500 focus-visible:ring-red-500")}
+            className={cn((usernameError || generalError) && "border-red-500 text-red-500 focus-visible:ring-red-500")}
             autoFocus
           />
-          {usernameError && <p className="text-xs text-red-500 font-medium mt-1">{usernameError}</p>}
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <FieldLabel htmlFor="password" className={cn((passwordError || generalError) && "text-red-500")}>Password</FieldLabel>
           <Input 
             id="password" 
             type="password" 
@@ -102,13 +115,11 @@ export function LoginForm({
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              if (passwordError) setPasswordError("");
+              if (passwordError) setPasswordError(false);
               if (generalError) setGeneralError("");
             }}
-            className={cn(passwordError && "border-red-500 focus-visible:ring-red-500")}
+            className={cn((passwordError || generalError) && "border-red-500 text-red-500 focus-visible:ring-red-500")}
           />
-          {passwordError && <p className="text-xs text-red-500 font-medium mt-1">{passwordError}</p>}
-          {generalError && <p className="text-sm text-red-500 font-medium text-center mt-2">{generalError}</p>}
         </Field>
         
         <Field className="pt-2">

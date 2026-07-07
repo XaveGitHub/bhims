@@ -1,13 +1,13 @@
 import {
 	IconDashboard,
 	IconDatabase,
-	IconFolder,
 	IconFileCertificate,
 	IconInnerShadowTop,
 	IconSettings,
 	IconUsers,
 	IconUserShield,
 	IconClipboardList,
+	IconHome,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type * as React from "react";
@@ -28,14 +28,21 @@ import {
 
 export function AppSidebar({
 	brgyName,
+	userRole,
 	...props
-}: { brgyName: string } & React.ComponentProps<typeof Sidebar>) {
+}: { brgyName: string; userRole?: string } & React.ComponentProps<typeof Sidebar>) {
 	const data = {
 		user: {
 			name: brgyName,
 			email: "local-node@bhims.gov",
 		},
-		navMain: [
+		navMain: [] as any[],
+		documents: [] as any[],
+		navSecondary: [] as any[],
+	};
+
+	if (userRole === "admin") {
+		data.navMain = [
 			{
 				title: "Dashboard",
 				url: "/",
@@ -49,10 +56,10 @@ export function AppSidebar({
 			{
 				title: "Households",
 				url: "/households",
-				icon: IconFolder,
+				icon: IconHome,
 			},
 			{
-				title: "Staff Queue",
+				title: "Document Queue",
 				url: "/queue",
 				icon: IconClipboardList,
 			},
@@ -61,8 +68,8 @@ export function AppSidebar({
 				url: "/templates",
 				icon: IconFileCertificate,
 			},
-		],
-		documents: [
+		];
+		data.documents = [
 			{
 				name: "Data Extraction",
 				url: "/extraction",
@@ -73,8 +80,8 @@ export function AppSidebar({
 				url: "/import",
 				icon: IconDatabase,
 			},
-		],
-		navSecondary: [
+		];
+		data.navSecondary = [
 			{
 				title: "Accounts",
 				url: "/accounts",
@@ -85,8 +92,18 @@ export function AppSidebar({
 				url: "/settings",
 				icon: IconSettings,
 			},
-		],
-	};
+		];
+	} else if (userRole === "staff") {
+		data.navMain = [
+			{
+				title: "Staff Queue",
+				url: "/queue",
+				icon: IconClipboardList,
+			}
+		];
+		data.documents = [];
+		data.navSecondary = [];
+	}
 
 	return (
 		<Sidebar collapsible="icon" {...props}>
@@ -109,8 +126,8 @@ export function AppSidebar({
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />
-				<NavDocuments items={data.documents} />
-				<NavSecondary items={data.navSecondary} className="mt-auto" />
+				{data.documents.length > 0 && <NavDocuments items={data.documents} />}
+				{data.navSecondary.length > 0 && <NavSecondary items={data.navSecondary} className="mt-auto" />}
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser user={data.user} />

@@ -4,10 +4,12 @@ import { db } from "../db";
 import { transactions } from "../db/schema";
 import { residents } from "../db/schema";
 import { documentTemplates } from "../db/schema";
+import { requireStaff } from "./security";
 
 export const getActiveQueue = createServerFn({
 	method: "GET",
 }).handler(async () => {
+	await requireStaff();
 	const activeTransactions = db
 		.select({
 			id: transactions.id,
@@ -70,6 +72,7 @@ export const updateTransactionStatus = createServerFn({
 })
 	.validator((data: { transactionIds: number[]; newStatus: string }) => data)
 	.handler(async ({ data: { transactionIds, newStatus } }) => {
+		await requireStaff();
 		db.update(transactions)
 			.set({ status: newStatus, updatedAt: new Date() })
 			.where(inArray(transactions.id, transactionIds))
@@ -95,6 +98,7 @@ export const updateResidentAndTransaction = createServerFn({
 		monthlyIncome?: string;
 	}) => data)
 	.handler(async ({ data }) => {
+		await requireStaff();
 		db.update(residents)
 			.set({
 				firstName: data.firstName,
@@ -126,6 +130,7 @@ export const getResidentTransactions = createServerFn({
 })
 	.validator((data: { residentId: number }) => data)
 	.handler(async ({ data: { residentId } }) => {
+		await requireStaff();
 		const results = db
 			.select({
 				id: transactions.id,
@@ -146,3 +151,87 @@ export const getResidentTransactions = createServerFn({
 
 		return results;
 	});
+
+export const getPublicQueue = createServerFn({
+	method: "GET",
+}).handler(async () => {
+	// No auth required for public monitor
+	const activeTransactions = db
+		.select({
+			id: transactions.id,
+			queueNumber: transactions.queueNumber,
+			status: transactions.status,
+			createdAt: transactions.createdAt,
+			resident: {
+				firstName: residents.firstName,
+				lastName: residents.lastName,
+			}
+		})
+		.from(transactions)
+		.leftJoin(residents, eq(transactions.residentId, residents.id))
+		.where(inArray(transactions.status, ["Pending", "Processing", "Ready to Claim"]))
+		.orderBy(asc(transactions.createdAt))
+		.all();
+
+	const grouped = activeTransactions.reduce((acc, curr) => {
+		const qn = curr.queueNumber;
+		if (!acc[qn]) {
+			acc[qn] = {
+				queueNumber: qn,
+				resident: curr.resident,
+				status: curr.status,
+				createdAt: curr.createdAt,
+				items: []
+			};
+		}
+		acc[qn].items.push(curr);
+		return acc;
+	}, {} as Record<number, any>);
+
+	const result = Object.values(grouped).map((group: any) => {
+		const allReady = group.items.every((i: any) => i.status === "Ready to Claim");
+		const anyProcessing = group.items.some((i: any) => i.status === "Processing");
+		
+		let computedStatus = "Pending";
+		if (allReady) computedStatus = "Ready to Claim";
+		else if (anyProcessing) computedStatus = "Processing";
+
+		return {
+			queueNumber: group.queueNumber,
+			residentName: group.resident ? `${group.resident.firstName} ${group.resident.lastName}` : "Unknown",
+			status: computedStatus,
+			createdAt: group.createdAt
+		};
+	});
+
+	return result.sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+});
+
+export const getAllTransactions = createServerFn({
+	method: "GET",
+}).handler(async () => {
+	await requireStaff();
+	const results = db
+		.select({
+			id: transactions.id,
+			queueNumber: transactions.queueNumber,
+			status: transactions.status,
+			purpose: transactions.purpose,
+			totalPrice: transactions.totalPrice,
+			createdAt: transactions.createdAt,
+			resident: {
+				firstName: residents.firstName,
+				lastName: residents.lastName,
+			},
+			template: {
+				name: documentTemplates.name,
+			}
+		})
+		.from(transactions)
+		.leftJoin(residents, eq(transactions.residentId, residents.id))
+		.leftJoin(documentTemplates, eq(transactions.templateId, documentTemplates.id))
+		.orderBy(desc(transactions.createdAt))
+		.all();
+
+	return results;
+});

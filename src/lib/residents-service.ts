@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, or, eq, like, sql, getTableColumns, desc, asc, inArray } from "drizzle-orm";
 import { db } from "../db";
 import { residents, households, puroks } from "../db/schema";
+import { requireAdmin, requireStaff } from "./security";
 
 
 export interface ResidentInput {
@@ -77,6 +78,7 @@ export const getResidents = createServerFn({
 		}) => params,
 	)
 	.handler(async ({ data: params }) => {
+		await requireStaff();
 		const page = params.page || 1;
 		const limit = params.limit || 10;
 		const offset = (page - 1) * limit;
@@ -192,6 +194,7 @@ export const addResident = createServerFn({
 })
 	.validator((data: ResidentInput) => data)
 	.handler(async ({ data }) => {
+		await requireAdmin();
 		// Determine if they are senior citizen based on birthdate if age is > 60
 		let isSenior = data.isSeniorCitizen;
 		if (data.birthDate) {
@@ -280,6 +283,7 @@ export const bulkDeleteResidents = createServerFn({
 })
 	.validator((ids: number[]) => ids)
 	.handler(async ({ data: ids }) => {
+		await requireAdmin();
 		if (!ids.length) return { success: false };
 		try {
 			db.delete(residents).where(inArray(residents.id, ids)).run();
@@ -295,6 +299,7 @@ export const markResidentDeceased = createServerFn({
 })
 	.validator((ids: number[]) => ids)
 	.handler(async ({ data: ids }) => {
+		await requireAdmin();
 		if (!ids.length) return { success: false };
 		try {
 			db.update(residents)
@@ -313,6 +318,7 @@ export const bulkUpdatePurok = createServerFn({
 })
 	.validator((params: { ids: number[]; purok: string }) => params)
 	.handler(async ({ data: { ids, purok } }) => {
+		await requireAdmin();
 		if (!ids.length) return { success: false };
 		try {
 			db.update(residents)
@@ -331,8 +337,10 @@ export const addPurok = createServerFn({
 })
 	.validator((name: string) => name)
 	.handler(async ({ data: name }) => {
+		await requireAdmin();
 		try {
-			const result = db.insert(puroks).values({ name }).returning().get();
+			const maxOrder = db.select({ max: sql<number>`max(${puroks.orderIndex})` }).from(puroks).get()?.max ?? 0;
+			const result = db.insert(puroks).values({ name, orderIndex: maxOrder + 1 }).returning().get();
 			return { success: true, purok: result };
 		} catch (err: any) {
 			return { success: false, error: err.message };
@@ -345,6 +353,7 @@ export const updatePurok = createServerFn({
 })
 	.validator((params: { id: number; oldName: string; newName: string }) => params)
 	.handler(async ({ data: { id, oldName, newName } }) => {
+		await requireAdmin();
 		try {
 			db.transaction((tx) => {
 				// Update the purok record
@@ -368,6 +377,7 @@ export const deletePurok = createServerFn({
 })
 	.validator((id: number) => id)
 	.handler(async ({ data: id }) => {
+		await requireAdmin();
 		try {
 			db.delete(puroks).where(eq(puroks.id, id)).run();
 			return { success: true };
@@ -382,6 +392,7 @@ export const updatePurokOrder = createServerFn({
 })
 	.validator((items: { id: number; orderIndex: number }[]) => items)
 	.handler(async ({ data: items }) => {
+		await requireAdmin();
 		try {
 			db.transaction((tx) => {
 				for (const item of items) {
@@ -398,6 +409,7 @@ export const updatePurokOrder = createServerFn({
 export const getPuroks = createServerFn({
 	method: "GET",
 }).handler(async () => {
+	await requireStaff();
 	try {
 		const allPuroks = db.select().from(puroks).orderBy(puroks.orderIndex, puroks.name).all();
 		return allPuroks;
@@ -413,6 +425,7 @@ export const updateResident = createServerFn({
 })
 	.validator((params: { id: number; data: Partial<ResidentInput> }) => params)
 	.handler(async ({ data: { id, data } }) => {
+		await requireAdmin();
 		let isSenior = data.isSeniorCitizen;
 		if (data.birthDate) {
 			const birth = new Date(data.birthDate);
@@ -460,14 +473,96 @@ export const deleteResident = createServerFn({
 })
 	.validator((id: number) => id)
 	.handler(async ({ data: id }) => {
+		await requireAdmin();
 		db.delete(residents).where(eq(residents.id, id)).run();
 		return { success: true };
 	});
 
 // Fetch list of unique puroks currently in the database
 export const getUniquePuroks = createServerFn({
-	method: "POST",
+	method: "GET",
 }).handler(async () => {
-	const results = db.select().from(puroks).orderBy(puroks.orderIndex, puroks.name).all();
+	await requireStaff();
+	const results = db.select({ name: puroks.name }).from(puroks).orderBy(puroks.orderIndex, puroks.name).all();
 	return results.map((r) => r.name);
 });
+
+
+// Kiosk registration - Publicly accessible without auth
+export const kioskRegisterResident = createServerFn({
+	method: "POST",
+})
+	.validator((data: ResidentInput) => data)
+	.handler(async ({ data }) => {
+		// No requireAdmin() here
+		
+		let isSenior = data.isSeniorCitizen;
+		if (data.birthDate) {
+			const birth = new Date(data.birthDate);
+			const age = new Date().getFullYear() - birth.getFullYear();
+			if (age >= 60) {
+				isSenior = true;
+			}
+		}
+
+		const existingResident = db.select({ id: residents.id })
+			.from(residents)
+			.where(
+				and(
+					sql`lower(${residents.firstName}) = lower(${data.firstName || ""})`,
+					sql`lower(${residents.lastName}) = lower(${data.lastName || ""})`,
+					eq(residents.birthDate, data.birthDate || "")
+				)
+			)
+			.get();
+			
+		if (existingResident) {
+			return { success: false, resident: null, error: "A resident with this exact name and birth date already exists." };
+		}
+
+		let finalHouseholdId = data.householdId;
+		if (data.isNewHousehold) {
+			let hhId = `HH-${data.purok}-BLK${data.newHouseholdBlock || ""}-LOT${data.newHouseholdLot || ""}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			if (!data.newHouseholdBlock && !data.newHouseholdLot) {
+				hhId = `HH-${data.purok}-FAM-${data.lastName}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			}
+			
+			db.insert(households).values({
+				id: hhId,
+				purok: data.purok,
+				block: data.newHouseholdBlock || null,
+				lot: data.newHouseholdLot || null,
+			}).onConflictDoNothing().run();
+			
+			finalHouseholdId = hhId;
+		}
+
+		const { isNewHousehold, newHouseholdBlock, newHouseholdLot, ...insertData } = data;
+
+		const generateId = () => Math.floor(10000000 + Math.random() * 90000000).toString();
+
+		let residentId = generateId();
+		let isUnique = false;
+
+		while (!isUnique) {
+			const existing = db.select({ id: residents.id }).from(residents).where(eq(residents.residentId, residentId)).get();
+			if (!existing) {
+				isUnique = true;
+			} else {
+				residentId = generateId();
+			}
+		}
+
+		const finalInsertData = {
+			...insertData,
+			residentId,
+			householdId: finalHouseholdId,
+			isSeniorCitizen: isSenior,
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		};
+
+		const result = db.insert(residents).values(finalInsertData).returning().get();
+
+		return { success: true, resident: result };
+	});

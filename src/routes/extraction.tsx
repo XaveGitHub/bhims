@@ -1,12 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useRef } from "react";
-import { Download, Printer, Search, UserCheck, Check, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Download, Printer, UserCheck } from "lucide-react";
 import { getPuroks } from "../lib/residents-service";
 import { extractResidents } from "../lib/reports-service";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { Card } from "../components/ui/card";
-import { Checkbox } from "../components/ui/checkbox";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import {
@@ -43,9 +41,7 @@ function ExtractionView() {
 	const [gender, setGender] = useState("ALL");
 	const [isPwd, setIsPwd] = useState(false);
 	const [isSoloParent, setIsSoloParent] = useState(false);
-	const [appliedFilters, setAppliedFilters] = useState({ isPwd: false, isSoloParent: false });
-
-	const printRef = useRef<HTMLDivElement>(null);
+	const [appliedFilters] = useState({ isPwd: false, isSoloParent: false });
 
 	useEffect(() => {
 		getPuroks().then(setPuroks).catch(console.error);

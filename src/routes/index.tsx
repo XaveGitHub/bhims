@@ -28,7 +28,8 @@ import {
 import { getDashboardData } from "../lib/dashboard-service";
 import { getUniquePuroks } from "../lib/residents-service";
 import { z } from "zod";
-import { useNavigate, Link } from "@tanstack/react-router";
+import { useNavigate, Link, redirect } from "@tanstack/react-router";
+import { getClientUser } from "../lib/client-auth";
 import {
 	Select,
 	SelectContent,
@@ -45,6 +46,10 @@ export const Route = createFileRoute("/")({
 	validateSearch: dashboardSearchSchema,
 	loaderDeps: ({ search: { purok } }) => ({ purok }),
 	loader: async ({ deps: { purok } }) => {
+		const user = await getClientUser();
+		if (user?.role === "staff") {
+			throw redirect({ to: "/queue" });
+		}
 		const [stats, puroks] = await Promise.all([
 			getDashboardData({ data: { purok } }),
 			getUniquePuroks(),
@@ -181,8 +186,8 @@ function DashboardView() {
 		{
 			// Use age-calculated seniors (60+) — more accurate than the manual boolean flag
 			label: "Seniors (60+)",
-			value: stats?.totalSeniorsAge ?? 0,
-			pct: total > 0 ? ((stats?.totalSeniorsAge ?? 0) / total) * 100 : 0,
+			value: stats?.totalSeniors ?? 0,
+			pct: total > 0 ? ((stats?.totalSeniors ?? 0) / total) * 100 : 0,
 			color: "text-amber-400",
 			stroke: "#fbbf24",
 			radius: 44,

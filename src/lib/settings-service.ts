@@ -4,6 +4,7 @@ import { createServerFn } from "@tanstack/react-start";
 import Database from "better-sqlite3";
 import { db, sqlite } from "../db";
 import { households, residents, settings } from "../db/schema";
+import { requireAdmin, requireStaff } from "./security";
 
 export interface SettingsData {
 	barangayName: string;
@@ -13,6 +14,7 @@ export interface SettingsData {
 export const getSettings = createServerFn({
 	method: "POST",
 }).handler(async (): Promise<SettingsData> => {
+	await requireStaff();
 	const allSettings = db.select().from(settings).all();
 	const barangayName =
 		allSettings.find((s: { key: string }) => s.key === "barangay_name")
@@ -26,6 +28,7 @@ export const updateSettings = createServerFn({
 })
 	.validator((data: SettingsData) => data)
 	.handler(async ({ data }) => {
+		await requireAdmin();
 		// Upsert Barangay Name
 		db.insert(settings)
 			.values({ key: "barangay_name", value: data.barangayName })
@@ -42,6 +45,7 @@ export const updateSettings = createServerFn({
 export const downloadBackup = createServerFn({
 	method: "GET",
 }).handler(async () => {
+	await requireAdmin();
 	const dbPath = process.env.DATABASE_PATH
 		? path.resolve(process.env.DATABASE_PATH)
 		: path.resolve(process.cwd(), "bhims.db");
@@ -74,6 +78,7 @@ export const restoreBackup = createServerFn({
 })
 	.validator((base64Data: string) => base64Data)
 	.handler(async ({ data: base64 }) => {
+		await requireAdmin();
 		const liveDbPath = process.env.DATABASE_PATH
 			? path.resolve(process.env.DATABASE_PATH)
 			: path.resolve(process.cwd(), "bhims.db");
@@ -124,6 +129,7 @@ export const clearAllData = createServerFn({
 })
 	.validator((confirmation: string) => confirmation)
 	.handler(async ({ data: confirmation }) => {
+		await requireAdmin();
 		if (confirmation !== "DELETE ALL") {
 			return { success: false, error: "Invalid confirmation phrase." };
 		}
