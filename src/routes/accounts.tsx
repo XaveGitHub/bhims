@@ -35,16 +35,6 @@ export const Route = createFileRoute("/accounts")({
 
 let cachedUsers: { id: number; username: string; role: string; name: string }[] | null = null;
 
-// Manual prefetcher for hover-optimizations
-const prefetchAccountsData = async () => {
-	try {
-		if (!cachedUsers) {
-			cachedUsers = await getUsers();
-		}
-	} catch (err) {
-		// Silent fail
-	}
-};
 
 function AccountsView() {
 	// Users state

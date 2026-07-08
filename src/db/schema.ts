@@ -139,3 +139,24 @@ export const transactions = sqliteTable("transactions", {
 		() => new Date(),
 	),
 });
+
+export const distributionPrograms = sqliteTable("distribution_programs", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	name: text("name").notNull(),
+	description: text("description"),
+	date: text("date"), // Date of distribution YYYY-MM-DD
+	status: text("status").default("Active").notNull(), // Active, Completed
+	targetDemographic: text("target_demographic"), // e.g., "All", "Senior Citizens", "Single Parents", etc.
+	createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+		() => new Date(),
+	),
+});
+
+export const distributionBeneficiaries = sqliteTable("distribution_beneficiaries", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	programId: integer("program_id").notNull(),
+	residentId: integer("resident_id").notNull(),
+	status: text("status").default("Pending").notNull(), // Pending, Claimed
+	claimedAt: integer("claimed_at", { mode: "timestamp" }),
+	notes: text("notes"),
+});

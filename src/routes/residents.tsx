@@ -3,7 +3,6 @@ import {
 	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
-	getSortedRowModel,
 	type SortingState,
 	useReactTable,
 	type VisibilityState,
@@ -14,7 +13,6 @@ import {
 	ArrowUpDown,
 	ChevronDown,
 	ChevronUp,
-	Download,
 	Eye,
 	Map,
 	Search,
@@ -900,9 +898,9 @@ function ResidentsView() {
 			{/* Table and Split Pane */}
 			<div
 				ref={containerRef}
-				className="flex flex-col md:flex-row gap-6 h-[calc(100vh-16rem)] overflow-hidden"
+				className="flex flex-col md:flex-row gap-6 max-h-[calc(100vh-16rem)]"
 			>
-				<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden h-full p-0 gap-0 flex-1 min-w-0">
+				<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 flex-1 min-w-0">
 					{loading && residentsList.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
 							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-emerald-600 border-t-transparent" />

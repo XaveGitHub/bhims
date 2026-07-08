@@ -69,7 +69,42 @@ function TemplatesPage() {
 		setOriginalFileName(file.name);
 		const reader = new FileReader();
 		reader.onload = (event) => {
-			setImageBase64(event.target?.result as string);
+			const img = new Image();
+			img.onload = () => {
+				const canvas = document.createElement("canvas");
+				const MAX_DIMENSION = 1500;
+				let width = img.width;
+				let height = img.height;
+
+				if (width > height) {
+					if (width > MAX_DIMENSION) {
+						height *= MAX_DIMENSION / width;
+						width = MAX_DIMENSION;
+					}
+				} else {
+					if (height > MAX_DIMENSION) {
+						width *= MAX_DIMENSION / height;
+						height = MAX_DIMENSION;
+					}
+				}
+
+				canvas.width = width;
+				canvas.height = height;
+				const ctx = canvas.getContext("2d");
+				if (ctx) {
+					// Draw image with a white background in case it's a transparent PNG
+					ctx.fillStyle = "white";
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+					ctx.drawImage(img, 0, 0, width, height);
+					
+					// Compress to 85% JPEG quality
+					const compressedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+					setImageBase64(compressedBase64);
+				} else {
+					setImageBase64(event.target?.result as string); // fallback
+				}
+			};
+			img.src = event.target?.result as string;
 		};
 		reader.readAsDataURL(file);
 	};

@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { createFirstAdmin } from "../lib/auth-service";
 import { Button } from "../components/ui/button";

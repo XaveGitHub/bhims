@@ -54,7 +54,7 @@ export const downloadBackup = createServerFn({
 		throw new Error("Database file not found.");
 	}
 
-	const tempBackupPath = path.resolve(process.cwd(), `bhims_backup_temp_${Date.now()}.db`);
+	const tempBackupPath = path.join(path.dirname(dbPath), `bhims_backup_temp_${Date.now()}.db`);
 
 	// Use better-sqlite3's native backup to safely flush WAL and consolidate into a single file
 	await sqlite.backup(tempBackupPath);

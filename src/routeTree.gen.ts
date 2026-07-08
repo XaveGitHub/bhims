@@ -21,6 +21,8 @@ import { Route as KioskRouteImport } from './routes/kiosk'
 import { Route as ImportRouteImport } from './routes/import'
 import { Route as HouseholdsRouteImport } from './routes/households'
 import { Route as ExtractionRouteImport } from './routes/extraction'
+import { Route as DocumentMetricsRouteImport } from './routes/document-metrics'
+import { Route as DistributionsRouteImport } from './routes/distributions'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -84,6 +86,16 @@ const ExtractionRoute = ExtractionRouteImport.update({
   path: '/extraction',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocumentMetricsRoute = DocumentMetricsRouteImport.update({
+  id: '/document-metrics',
+  path: '/document-metrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DistributionsRoute = DistributionsRouteImport.update({
+  id: '/distributions',
+  path: '/distributions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountsRoute = AccountsRouteImport.update({
   id: '/accounts',
   path: '/accounts',
@@ -98,6 +110,8 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/distributions': typeof DistributionsRoute
+  '/document-metrics': typeof DocumentMetricsRoute
   '/extraction': typeof ExtractionRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
@@ -114,6 +128,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/distributions': typeof DistributionsRoute
+  '/document-metrics': typeof DocumentMetricsRoute
   '/extraction': typeof ExtractionRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
@@ -131,6 +147,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/distributions': typeof DistributionsRoute
+  '/document-metrics': typeof DocumentMetricsRoute
   '/extraction': typeof ExtractionRoute
   '/households': typeof HouseholdsRoute
   '/import': typeof ImportRoute
@@ -149,6 +167,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/accounts'
+    | '/distributions'
+    | '/document-metrics'
     | '/extraction'
     | '/households'
     | '/import'
@@ -165,6 +185,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/accounts'
+    | '/distributions'
+    | '/document-metrics'
     | '/extraction'
     | '/households'
     | '/import'
@@ -181,6 +203,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/accounts'
+    | '/distributions'
+    | '/document-metrics'
     | '/extraction'
     | '/households'
     | '/import'
@@ -198,6 +222,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountsRoute: typeof AccountsRoute
+  DistributionsRoute: typeof DistributionsRoute
+  DocumentMetricsRoute: typeof DocumentMetricsRoute
   ExtractionRoute: typeof ExtractionRoute
   HouseholdsRoute: typeof HouseholdsRoute
   ImportRoute: typeof ImportRoute
@@ -298,6 +324,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExtractionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/document-metrics': {
+      id: '/document-metrics'
+      path: '/document-metrics'
+      fullPath: '/document-metrics'
+      preLoaderRoute: typeof DocumentMetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/distributions': {
+      id: '/distributions'
+      path: '/distributions'
+      fullPath: '/distributions'
+      preLoaderRoute: typeof DistributionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accounts': {
       id: '/accounts'
       path: '/accounts'
@@ -318,6 +358,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
+  DistributionsRoute: DistributionsRoute,
+  DocumentMetricsRoute: DocumentMetricsRoute,
   ExtractionRoute: ExtractionRoute,
   HouseholdsRoute: HouseholdsRoute,
   ImportRoute: ImportRoute,

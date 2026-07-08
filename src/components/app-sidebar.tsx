@@ -8,11 +8,13 @@ import {
 	IconUserShield,
 	IconClipboardList,
 	IconHome,
+	IconHistory,
+	IconChartBar,
+	IconGift,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type * as React from "react";
 
-import { NavDocuments } from "#/components/nav-documents.tsx";
 import { NavMain } from "#/components/nav-main.tsx";
 import { NavSecondary } from "#/components/nav-secondary.tsx";
 import { NavUser } from "#/components/nav-user.tsx";
@@ -36,13 +38,14 @@ export function AppSidebar({
 			name: brgyName,
 			email: "local-node@bhims.gov",
 		},
-		navMain: [] as any[],
-		documents: [] as any[],
+		overview: [] as any[],
+		documentServices: [] as any[],
+		dataTools: [] as any[],
 		navSecondary: [] as any[],
 	};
 
 	if (userRole === "admin") {
-		data.navMain = [
+		data.overview = [
 			{
 				title: "Dashboard",
 				url: "/",
@@ -58,6 +61,18 @@ export function AppSidebar({
 				url: "/households",
 				icon: IconHome,
 			},
+		];
+		data.documentServices = [
+			{
+				title: "Document Metrics",
+				url: "/document-metrics",
+				icon: IconChartBar,
+			},
+			{
+				title: "Transactions",
+				url: "/transactions",
+				icon: IconHistory,
+			},
 			{
 				title: "Document Queue",
 				url: "/queue",
@@ -69,14 +84,19 @@ export function AppSidebar({
 				icon: IconFileCertificate,
 			},
 		];
-		data.documents = [
+		data.dataTools = [
 			{
-				name: "Data Extraction",
+				title: "Ayuda Distributions",
+				url: "/distributions",
+				icon: IconGift,
+			},
+			{
+				title: "Data Extraction",
 				url: "/extraction",
 				icon: IconFileCertificate,
 			},
 			{
-				name: "Excel Import",
+				title: "Excel Import",
 				url: "/import",
 				icon: IconDatabase,
 			},
@@ -94,14 +114,20 @@ export function AppSidebar({
 			},
 		];
 	} else if (userRole === "staff") {
-		data.navMain = [
+		data.documentServices = [
 			{
 				title: "Staff Queue",
 				url: "/queue",
 				icon: IconClipboardList,
+			},
+			{
+				title: "Transactions",
+				url: "/transactions",
+				icon: IconHistory,
 			}
 		];
-		data.documents = [];
+		data.overview = [];
+		data.dataTools = [];
 		data.navSecondary = [];
 	}
 
@@ -125,8 +151,9 @@ export function AppSidebar({
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
-				{data.documents.length > 0 && <NavDocuments items={data.documents} />}
+				{data.overview.length > 0 && <NavMain items={data.overview} label="Overview" />}
+				{data.documentServices.length > 0 && <NavMain items={data.documentServices} label="Document Services" />}
+				{data.dataTools.length > 0 && <NavMain items={data.dataTools} label="Data Tools" />}
 				{data.navSecondary.length > 0 && <NavSecondary items={data.navSecondary} className="mt-auto" />}
 			</SidebarContent>
 			<SidebarFooter>

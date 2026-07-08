@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Printer, X, GripHorizontal, Calendar as CalendarIcon, CheckCircle2, Download } from "lucide-react";
+import { Printer, X, GripHorizontal, Calendar as CalendarIcon, CheckCircle2, Download, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
@@ -18,8 +18,17 @@ interface QueueVerificationPaneProps {
 
 export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueVerificationPaneProps) {
 	const [isProcessing, setIsProcessing] = useState(false);
+	const [isPrinting, setIsPrinting] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(0);
-	const [printedItems, setPrintedItems] = useState<Record<number, boolean>>({});
+	const [printedItems, setPrintedItems] = useState<Record<number, boolean>>(() => {
+		const saved = sessionStorage.getItem('queue_printed_items');
+		return saved ? JSON.parse(saved) : {};
+	});
+
+	useEffect(() => {
+		sessionStorage.setItem('queue_printed_items', JSON.stringify(printedItems));
+	}, [printedItems]);
 	
 	const activeItem = batch?.items[selectedIndex];
 
@@ -43,7 +52,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 	});
 
 	const previewContainerRef = useRef<HTMLDivElement>(null);
-	const [previewScale, setPreviewScale] = useState(1);
+	const [previewScale, setPreviewScale] = useState<number | null>(null);
 
 	useEffect(() => {
 		if (!previewContainerRef.current) return;
@@ -104,17 +113,17 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 	const handlePrintSingle = async () => {
 		if (!previewContainerRef.current) return;
 		setIsProcessing(true);
+		setIsPrinting(true);
 		
 		try {
 			const element = document.getElementById('print-document');
 			if (!element) throw new Error("Document not found");
 
-			// Generate high quality image
 			const dataUrl = await toPng(element, { 
-				quality: 1.0,
+				quality: 0.95,
 				width: 794,
 				height: 1123,
-				pixelRatio: 2, // High res
+				pixelRatio: 1.5, // Balance of high quality and speed
 				style: {
 					transform: 'scale(1)',
 					transformOrigin: 'top left'
@@ -167,6 +176,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 			toast.error("Failed to print document");
 		} finally {
 			setIsProcessing(false);
+			setIsPrinting(false);
 		}
 	};
 
@@ -174,16 +184,17 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 		if (!previewContainerRef.current) return;
 		
 		setIsProcessing(true);
+		setIsSaving(true);
 		try {
 			// Get the actual print document element, not the scaled container
 			const element = document.getElementById('print-document');
 			if (!element) throw new Error("Document not found");
 
 			const dataUrl = await toPng(element, { 
-				quality: 1.0,
+				quality: 0.95,
 				width: 794,
 				height: 1123,
-				pixelRatio: 2, // High res
+				pixelRatio: 1.5, // Balance of high quality and speed
 				style: {
 					transform: 'scale(1)',
 					transformOrigin: 'top left'
@@ -202,6 +213,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 			toast.error("Failed to download image");
 		} finally {
 			setIsProcessing(false);
+			setIsSaving(false);
 		}
 	};
 
@@ -301,12 +313,12 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 					<div className="flex-1 flex overflow-hidden">
 						{/* Left: Document Preview */}
 						<div ref={previewContainerRef} className="w-7/12 bg-neutral-900/30 p-4 flex justify-center items-start border-r border-neutral-800 overflow-y-auto">
-							<div style={{ width: 794 * previewScale, height: 1123 * previewScale }} className="shrink-0 relative">
+							<div style={{ width: previewScale ? 794 * previewScale : 'auto', height: previewScale ? 1123 * previewScale : 'auto', opacity: previewScale ? 1 : 0, transition: 'opacity 0.2s' }} className="shrink-0 relative">
 								<div 
 									id="print-document"
 									className="w-[794px] h-[1123px] bg-white text-black shadow-2xl relative"
 									style={{
-										transform: `scale(${previewScale})`,
+										transform: `scale(${previewScale || 1})`,
 										transformOrigin: 'top left',
 										backgroundImage: activeItem.template?.imageBase64 ? `url('${activeItem.template.imageBase64.startsWith('data:image') ? activeItem.template.imageBase64 : `/templates/${activeItem.template.imageBase64}`}')` : undefined,
 										backgroundSize: '100% 100%',
@@ -642,8 +654,8 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 										onClick={handlePrintSingle}
 										disabled={isProcessing}
 									>
-										<Printer className="w-5 h-5 mr-2 shrink-0" />
-										{isProcessing ? "Wait..." : (printedItems[activeItem.id] || activeItem.status === "Ready to Claim" || activeItem.status === "Completed") ? "Reprint" : "Print"}
+										{isPrinting ? <Loader2 className="w-5 h-5 mr-2 shrink-0 animate-spin" /> : <Printer className="w-5 h-5 mr-2 shrink-0" />}
+										{isPrinting ? "Printing" : (printedItems[activeItem.id] || activeItem.status === "Ready to Claim" || activeItem.status === "Completed") ? "Reprint" : "Print"}
 									</Button>
 									
 									<Button 
@@ -651,8 +663,8 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 										onClick={handleDownloadImage}
 										disabled={isProcessing}
 									>
-										<Download className="w-5 h-5 mr-2 shrink-0" />
-										Save PNG
+										{isSaving ? <Loader2 className="w-5 h-5 mr-2 shrink-0 animate-spin" /> : <Download className="w-5 h-5 mr-2 shrink-0" />}
+										{isSaving ? "Saving" : "Save PNG"}
 									</Button>
 								</div>
 

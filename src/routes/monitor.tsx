@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getPublicQueue } from "../lib/queue-service";
-import { Card, CardContent } from "../components/ui/card";
 import { Loader2 } from "lucide-react";
+
 
 export const Route = createFileRoute("/monitor")({
   component: MonitorDashboard,
@@ -94,7 +94,7 @@ function MonitorDashboard() {
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT COLUMN: PREPARING (Processing) */}
-        <div className="flex-1 border-r border-neutral-800 flex flex-col bg-neutral-950">
+        <div className="flex-1 border-r border-neutral-800 flex flex-col bg-transparent">
           <div className="px-10 py-8 shrink-0">
             <h2 className="text-5xl font-black tracking-tight text-neutral-300 uppercase">
               Preparing
@@ -111,9 +111,7 @@ function MonitorDashboard() {
               </div>
             ) : processing.length === 0 ? (
               <div className="h-[400px] flex flex-col items-center justify-center text-neutral-600">
-                <span className="text-6xl font-black opacity-20">
-                  NO ONGOING
-                </span>
+                {/* Empty State */}
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-8">
@@ -133,7 +131,7 @@ function MonitorDashboard() {
         </div>
 
         {/* RIGHT COLUMN: NOW SERVING (Ready to Claim) */}
-        <div className="flex-1 flex flex-col bg-neutral-900/10">
+        <div className="flex-1 flex flex-col bg-transparent">
           <div className="px-10 py-8 shrink-0">
             <h2 className="text-5xl font-black tracking-tight text-white mb-2 uppercase">
               Ready to Claim
@@ -150,14 +148,14 @@ function MonitorDashboard() {
               </div>
             ) : readyToClaim.length === 0 ? (
               <div className="h-[400px] flex flex-col items-center justify-center text-neutral-600">
-                <span className="text-6xl font-black opacity-20">EMPTY</span>
+                {/* Empty State */}
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-8">
                 {readyToClaim.map((item) => (
                   <div
                     key={item.queueNumber}
-                    className="flex items-center justify-center py-4 animate-pulse"
+                    className="flex items-center justify-center py-4"
                   >
                     <span className={`${getTextSize(readyToClaim.length)} font-black tracking-tighter text-white drop-shadow-md`}>
                       {String(item.queueNumber).padStart(4, "0")}

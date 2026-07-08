@@ -15,11 +15,11 @@ interface NavItem {
 	icon: TablerIcon;
 }
 
-export function NavMain({ items }: { items: NavItem[] }) {
+export function NavMain({ items, label = "Core Operations" }: { items: NavItem[], label?: string }) {
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel className="normal-case text-neutral-500 font-semibold text-xs mt-2">
-				Core Operations
+				{label}
 			</SidebarGroupLabel>
 			<SidebarMenu>
 				{items.map((item) => (
