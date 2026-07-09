@@ -302,7 +302,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								>
 									<div className="flex justify-between items-center">
 										<span className="font-medium text-sm truncate pr-2 capitalize">{item.template?.name?.toLowerCase()}</span>
-										{isPrinted && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
+										{isPrinted && <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />}
 									</div>
 								</button>
 							);
@@ -669,7 +669,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								</div>
 
 								<Button 
-									className="w-full h-11 text-base font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 rounded-xl relative overflow-hidden group disabled:opacity-50 disabled:shadow-none"
+									className="w-full h-11 text-base font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 rounded-xl relative overflow-hidden group disabled:opacity-50 disabled:shadow-none"
 									onClick={handleMarkBatchReady}
 									disabled={isProcessing || !allPrinted}
 								>

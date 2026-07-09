@@ -355,7 +355,7 @@ function ResidentsView() {
 						}
 						onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
 						aria-label="Select all"
-						className="border-neutral-700 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+						className="border-neutral-700 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
 					/>
 				),
 				cell: ({ row }) => (
@@ -363,7 +363,7 @@ function ResidentsView() {
 						checked={row.getIsSelected()}
 						onCheckedChange={(value) => row.toggleSelected(!!value)}
 						aria-label="Select row"
-						className="border-neutral-700 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600 mt-1"
+						className="border-neutral-700 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 mt-1"
 					/>
 				),
 				enableSorting: false,
@@ -536,7 +536,7 @@ function ResidentsView() {
 								</span>
 							)}
 							{r.isRegisteredVoter && (
-								<span className="rounded-full bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+								<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
 									Voter
 								</span>
 							)}
@@ -748,7 +748,7 @@ function ResidentsView() {
 						onClick={() => {
 							setIsAddModalOpen(true);
 						}}
-						className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-4"
+						className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-4"
 					>
 						<UserPlus className="h-4 w-4" />
 						<span>Add Resident</span>
@@ -767,7 +767,7 @@ function ResidentsView() {
 							placeholder="Search by name…"
 							value={searchInput}
 							onChange={(e) => handleSearchChange(e.target.value)}
-							className="pl-9 bg-neutral-950 border-neutral-800 text-neutral-200 placeholder:text-neutral-600 focus:border-emerald-500 rounded-xl h-9 text-sm"
+							className="pl-9 bg-neutral-950 border-neutral-800 text-neutral-200 placeholder:text-neutral-600 focus:border-blue-500 rounded-xl h-9 text-sm"
 						/>
 					</div>
 					{/* Purok Filter */}
@@ -829,7 +829,7 @@ function ResidentsView() {
 							{
 								label: "Voter",
 								active: filterVoter === true,
-								color: "bg-emerald-950/40 text-emerald-400 border-emerald-800/50",
+								color: "bg-blue-950/40 text-blue-400 border-blue-800/50",
 								fn: () => setFilterVoter(filterVoter === true ? undefined : true),
 							},
 							{
@@ -903,7 +903,7 @@ function ResidentsView() {
 				<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 flex-1 min-w-0">
 					{loading && residentsList.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
-							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-emerald-600 border-t-transparent" />
+							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-blue-600 border-t-transparent" />
 						</div>
 					) : residentsList.length > 0 ? (
 						<>
@@ -944,9 +944,9 @@ function ResidentsView() {
 																	header.getContext(),
 																)}
 																{sorted === "asc" ? (
-																	<ChevronUp className="h-3 w-3 text-emerald-500" />
+																	<ChevronUp className="h-3 w-3 text-blue-500" />
 																) : sorted === "desc" ? (
-																	<ChevronDown className="h-3 w-3 text-emerald-500" />
+																	<ChevronDown className="h-3 w-3 text-blue-500" />
 																) : (
 																	<ArrowUpDown className="h-3 w-3 opacity-25" />
 																)}
@@ -972,7 +972,7 @@ function ResidentsView() {
 												drawerResident?.id === row.original.id
 													? "bg-neutral-800/60 hover:bg-neutral-800/60"
 													: row.getIsSelected()
-														? "bg-emerald-950/20"
+														? "bg-blue-950/20"
 														: "hover:bg-neutral-900/40"
 											}`}
 											onClick={() => {
@@ -1105,7 +1105,7 @@ function ResidentsView() {
 			/>
 			{/* DELETE CONFIRMATION DIALOG */}
 			<Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 							<Trash2 className="h-5 w-5 text-red-500" />
@@ -1143,7 +1143,7 @@ function ResidentsView() {
 			{selectedIds.length > 0 && (
 				<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10 fade-in duration-300">
 					<div className="bg-neutral-900 border border-neutral-700 shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-4">
-						<span className="text-sm font-medium text-emerald-400 whitespace-nowrap">
+						<span className="text-sm font-medium text-blue-400 whitespace-nowrap">
 							{selectedIds.length} selected
 						</span>
 						<div className="h-4 w-px bg-neutral-700"></div>
@@ -1199,7 +1199,7 @@ function ResidentsView() {
 			
 			{/* BULK DELETE CONFIRMATION DIALOG */}
 			<Dialog open={isBulkDeleteModalOpen} onOpenChange={setIsBulkDeleteModalOpen}>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 							<AlertTriangle className="h-5 w-5 text-red-500" />
@@ -1231,10 +1231,10 @@ function ResidentsView() {
 			
 			{/* BULK PUROK CONFIRMATION DIALOG */}
 			<Dialog open={!!bulkPurokToUpdate} onOpenChange={(open) => !open && setBulkPurokToUpdate(null)}>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
-							<Map className="h-5 w-5 text-emerald-500" />
+							<Map className="h-5 w-5 text-blue-500" />
 							<span>Confirm Purok Update</span>
 						</DialogTitle>
 					</DialogHeader>
@@ -1252,7 +1252,7 @@ function ResidentsView() {
 							</Button>
 							<Button
 								onClick={confirmBulkUpdatePurok}
-								className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5"
+								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
 							>
 								Update Purok
 							</Button>
@@ -1263,7 +1263,7 @@ function ResidentsView() {
 			
 			{/* ARCHIVE CONFIRMATION DIALOG */}
 			<Dialog open={!!archiveModalIds} onOpenChange={(open) => !open && setArchiveModalIds(null)}>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x text-amber-500"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>

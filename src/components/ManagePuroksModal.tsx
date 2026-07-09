@@ -113,10 +113,10 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 							value={newPurokName}
 							onChange={(e) => setNewPurokName(e.target.value)}
 							placeholder="Add new Purok..."
-							className="bg-neutral-900 border-neutral-800 text-neutral-200 focus-visible:ring-emerald-500 rounded-xl"
+							className="bg-neutral-900 border-neutral-800 text-neutral-200 focus-visible:ring-blue-500 rounded-xl"
 							disabled={isAdding}
 						/>
-						<Button type="submit" disabled={isAdding || !newPurokName.trim()} className="bg-emerald-600 hover:bg-emerald-500 text-white shrink-0 rounded-xl">
+						<Button type="submit" disabled={isAdding || !newPurokName.trim()} className="bg-blue-600 hover:bg-blue-500 text-white shrink-0 rounded-xl">
 							{isAdding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
 							Add
 						</Button>
@@ -125,7 +125,7 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 					<div className="border border-neutral-800 rounded-xl overflow-hidden bg-neutral-900/50 max-h-[400px] overflow-y-auto">
 						{isLoading ? (
 							<div className="p-8 flex justify-center">
-								<Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
+								<Loader2 className="w-6 h-6 animate-spin text-blue-500" />
 							</div>
 						) : puroks.length === 0 ? (
 							<div className="p-8 text-center text-neutral-500 text-sm">
@@ -145,7 +145,7 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 														if (e.key === 'Enter') handleSaveEdit(purok);
 														if (e.key === 'Escape') setEditingId(null);
 													}}
-													className="h-8 bg-neutral-950 border-emerald-500 text-neutral-200"
+													className="h-8 bg-neutral-950 border-blue-500 text-neutral-200"
 													autoFocus
 												/>
 											) : (
@@ -155,7 +155,7 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 										<div className="flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
 											{editingId === purok.id ? (
 												<>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-emerald-400 hover:bg-emerald-500/10" onClick={() => handleSaveEdit(purok)}>
+													<Button variant="ghost" size="icon" className="w-8 h-8 text-blue-400 hover:bg-blue-500/10" onClick={() => handleSaveEdit(purok)}>
 														<Check className="w-4 h-4" />
 													</Button>
 													<Button variant="ghost" size="icon" className="w-8 h-8 text-neutral-400 hover:bg-neutral-800" onClick={() => setEditingId(null)}>

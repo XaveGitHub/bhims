@@ -174,7 +174,7 @@ function DocumentMetricsView() {
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 				{/* Prints Card */}
 				<Card className="relative h-full overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300">
-					<div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+					<div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
@@ -187,7 +187,7 @@ function DocumentMetricsView() {
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-emerald-400 bg-emerald-950/40 border-emerald-800/40 shrink-0">
+							<div className="p-2.5 rounded-xl border text-blue-400 bg-blue-950/40 border-blue-800/40 shrink-0">
 								<FileText className="h-5 w-5" />
 							</div>
 						</div>

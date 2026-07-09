@@ -225,7 +225,7 @@ function SettingsView() {
 	if (loading) {
 		return (
 			<div className="flex h-[60vh] items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
 			</div>
 		);
 	}
@@ -246,7 +246,7 @@ function SettingsView() {
 			<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-6 space-y-6">
 				<form onSubmit={handleSaveSettings} className="space-y-6">
 					<h3 className="text-lg font-bold text-neutral-100 flex items-center gap-2">
-						<Settings className="h-4.5 w-4.5 text-emerald-500" />
+						<Settings className="h-4.5 w-4.5 text-blue-500" />
 						<span>Barangay Customization</span>
 					</h3>
 
@@ -261,7 +261,7 @@ function SettingsView() {
 								value={brgyName}
 								onChange={(e) => setBrgyName(e.target.value)}
 								placeholder="e.g. Barangay Handumanan"
-								className="bg-neutral-950 border-neutral-800 text-white placeholder:text-neutral-500 focus:border-emerald-500 rounded-xl"
+								className="bg-neutral-950 border-neutral-800 text-white placeholder:text-neutral-500 focus:border-blue-500 rounded-xl"
 							/>
 						</div>
 					</div>
@@ -269,7 +269,7 @@ function SettingsView() {
 					<Button
 						type="submit"
 						disabled={saving}
-						className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all shadow-md shadow-emerald-950/20"
+						className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all shadow-md shadow-blue-950/20"
 					>
 						{saving ? "Saving..." : "Save Settings"}
 					</Button>
@@ -280,7 +280,7 @@ function SettingsView() {
 			<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-6 space-y-6">
 				<div>
 					<h3 className="text-lg font-bold text-neutral-100 flex items-center gap-2">
-						<Download className="h-4.5 w-4.5 text-emerald-500" />
+						<Download className="h-4.5 w-4.5 text-blue-500" />
 						<span>Database Backup & Restore</span>
 					</h3>
 					<p className="text-xs text-neutral-400 mt-1">
@@ -305,7 +305,7 @@ function SettingsView() {
 							type="button"
 							onClick={handleBackup}
 							disabled={backingUp}
-							className="bg-neutral-800 hover:bg-neutral-700 text-emerald-400 border border-emerald-900/30 rounded-xl px-5 text-xs font-semibold w-full sm:w-auto flex items-center justify-center gap-2"
+							className="bg-neutral-800 hover:bg-neutral-700 text-blue-400 border border-blue-900/30 rounded-xl px-5 text-xs font-semibold w-full sm:w-auto flex items-center justify-center gap-2"
 						>
 							{backingUp ? (
 								<RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -407,7 +407,7 @@ function SettingsView() {
 					}
 				}}
 			>
-				<DialogContent className="max-w-md bg-neutral-900 border-red-900/50 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-red-900/50 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-red-400 flex items-center gap-2">
 							<Trash2 className="h-5 w-5" />
@@ -468,7 +468,7 @@ function SettingsView() {
 				open={isRestoreConfirmOpen}
 				onOpenChange={setIsRestoreConfirmOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 							<AlertTriangle className="h-5 w-5 text-amber-500" />

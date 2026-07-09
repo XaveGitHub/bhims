@@ -117,9 +117,9 @@ function RootLayout() {
 		<RootDocument>
 			{/* Fixed decorative background — outside the sidebar flex context so it doesn't break peer selectors */}
 			<div className="fixed inset-0 bg-neutral-950 z-[-2]" />
-			<div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-950/15 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
-			<div className="fixed top-0 left-0 h-[350px] w-[350px] rounded-full bg-emerald-950/8 blur-[120px] pointer-events-none z-[-1]" />
-			<div className="fixed bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-emerald-950/8 blur-[120px] pointer-events-none z-[-1]" />
+			<div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-950/15 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
+			<div className="fixed top-0 left-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
+			<div className="fixed bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
 			<div
 				className="fixed inset-0 opacity-[0.025] pointer-events-none z-[-1]"
 				style={{
@@ -149,10 +149,10 @@ function RootLayout() {
 						</div>
 
 						<div className="flex items-center gap-4">
-							<div className="flex items-center gap-2 rounded-full bg-emerald-950/30 border border-emerald-900/30 px-3 py-1 text-xs text-emerald-400">
+							<div className="flex items-center gap-2 rounded-full bg-blue-950/30 border border-blue-900/30 px-3 py-1 text-xs text-blue-400">
 								<span className="relative flex h-2 w-2">
-									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-									<span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+									<span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
 								</span>
 								<span className="font-semibold uppercase tracking-wider text-[10px]">
 									Local Server Online

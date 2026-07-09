@@ -225,25 +225,25 @@ export function ResidentProfilePane({
 			<TabsList className="w-full grid grid-cols-4 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-14 shrink-0 items-stretch">
 				<TabsTrigger
 					value="personal"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					Personal
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					Health
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					Household
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					History
 				</TabsTrigger>
@@ -509,7 +509,7 @@ export function ResidentProfilePane({
 									<p className="text-sm font-medium text-neutral-200">
 										{resident.relationshipToHead || "—"}{" "}
 										{resident.isHeadOfHousehold && (
-											<span className="text-emerald-400 text-xs ml-1">
+											<span className="text-blue-400 text-xs ml-1">
 												(Head)
 											</span>
 										)}
@@ -618,7 +618,7 @@ export function ResidentProfilePane({
 									variant={resident.isOfw ? "default" : "outline"}
 									className={
 										resident.isOfw
-											? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+											? "bg-blue-500/20 text-blue-400 border-blue-500/30"
 											: "text-neutral-500 border-neutral-800"
 									}
 								>
@@ -682,7 +682,7 @@ export function ResidentProfilePane({
 			<TabsList className="w-full grid grid-cols-3 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-14 shrink-0 items-stretch">
 				<TabsTrigger
 					value="personal"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Personal
@@ -693,7 +693,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Health & Status
@@ -704,7 +704,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Household & Economic
@@ -730,7 +730,7 @@ export function ResidentProfilePane({
 											value={formData.firstName || ""}
 											onChange={(e) => updateField("firstName", e.target.value)}
 											className={cn(
-												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
+												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
 												errors.firstName &&
 													"border-red-500 focus-visible:ring-red-500",
 											)}
@@ -745,7 +745,7 @@ export function ResidentProfilePane({
 											value={formData.lastName || ""}
 											onChange={(e) => updateField("lastName", e.target.value)}
 											className={cn(
-												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
+												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
 												errors.lastName &&
 													"border-red-500 focus-visible:ring-red-500",
 											)}
@@ -891,7 +891,7 @@ export function ResidentProfilePane({
 											value={formData.email || ""}
 											onChange={(e) => updateField("email", e.target.value)}
 											className={cn(
-												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
+												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
 												errors.email &&
 													"border-red-500 focus-visible:ring-red-500",
 											)}
@@ -1054,7 +1054,7 @@ export function ResidentProfilePane({
 													}
 												}}
 												placeholder="Select or type Purok..."
-												className={cn("bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+												className={cn("bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
 											/>
 											<datalist id="purok-options">
 												{purokOptions.map((p) => <option key={p} value={p} />)}
@@ -1309,7 +1309,7 @@ export function ResidentProfilePane({
 				className={cn(
 					"p-6 pb-4 shrink-0 relative border-b group transition-colors duration-300",
 					isEditing
-						? "bg-gradient-to-b from-emerald-950/20 to-transparent border-emerald-500/20"
+						? "bg-gradient-to-b from-blue-950/20 to-transparent border-blue-500/20"
 						: "bg-gradient-to-b from-neutral-900/60 to-transparent border-white/5"
 				)}
 			>
@@ -1334,7 +1334,7 @@ export function ResidentProfilePane({
 								variant="ghost"
 								size="icon"
 								onClick={() => setIsEditing(true)}
-								className="h-8 w-8 text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-all"
+								className="h-8 w-8 text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all"
 								title="Edit Profile"
 							>
 								<Edit2 className="h-4 w-4" />
@@ -1351,8 +1351,8 @@ export function ResidentProfilePane({
 					</Button>
 				</div>
 				<div className="flex items-start gap-4 mt-6">
-					<div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0 shadow-inner">
-						<User className="h-8 w-8 text-emerald-400" />
+					<div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-teal-500/20 border border-blue-500/30 flex items-center justify-center shrink-0 shadow-inner">
+						<User className="h-8 w-8 text-blue-400" />
 					</div>
 					<div className="pt-1 min-w-0 flex-1">
 						{isEditing ? (
@@ -1369,7 +1369,7 @@ export function ResidentProfilePane({
 										variant="outline"
 										className="bg-neutral-900 border-neutral-800 text-neutral-300 font-normal px-2 py-0"
 									>
-										<span className="text-emerald-400/90 font-mono tracking-wider ml-1">
+										<span className="text-blue-400/90 font-mono tracking-wider ml-1">
 											ID: {resident.residentId || resident.id.toString().padStart(4, "0")}
 										</span>
 									</Badge>
@@ -1380,7 +1380,7 @@ export function ResidentProfilePane({
 								</div>
 								<div className="flex flex-wrap gap-1 mt-2">
 									{resident.isHeadOfHousehold && (
-										<Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20 px-2 py-0 text-[10px] rounded-full">
+										<Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 px-2 py-0 text-[10px] rounded-full">
 											Household Head
 										</Badge>
 									)}
@@ -1437,7 +1437,7 @@ export function ResidentProfilePane({
 					<Button
 						onClick={handleSave}
 						disabled={isSaving}
-						className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 rounded-xl"
+						className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 rounded-xl"
 					>
 						{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 						Save Changes
@@ -1504,9 +1504,9 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 	}
 
 	const statusConfig: Record<string, { dot: string; badge: string; label: string }> = {
-		"Ready to Claim": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Ready" },
-		"Completed": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Completed" },
-		"Released": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Released" },
+		"Ready to Claim": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Ready" },
+		"Completed": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Completed" },
+		"Released": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Released" },
 		"Processing": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Processing" },
 		"Pending": { dot: "bg-amber-500 shadow-amber-500/40", badge: "bg-amber-500/15 text-amber-400 border-amber-500/30", label: "Pending" },
 		"Cancelled": { dot: "bg-red-500 shadow-red-500/40", badge: "bg-red-500/15 text-red-400 border-red-500/30", label: "Cancelled" },
@@ -1528,7 +1528,7 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 
 					<div className="relative pl-6">
 						{/* Vertical timeline line */}
-						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/40 via-emerald-500/20 to-transparent" />
+						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-blue-500/40 via-blue-500/20 to-transparent" />
 
 						<div className="space-y-4">
 							{items.map((tx: any) => {

@@ -31,7 +31,7 @@ export function NavDocuments({ items }: { items: DocumentItem[] }) {
 								to={item.url}
 								activeProps={{
 									className:
-										"bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 hover:bg-emerald-900/40 hover:text-emerald-300",
+										"bg-blue-950/40 text-blue-400 border border-blue-900/30 hover:bg-blue-900/40 hover:text-blue-300",
 								}}
 								inactiveProps={{
 									className:

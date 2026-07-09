@@ -189,7 +189,7 @@ function AccountsView() {
 	if (loading) {
 		return (
 			<div className="flex h-[60vh] items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
 			</div>
 		);
 	}
@@ -208,7 +208,7 @@ function AccountsView() {
 				</div>
 				<Button
 					onClick={handleCreateAccountClick}
-					className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl px-4 py-2"
+					className="bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl px-4 py-2"
 				>
 					Add Account
 				</Button>
@@ -234,7 +234,7 @@ function AccountsView() {
 									@{user.username}
 								</TableCell>
 								<TableCell className="px-6 py-4">
-									<span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${user.role === 'admin' ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30' : 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'}`}>
+									<span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${user.role === 'admin' ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30' : 'bg-blue-950/40 text-blue-400 border border-blue-900/30'}`}>
 										{user.role}
 									</span>
 								</TableCell>
@@ -271,7 +271,7 @@ function AccountsView() {
 				open={isAccountModalOpen}
 				onOpenChange={setIsAccountModalOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 text-neutral-100 p-6 sm:rounded-2xl shadow-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100">
 							Edit Account
@@ -285,7 +285,7 @@ function AccountsView() {
 								value={editUsername}
 								onChange={(e) => setEditUsername(e.target.value)}
 								placeholder="Login username"
-								className="bg-neutral-950 border-neutral-800 text-white focus:border-emerald-500 rounded-xl"
+								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
 								required
 							/>
 						</div>
@@ -296,7 +296,7 @@ function AccountsView() {
 								value={editName}
 								onChange={(e) => setEditName(e.target.value)}
 								placeholder="Full name"
-								className="bg-neutral-950 border-neutral-800 text-white focus:border-emerald-500 rounded-xl"
+								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
 								required
 							/>
 						</div>
@@ -307,8 +307,8 @@ function AccountsView() {
 								type="password"
 								value={newPassword}
 								onChange={(e) => setNewPassword(e.target.value)}
-								placeholder="Leave blank to keep current password"
-								className="bg-neutral-950 border-neutral-800 text-white focus:border-emerald-500 rounded-xl"
+								placeholder="Leave blank to keep unchanged"
+								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
 							/>
 						</div>
 						<div className="flex items-center justify-end gap-2 mt-4">
@@ -322,7 +322,7 @@ function AccountsView() {
 							<Button
 								type="submit"
 								disabled={updatingAccount}
-								className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5"
+								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
 							>
 								{updatingAccount ? "Saving..." : "Save Changes"}
 							</Button>
@@ -336,7 +336,7 @@ function AccountsView() {
 				open={isCreateModalOpen}
 				onOpenChange={setIsCreateModalOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 text-neutral-100 p-6 sm:rounded-2xl shadow-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100">
 							Add New Account
@@ -349,7 +349,7 @@ function AccountsView() {
 								value={createRole} 
 								onValueChange={(val: "admin" | "staff") => setCreateRole(val)}
 							>
-								<SelectTrigger className="bg-neutral-950 border-neutral-800 text-white rounded-xl h-10 focus:ring-emerald-500/20">
+								<SelectTrigger className="bg-neutral-900 border-neutral-800 text-white rounded-xl h-10 focus:ring-blue-500/20">
 									<SelectValue placeholder="Select a role" />
 								</SelectTrigger>
 								<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
@@ -365,7 +365,7 @@ function AccountsView() {
 								value={createUsername}
 								onChange={(e) => setCreateUsername(e.target.value)}
 								placeholder="Login username"
-								className="bg-neutral-950 border-neutral-800 text-white focus:border-emerald-500 rounded-xl"
+								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
 								required
 							/>
 						</div>
@@ -376,7 +376,7 @@ function AccountsView() {
 								value={createName}
 								onChange={(e) => setCreateName(e.target.value)}
 								placeholder="Full name"
-								className="bg-neutral-950 border-neutral-800 text-white focus:border-emerald-500 rounded-xl"
+								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
 								required
 							/>
 						</div>
@@ -387,9 +387,10 @@ function AccountsView() {
 								type="password"
 								value={createPassword}
 								onChange={(e) => setCreatePassword(e.target.value)}
-								placeholder="Initial password"
-								className="bg-neutral-950 border-neutral-800 text-white focus:border-emerald-500 rounded-xl"
+								placeholder="Minimum 6 characters"
+								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
 								required
+								minLength={6}
 							/>
 						</div>
 						<div className="flex items-center justify-end gap-2 mt-4">
@@ -403,7 +404,7 @@ function AccountsView() {
 							<Button
 								type="submit"
 								disabled={creatingAccount}
-								className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5"
+								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
 							>
 								{creatingAccount ? "Adding..." : "Add Account"}
 							</Button>
@@ -417,7 +418,7 @@ function AccountsView() {
 				open={isDeleteModalOpen}
 				onOpenChange={setIsDeleteModalOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-red-500 flex items-center gap-2">
 							<Trash2 className="h-5 w-5" />

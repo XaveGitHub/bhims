@@ -304,7 +304,7 @@ function HouseholdsView() {
 
 				<div className="space-y-0.5 relative z-10 pl-1">
 					<h4
-						className="font-semibold text-sm text-neutral-200 truncate group-hover:text-emerald-400 transition-colors"
+						className="font-semibold text-sm text-neutral-200 truncate group-hover:text-blue-400 transition-colors"
 						title={member.fullName}
 					>
 						{member.fullName}
@@ -327,7 +327,7 @@ function HouseholdsView() {
 						</span>
 					)}
 					{member.isRegisteredVoter && (
-						<span className="inline-flex items-center rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-400/20">
+						<span className="inline-flex items-center rounded-full bg-blue-400/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400 border border-blue-400/20">
 							Voter
 						</span>
 					)}
@@ -367,7 +367,7 @@ function HouseholdsView() {
 					<div className="p-4 border-b border-neutral-800/80 space-y-4 bg-neutral-900/20">
 						<div className="space-y-1">
 							<h3 className="font-bold text-neutral-100 flex items-center gap-2">
-								<Home className="h-4 w-4 text-emerald-500" />
+								<Home className="h-4 w-4 text-blue-500" />
 								<span className="tracking-tight">Households</span>
 							</h3>
 							<p className="text-[11px] text-neutral-500">
@@ -384,7 +384,7 @@ function HouseholdsView() {
 									placeholder="Search head of family..."
 									value={search}
 									onChange={(e) => setSearch(e.target.value)}
-									className="pl-8 py-2 bg-neutral-950/50 border-neutral-800/80 text-xs text-neutral-200 placeholder:text-neutral-600 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-500/50 h-9 rounded-xl"
+									className="pl-8 py-2 bg-neutral-950/50 border-neutral-800/80 text-xs text-neutral-200 placeholder:text-neutral-600 focus-visible:ring-blue-500/30 focus-visible:border-blue-500/50 h-9 rounded-xl"
 								/>
 							</div>
 
@@ -394,7 +394,7 @@ function HouseholdsView() {
 									setSelectedPurok(val === "ALL" ? "" : val)
 								}
 							>
-								<SelectTrigger className="w-full bg-neutral-900 border-neutral-800 text-xs text-neutral-300 px-3 py-2 rounded-xl focus:border-emerald-500 h-9">
+								<SelectTrigger className="w-full bg-neutral-900 border-neutral-800 text-xs text-neutral-300 px-3 py-2 rounded-xl focus:border-blue-500 h-9">
 									<SelectValue placeholder="All Puroks" />
 								</SelectTrigger>
 								<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
@@ -413,7 +413,7 @@ function HouseholdsView() {
 					<div className="flex-1 overflow-y-auto divide-y divide-neutral-800/60 bg-neutral-950/20">
 						{loadingList ? (
 							<div className="flex h-40 items-center justify-center">
-								<div className="h-5 w-5 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+								<div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
 							</div>
 						) : filteredHouseholds.length > 0 ? (
 							filteredHouseholds.slice(0, 100).map((h) => (
@@ -430,7 +430,7 @@ function HouseholdsView() {
 								>
 									<div className="space-y-1 truncate pr-2">
 										<h4
-											className={`font-semibold text-sm truncate transition-colors ${selectedId === h.householdId ? "text-emerald-400" : "text-neutral-200 group-hover:text-neutral-100"}`}
+											className={`font-semibold text-sm truncate transition-colors ${selectedId === h.householdId ? "text-blue-400" : "text-neutral-200 group-hover:text-neutral-100"}`}
 										>
 											{h.headName}
 										</h4>
@@ -450,7 +450,7 @@ function HouseholdsView() {
 										</div>
 									</div>
 									<ChevronRight
-										className={`h-4 w-4 shrink-0 transition-all ${selectedId === h.householdId ? "opacity-100 text-emerald-500 translate-x-0.5" : "opacity-0 group-hover:opacity-50 -translate-x-1"}`}
+										className={`h-4 w-4 shrink-0 transition-all ${selectedId === h.householdId ? "opacity-100 text-blue-500 translate-x-0.5" : "opacity-0 group-hover:opacity-50 -translate-x-1"}`}
 									/>
 								</button>
 							))
@@ -474,7 +474,7 @@ function HouseholdsView() {
 						{loadingDetail ? (
 							<div className="flex-1 flex items-center justify-center">
 								<div className="flex flex-col items-center gap-4">
-									<div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500/20 border-t-emerald-500" />
+									<div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500/20 border-t-blue-500" />
 									<p className="text-sm text-neutral-400 animate-pulse">
 										Rendering family tree...
 									</p>
@@ -492,14 +492,14 @@ function HouseholdsView() {
 											<button
 												type="button"
 												onClick={handleOpenEdit}
-												className="h-6 w-6 flex items-center justify-center rounded-md bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-emerald-400 hover:border-emerald-900/50 hover:bg-emerald-950/30 transition-colors cursor-pointer"
+												className="h-6 w-6 flex items-center justify-center rounded-md bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-blue-400 hover:border-blue-900/50 hover:bg-blue-950/30 transition-colors cursor-pointer"
 												title="Edit Household"
 											>
 												<Edit2 className="h-3.5 w-3.5" />
 											</button>
 										</div>
 										<div className="flex items-center gap-2 mt-2">
-											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-950/40 text-emerald-500 border border-emerald-900/30">
+											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-950/40 text-blue-500 border border-blue-900/30">
 												Purok: {detail.purok}
 											</span>
 											{(detail.block || detail.lot) && (
@@ -513,7 +513,7 @@ function HouseholdsView() {
 										</div>
 									</div>
 									<div className="p-3 bg-neutral-950 border border-neutral-800 text-neutral-400 rounded-2xl flex items-center gap-2 text-xs font-semibold">
-										<Users className="h-4 w-4 text-emerald-500" />
+										<Users className="h-4 w-4 text-blue-500" />
 										<span>
 											{(detail.head ? 1 : 0) +
 												(detail.spouse ? 1 : 0) +
@@ -599,14 +599,14 @@ function HouseholdsView() {
 
 																	{/* Head */}
 																	{detail.head && (
-																		<MemberCard member={detail.head} roleColor="bg-emerald-950/50 text-emerald-400 border border-emerald-900/30" />
+																		<MemberCard member={detail.head} roleColor="bg-blue-950/50 text-blue-400 border border-blue-900/30" />
 																	)}
 
 																	{/* Spouse */}
 																	{detail.spouse && (
 																		<>
 																			<div className="absolute left-[14rem] w-[4rem] h-[2px] bg-neutral-800 top-1/2 -translate-y-1/2" />
-																			<MemberCard member={detail.spouse} roleColor="bg-emerald-950/50 text-emerald-400 border border-emerald-900/30" />
+																			<MemberCard member={detail.spouse} roleColor="bg-blue-950/50 text-blue-400 border border-blue-900/30" />
 																		</>
 																	)}
 
@@ -753,7 +753,7 @@ function HouseholdsView() {
 
 			{/* Edit Household Modal */}
 			<Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-				<DialogContent className="sm:max-w-[425px] bg-neutral-950 border-neutral-800">
+				<DialogContent className="sm:max-w-[425px] bg-neutral-950 border-neutral-800/60 shadow-2xl">
 					<form onSubmit={handleEditSubmit}>
 						<DialogHeader>
 							<DialogTitle className="text-xl text-neutral-100">
@@ -834,7 +834,7 @@ function HouseholdsView() {
 							</Button>
 							<Button
 								type="submit"
-								className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5"
+								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
 							>
 								Save Changes
 							</Button>

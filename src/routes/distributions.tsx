@@ -25,7 +25,8 @@ import {
 	importScannedExcel,
 	markClaimedViaScan
 } from "../lib/distribution-service";
-import { getResidents, getUniquePuroks } from "../lib/residents-service";
+import { getUniquePuroks } from "../lib/residents-service";
+import { extractResidents } from "../lib/reports-service";
 
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -57,6 +58,33 @@ import { Checkbox } from "../components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
 import { Calendar } from "../components/ui/calendar";
 
+// Optimization: Memoized row for rendering up to 5k residents smoothly
+const ResidentRow = React.memo(({ r, i, isSelected, onToggle }: { r: any, i: number, isSelected: boolean, onToggle: (id: number) => void }) => {
+	return (
+		<TableRow className="border-neutral-800/50 hover:bg-neutral-800/30">
+			<TableCell className="text-center py-2">
+				<Checkbox 
+					checked={isSelected}
+					onCheckedChange={() => onToggle(r.id)}
+					className="border-neutral-700 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+				/>
+			</TableCell>
+			<TableCell className="text-neutral-500 text-sm py-2">{i + 1}</TableCell>
+			<TableCell className="text-neutral-400 text-xs font-mono py-2">{r.residentId || "—"}</TableCell>
+			<TableCell className="font-medium text-neutral-200 py-2">{r.lastName || "—"}</TableCell>
+			<TableCell className="text-neutral-300 py-2">{r.firstName || "—"}</TableCell>
+			<TableCell className="text-neutral-400 text-sm py-2 text-center">{r.purok}</TableCell>
+			<TableCell className="py-2 text-center">
+				<div className="flex gap-1 justify-center flex-wrap">
+					{r.isPwd && <Badge variant="outline" className="text-[10px] py-0 h-5 border-blue-500/30 text-blue-400 bg-blue-500/10">PWD</Badge>}
+					{r.isSingleParent && <Badge variant="outline" className="text-[10px] py-0 h-5 border-purple-500/30 text-purple-400 bg-purple-500/10">Solo Parent</Badge>}
+					{r.isSeniorCitizen && <Badge variant="outline" className="text-[10px] py-0 h-5 border-amber-500/30 text-amber-400 bg-amber-500/10">Senior</Badge>}
+				</div>
+			</TableCell>
+		</TableRow>
+	);
+});
+
 export const Route = createFileRoute("/distributions")({
 	loader: async () => {
 		const programs = await getDistributionPrograms();
@@ -85,13 +113,16 @@ function DistributionsPage() {
 	const [isPwd, setIsPwd] = React.useState(false);
 	const [isSoloParent, setIsSoloParent] = React.useState(false);
 	
-	// Preview Residents
 	const [previewResidents, setPreviewResidents] = React.useState<any[]>([]);
 	const [selectedResidentIds, setSelectedResidentIds] = React.useState<Set<number>>(new Set());
 	const [isPreviewLoading, setIsPreviewLoading] = React.useState(false);
-	const [hasGeneratedList, setHasGeneratedList] = React.useState(false);
+	const [hasFetched, setHasFetched] = React.useState(false);
 	const [previewSearch, setPreviewSearch] = React.useState("");
 	const [programToDelete, setProgramToDelete] = React.useState<{id: number, name: string} | null>(null);
+	
+	// Pagination
+	const [page, setPage] = React.useState(1);
+	const [rowsPerPage, setRowsPerPage] = React.useState(50);
 
 	React.useEffect(() => {
 		getUniquePuroks().then((res) => {
@@ -99,44 +130,44 @@ function DistributionsPage() {
 		});
 	}, []);
 
-	const generatePreview = async () => {
+	// Auto-fetch when search changes (debounced)
+	React.useEffect(() => {
+		if (!isCreating || (!hasFetched && !previewSearch)) return;
+
+		const timeout = setTimeout(() => {
+			fetchPreview();
+		}, 400);
+
+		return () => clearTimeout(timeout);
+	}, [previewSearch]);
+
+	const fetchPreview = async () => {
 		if (isPreviewLoading) return;
 		setIsPreviewLoading(true);
+
 		try {
-			const isSenior = ageBracket.includes("Senior") ? true : undefined;
-			
-			const res = await getResidents({
+			const res = await extractResidents({
 				data: {
+					search: previewSearch || undefined,
 					purok: purok === "ALL" ? undefined : purok,
+					ageBracket: ageBracket === "ALL" ? undefined : ageBracket,
 					isPwd: isPwd ? true : undefined,
-					isSingleParent: isSoloParent ? true : undefined,
-					isSenior,
-					limit: 1000 // reasonable limit for preview
+					isSoloParent: isSoloParent ? true : undefined,
 				}
 			});
-			// isChildren filter handled client-side after fetch if needed
-			// Ensure correct casting
-			const data = res as unknown as { items: any[], total: number };
-			
-			// Sort explicitly by Purok (Zone 1 first) then by Last Name
-			const sortedItems = [...data.items].sort((a, b) => {
+			const sortedItems = [...(res.data || [])].sort((a, b) => {
 				if (a.purok !== b.purok) {
-					// Extract numeric zone if possible for better sorting
-					const aNum = parseInt(a.purok.replace(/\D/g, '')) || 0;
-					const bNum = parseInt(b.purok.replace(/\D/g, '')) || 0;
+					const aNum = parseInt((a.purok || "").replace(/\D/g, '')) || 0;
+					const bNum = parseInt((b.purok || "").replace(/\D/g, '')) || 0;
 					if (aNum !== bNum) return aNum - bNum;
-					return a.purok.localeCompare(b.purok);
+					return (a.purok || "").localeCompare(b.purok || "");
 				}
 				return (a.lastName || "").localeCompare(b.lastName || "");
 			});
 			
 			setPreviewResidents(sortedItems);
-			
-			// Auto-select all by default
-			const newSet = new Set<number>();
-			sortedItems.forEach(r => newSet.add(r.id));
-			setSelectedResidentIds(newSet);
-			setHasGeneratedList(true);
+			setPage(1);
+			setHasFetched(true);
 		} catch (err) {
 			console.error(err);
 		} finally {
@@ -144,22 +175,34 @@ function DistributionsPage() {
 		}
 	};
 
-	const toggleResident = (id: number) => {
-		const next = new Set(selectedResidentIds);
-		if (next.has(id)) next.delete(id);
-		else next.add(id);
-		setSelectedResidentIds(next);
-	};
+	const toggleResident = React.useCallback((id: number) => {
+		setSelectedResidentIds(prev => {
+			const next = new Set(prev);
+			if (next.has(id)) {
+				next.delete(id);
+			} else {
+				next.add(id);
+			}
+			return next;
+		});
+	}, []);
 
-	const toggleAll = () => {
-		if (selectedResidentIds.size === previewResidents.length) {
-			setSelectedResidentIds(new Set());
-		} else {
-			const newSet = new Set<number>();
-			previewResidents.forEach(r => newSet.add(r.id));
-			setSelectedResidentIds(newSet);
-		}
-	};
+	const toggleAll = React.useCallback(() => {
+		setSelectedResidentIds(prev => {
+			const next = new Set(prev);
+			// check if all currently visible are already selected
+			const allVisibleSelected = previewResidents.length > 0 && previewResidents.every(r => next.has(r.id));
+			
+			if (allVisibleSelected) {
+				// remove all visible from selection
+				previewResidents.forEach(r => next.delete(r.id));
+			} else {
+				// add all visible to selection
+				previewResidents.forEach(r => next.add(r.id));
+			}
+			return next;
+		});
+	}, [previewResidents]);
 
 	const handleCreate = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -260,7 +303,7 @@ function DistributionsPage() {
 							Manage relief goods, financial assistance, and targeted demographic programs.
 						</p>
 					</div>
-					<Button onClick={() => setIsCreating(true)} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-md px-4">
+					<Button onClick={() => setIsCreating(true)} className="gap-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-md px-4">
 						<Plus className="w-4 h-4" />
 						<span>New Program</span>
 					</Button>
@@ -295,7 +338,7 @@ function DistributionsPage() {
 										</TableCell>
 										<TableCell className="text-neutral-400 text-sm py-2">{prog.date}</TableCell>
 										<TableCell className="py-2">
-											<Badge variant="outline" className="text-indigo-400 bg-indigo-500/10 border-indigo-500/20">
+											<Badge variant="outline" className="text-blue-400 bg-blue-500/10 border-blue-500/20">
 												{prog.targetDemographic || "Custom Selection"}
 											</Badge>
 										</TableCell>
@@ -327,8 +370,8 @@ function DistributionsPage() {
 
 			{/* Create Modal */}
 			<Dialog open={isCreating} onOpenChange={setIsCreating}>
-				<DialogContent className="max-w-4xl bg-neutral-950 border-neutral-800/60 p-0 shadow-2xl flex flex-col h-[85vh]">
-					<div className="p-6 border-b border-neutral-800/60 bg-neutral-900/40">
+				<DialogContent className="max-w-4xl bg-neutral-950 border-neutral-800/60 p-0 shadow-2xl flex flex-col max-h-[85vh]">
+					<div className="px-6 pt-6">
 						<DialogHeader>
 							<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 								Create Distribution Program
@@ -343,7 +386,7 @@ function DistributionsPage() {
 									value={newName}
 									onChange={(e) => setNewName(e.target.value)}
 									placeholder="e.g., Senior Citizen Allowance Q4"
-									className="bg-neutral-900 border-neutral-800 focus-visible:ring-indigo-500 rounded-xl h-10"
+									className="bg-neutral-900 border-neutral-800 focus-visible:ring-blue-500 rounded-xl h-10"
 								/>
 							</div>
 							<div className="space-y-1.5">
@@ -376,53 +419,52 @@ function DistributionsPage() {
 								value={newDescription}
 								onChange={(e) => setNewDescription(e.target.value)}
 								placeholder="Brief details about this distribution..."
-								className="bg-neutral-900 border-neutral-800 focus-visible:ring-indigo-500 rounded-xl h-10"
+								className="bg-neutral-900 border-neutral-800 focus-visible:ring-blue-500 rounded-xl h-10"
 							/>
 						</div>
 					</div>
 
 					{/* Filters Area */}
-					<div className="p-4 border-b border-neutral-800/60 bg-neutral-900/20 flex flex-col gap-3">
-						<div className="flex items-center justify-between">
-							<h3 className="text-sm font-semibold text-neutral-300">Target Demographic</h3>
-							<Button 
-								onClick={generatePreview}
-								disabled={isPreviewLoading}
-								className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl h-9 px-4 text-sm"
-							>
-								{isPreviewLoading ? (
-									<>
-										<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-										Generating...
-									</>
-								) : (
-									"Generate List"
-								)}
-							</Button>
-						</div>
-						<div className="flex flex-wrap gap-3 items-center">
-							<Select value={purok} onValueChange={setPurok}>
-								<SelectTrigger className="bg-neutral-900/50 border-neutral-800 text-neutral-200 h-10 rounded-xl w-[160px]">
-									<SelectValue placeholder="All Puroks" />
-								</SelectTrigger>
-								<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
-									<SelectItem value="ALL">All Puroks</SelectItem>
-									{puroks.map(p => (
-										<SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-							
-							<Select value={ageBracket} onValueChange={setAgeBracket}>
-								<SelectTrigger className="bg-neutral-900/50 border-neutral-800 text-neutral-200 h-10 rounded-xl w-[160px]">
-									<SelectValue placeholder="All Ages" />
-								</SelectTrigger>
-								<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
-									<SelectItem value="ALL">All Ages</SelectItem>
-									<SelectItem value="Children (0-12)">Children (0-12)</SelectItem>
-									<SelectItem value="Senior (60+)">Senior (60+)</SelectItem>
-								</SelectContent>
-							</Select>
+					<div className="px-6 pb-0 shrink-0">
+						<div className="flex flex-wrap gap-3 items-center border border-neutral-800/60 rounded-xl p-2.5 bg-neutral-900/20">
+							<div className="relative w-full max-w-[200px]">
+								<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+								<Input 
+									placeholder="Search residents..."
+									value={previewSearch}
+									onChange={(e) => setPreviewSearch(e.target.value)}
+									className="pl-9 bg-neutral-900 border-neutral-800 h-10 rounded-xl text-sm focus-visible:ring-blue-500"
+								/>
+							</div>
+
+						<Select value={purok} onValueChange={setPurok}>
+							<SelectTrigger className="bg-neutral-900/50 border-neutral-800 text-neutral-200 h-10 rounded-xl w-[120px]">
+								<SelectValue placeholder="All Puroks" />
+							</SelectTrigger>
+							<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+								<SelectItem value="ALL">All Puroks</SelectItem>
+								{puroks.map(p => (
+									<SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+						
+						<Select value={ageBracket} onValueChange={setAgeBracket}>
+							<SelectTrigger className="bg-neutral-900/50 border-neutral-800 text-neutral-200 h-10 rounded-xl w-[120px]">
+								<SelectValue placeholder="All Ages" />
+							</SelectTrigger>
+							<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+								<SelectItem value="ALL">All Ages</SelectItem>
+								<SelectItem value="Children (0-5)">Children (0-5)</SelectItem>
+								<SelectItem value="Children (6-12)">Children (6-12)</SelectItem>
+								<SelectItem value="Children (13-17)">Children (13-17)</SelectItem>
+								<SelectItem value="Adult (18-35)">Adult (18-35)</SelectItem>
+								<SelectItem value="Adult (36-50)">Adult (36-50)</SelectItem>
+								<SelectItem value="Adult (51-59)">Adult (51-59)</SelectItem>
+								<SelectItem value="Senior (60+)">Senior (60+)</SelectItem>
+								<SelectItem value="Senior (65+)">Senior (65+)</SelectItem>
+							</SelectContent>
+						</Select>
 
 						<div className="flex gap-2">
 							<button 
@@ -446,101 +488,149 @@ function DistributionsPage() {
 								Solo Parent
 							</button>
 						</div>
+						<div>
+							<Button 
+								onClick={fetchPreview}
+								disabled={isPreviewLoading}
+								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl h-10 px-6 font-medium shadow-sm"
+							>
+								{isPreviewLoading ? (
+									<>
+										<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+										Fetching
+									</>
+								) : (
+									"Apply Filters"
+								)}
+							</Button>
+						</div>
 					</div>
 				</div>
 
 					{/* Preview List */}
-					<div className="flex-1 overflow-auto bg-neutral-950/50 relative">
-						<div className="p-3 border-b border-neutral-800/60 bg-neutral-900/90 backdrop-blur-md sticky top-0 z-20">
-							<div className="relative max-w-sm">
-								<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
-								<Input 
-									placeholder="Search residents in preview..."
-									value={previewSearch}
-									onChange={(e) => setPreviewSearch(e.target.value)}
-									className="pl-9 bg-neutral-900 border-neutral-800 h-9 rounded-xl text-sm focus-visible:ring-indigo-500"
-								/>
-							</div>
-						</div>
-						<Table>
-							<TableHeader className="sticky top-[60px] z-10 bg-neutral-900/95 backdrop-blur-md">
+					<div className="px-6 pb-0 flex-1 flex flex-col overflow-hidden min-h-[400px]">
+						<div className="flex flex-col flex-1 border border-neutral-800/60 rounded-xl bg-neutral-900/10 overflow-hidden min-h-0">
+							<div className="flex-1 overflow-auto custom-scrollbar">
+								<Table>
+									<TableHeader className="sticky top-0 z-10 bg-neutral-900/95 backdrop-blur-sm shadow-[0_1px_0_rgba(255,255,255,0.05)]">
 								<TableRow className="border-neutral-800 hover:bg-transparent">
-									<TableHead className="w-12 text-center h-10">
-										<Checkbox 
-											checked={selectedResidentIds.size === previewResidents.length && previewResidents.length > 0}
-											onCheckedChange={toggleAll}
-											className="border-neutral-700 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
-										/>
-									</TableHead>
-									<TableHead className="w-16 text-neutral-400 font-medium h-10">No.</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10">ID</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10">Last Name</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10">First Name</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10 text-center">Purok</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10 text-center">Tags</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{!hasGeneratedList ? (
-									<TableRow>
-										<TableCell colSpan={7} className="h-32 text-center text-neutral-500">
-											Click "Generate List" to preview beneficiaries.
-										</TableCell>
+										<TableHead className="w-12 text-center h-10">
+											<Checkbox 
+												checked={hasFetched && previewResidents.length > 0 && previewResidents.every(r => selectedResidentIds.has(r.id))}
+												onCheckedChange={toggleAll}
+												className="border-neutral-700 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+											/>
+										</TableHead>
+										<TableHead className="w-16 text-neutral-400 font-medium h-10">No.</TableHead>
+										<TableHead className="text-neutral-400 font-medium h-10">ID</TableHead>
+										<TableHead className="text-neutral-400 font-medium h-10">Last Name</TableHead>
+										<TableHead className="text-neutral-400 font-medium h-10">First Name</TableHead>
+										<TableHead className="text-neutral-400 font-medium h-10 text-center">Purok</TableHead>
+										<TableHead className="text-neutral-400 font-medium h-10 text-center">Tags</TableHead>
 									</TableRow>
-								) : isPreviewLoading ? (
-									<TableRow>
-										<TableCell colSpan={7} className="h-32 text-center">
-											<div className="flex items-center justify-center gap-2 text-neutral-500">
-												<Clock className="w-4 h-4 animate-spin" />
-												Loading Preview...
-											</div>
-										</TableCell>
-									</TableRow>
-								) : previewResidents.filter(r => r.fullName.toLowerCase().includes(previewSearch.toLowerCase())).length === 0 ? (
-									<TableRow>
-										<TableCell colSpan={7} className="h-32 text-center text-neutral-500">
-											No residents match these filters.
-										</TableCell>
-									</TableRow>
-								) : (
-									previewResidents.filter(r => r.fullName.toLowerCase().includes(previewSearch.toLowerCase())).map((r, i) => (
-										<TableRow key={r.id} className="border-neutral-800/50 hover:bg-neutral-800/30">
-											<TableCell className="text-center py-2">
-												<Checkbox 
-													checked={selectedResidentIds.has(r.id)}
-													onCheckedChange={() => toggleResident(r.id)}
-													className="border-neutral-700 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
-												/>
-											</TableCell>
-											<TableCell className="text-neutral-500 text-sm py-2">{i + 1}</TableCell>
-											<TableCell className="text-neutral-400 text-xs font-mono py-2">{r.residentId || "—"}</TableCell>
-											<TableCell className="font-medium text-neutral-200 py-2">{r.lastName || "—"}</TableCell>
-											<TableCell className="text-neutral-300 py-2">{r.firstName || "—"}</TableCell>
-											<TableCell className="text-neutral-400 text-sm py-2 text-center">{r.purok}</TableCell>
-											<TableCell className="py-2 text-center">
-												<div className="flex gap-1 justify-center flex-wrap">
-													{r.isPwd && <Badge variant="outline" className="text-[10px] py-0 h-5 border-blue-500/30 text-blue-400 bg-blue-500/10">PWD</Badge>}
-													{r.isSingleParent && <Badge variant="outline" className="text-[10px] py-0 h-5 border-purple-500/30 text-purple-400 bg-purple-500/10">Solo Parent</Badge>}
-													{r.isSeniorCitizen && <Badge variant="outline" className="text-[10px] py-0 h-5 border-amber-500/30 text-amber-400 bg-amber-500/10">Senior</Badge>}
+								</TableHeader>
+								<TableBody>
+									{isPreviewLoading ? (
+										<TableRow>
+											<TableCell colSpan={7} className="h-40 text-center">
+												<div className="flex flex-col items-center justify-center gap-3 text-neutral-500">
+													<Loader2 className="w-6 h-6 animate-spin" />
+													<span className="text-sm">Fetching residents</span>
 												</div>
 											</TableCell>
 										</TableRow>
-									))
-								)}
-							</TableBody>
-						</Table>
-					</div>
+									) : !hasFetched ? (
+										<TableRow>
+											<TableCell colSpan={7} className="h-24 text-center text-neutral-500">
+												Apply filters to preview target residents
+											</TableCell>
+										</TableRow>
+									) : previewResidents.length === 0 ? (
+										<TableRow>
+											<TableCell colSpan={7} className="h-24 text-center text-neutral-500">
+												No residents found matching the criteria
+											</TableCell>
+										</TableRow>
+									) : (
+										previewResidents.slice((page - 1) * rowsPerPage, page * rowsPerPage).map((r, i) => (
+											<ResidentRow 
+												key={r.id} 
+												r={r} 
+												i={(page - 1) * rowsPerPage + i} 
+												isSelected={selectedResidentIds.has(r.id)} 
+												onToggle={toggleResident} 
+											/>
+										))
+									)}
+								</TableBody>
+							</Table>
+						</div>
 
-					{/* Footer */}
-					<div className="p-4 border-t border-neutral-800/60 bg-neutral-900/40 flex justify-between items-center shrink-0">
+						{/* Pagination Footer */}
+						{hasFetched && previewResidents.length > 0 && (
+							<div className="p-3 bg-neutral-900/40 border-t border-neutral-800/60 flex items-center justify-between shrink-0">
+								<div className="flex items-center gap-2">
+									<span className="text-xs text-neutral-400">Rows per page:</span>
+									<Select 
+										value={rowsPerPage.toString()} 
+										onValueChange={(v) => {
+											setRowsPerPage(parseInt(v, 10));
+											setPage(1);
+										}}
+									>
+										<SelectTrigger className="w-20 h-8 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-lg text-xs">
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl text-xs">
+											<SelectItem value="50">50</SelectItem>
+											<SelectItem value="100">100</SelectItem>
+											<SelectItem value="500">500</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+								
+								{Math.ceil(previewResidents.length / rowsPerPage) > 1 && (
+									<div className="flex items-center gap-4">
+										<div className="text-xs text-neutral-400">
+											Page {page} of {Math.ceil(previewResidents.length / rowsPerPage)}
+										</div>
+										<div className="flex gap-2">
+											<Button 
+												variant="outline" 
+												size="sm" 
+												onClick={() => setPage(p => Math.max(1, p - 1))}
+												disabled={page === 1}
+												className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-lg disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800 text-xs px-3"
+											>
+												Previous
+											</Button>
+											<Button 
+												variant="outline" 
+												size="sm" 
+												onClick={() => setPage(p => Math.min(Math.ceil(previewResidents.length / rowsPerPage), p + 1))}
+												disabled={page === Math.ceil(previewResidents.length / rowsPerPage)}
+												className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-lg disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800 text-xs px-3"
+											>
+												Next
+											</Button>
+										</div>
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+				</div>
+
+				{/* Footer */}
+					<div className="px-6 py-4 border-t border-neutral-800/60 bg-neutral-900/40 flex justify-between items-center shrink-0">
 						<div className="text-sm font-medium text-neutral-400">
-							<span className="text-indigo-400">{selectedResidentIds.size}</span> residents selected
+							<span className="text-blue-400">{selectedResidentIds.size}</span> residents selected
 						</div>
 						<div className="flex gap-3">
 							<Button type="button" variant="ghost" onClick={() => setIsCreating(false)} className="rounded-xl text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 px-5">
 							Cancel
 						</Button>
-						<Button onClick={handleCreate} disabled={isLoading || selectedResidentIds.size === 0} className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-5 shadow-sm">
+						<Button onClick={handleCreate} disabled={isLoading || selectedResidentIds.size === 0} className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 shadow-sm">
 							{isLoading ? (
 								<div className="flex items-center gap-2">
 									<Loader2 className="w-4 h-4 animate-spin" />
@@ -557,7 +647,7 @@ function DistributionsPage() {
 
 			{/* Delete Confirmation Dialog */}
 			<Dialog open={programToDelete !== null} onOpenChange={(open) => !open && setProgramToDelete(null)}>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 							<Trash2 className="w-5 h-5 text-red-500" />
@@ -753,7 +843,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 									placeholder="Search resident name or ID..."
 									value={searchQuery}
 									onChange={(e) => setSearchQuery(e.target.value)}
-									className="pl-9 h-11 bg-neutral-950/50 border-neutral-800 text-neutral-200 rounded-xl focus-visible:ring-indigo-500 w-full"
+									className="pl-9 h-11 bg-neutral-950/50 border-neutral-800 text-neutral-200 rounded-xl focus-visible:ring-blue-500 w-full"
 								/>
 							</div>
 						</div>
@@ -781,7 +871,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 								{isImporting ? "Importing..." : "Import Scanned Results"}
 							</Button>
 
-							<Button onClick={() => setIsScannerOpen(true)} className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white shadow-md rounded-xl">
+							<Button onClick={() => setIsScannerOpen(true)} className="gap-2 bg-blue-600 hover:bg-blue-500 text-white shadow-md rounded-xl">
 								<ScanBarcode className="w-4 h-4" />
 								Scanner Mode
 							</Button>
@@ -795,7 +885,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 						<div>
 							<h3 className="text-lg font-bold text-neutral-100">{program.name}</h3>
 							<div className="flex items-center gap-3 mt-2 text-sm text-neutral-400">
-								<span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> {claimed} Claimed</span>
+								<span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-blue-500" /> {claimed} Claimed</span>
 								<span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-amber-500" /> {pending} Pending</span>
 								<span className="font-medium ml-2 text-neutral-500">{new Date(program.date).toLocaleDateString()}</span>
 							</div>
@@ -839,7 +929,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 										
 										<TableCell className="py-2 text-center w-[120px]">
 											{b.status === "Claimed" ? (
-												<Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 gap-1.5 h-6">
+												<Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20 gap-1.5 h-6">
 													<CheckCircle2 className="w-3.5 h-3.5" />
 													Claimed
 												</Badge>
@@ -1020,7 +1110,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 			</Button>
 
 			<div className="text-center space-y-4 mb-12">
-				<div className="w-20 h-20 bg-indigo-500/10 text-indigo-500 rounded-full flex items-center justify-center mx-auto animate-pulse">
+				<div className="w-20 h-20 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto animate-pulse">
 					<ScanBarcode className="w-10 h-10" />
 				</div>
 				<h2 className="text-3xl font-black text-white">Scanner Mode Active</h2>
@@ -1031,14 +1121,14 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 
 			<div className="w-full max-w-2xl h-80 flex items-center justify-center">
 				{isProcessing ? (
-					<div className="animate-pulse text-indigo-400 flex flex-col items-center gap-4">
+					<div className="animate-pulse text-blue-400 flex flex-col items-center gap-4">
 						<ScanBarcode className="w-12 h-12 animate-bounce" />
 						<span className="font-bold text-xl">Processing Scan...</span>
 					</div>
 				) : lastResult ? (
 					<div className={`w-full p-8 rounded-3xl border-2 flex items-center gap-8 shadow-2xl transition-all duration-300 transform scale-100 ${
 						lastResult.success 
-							? "bg-emerald-950/50 border-emerald-500/50 shadow-emerald-900/20" 
+							? "bg-blue-950/50 border-blue-500/50 shadow-blue-900/20" 
 							: "bg-rose-950/50 border-rose-500/50 shadow-rose-900/20"
 					}`}>
 						<div className="shrink-0">
@@ -1046,17 +1136,17 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 								<img 
 									src={lastResult.resident.photoBase64} 
 									alt="Resident" 
-									className={`w-32 h-32 rounded-2xl object-cover border-4 ${lastResult.success ? "border-emerald-500" : "border-rose-500"}`} 
+									className={`w-32 h-32 rounded-2xl object-cover border-4 ${lastResult.success ? "border-blue-500" : "border-rose-500"}`} 
 								/>
 							) : (
-								<div className={`w-32 h-32 rounded-2xl flex items-center justify-center border-4 ${lastResult.success ? "border-emerald-500 bg-emerald-950" : "border-rose-500 bg-rose-950"}`}>
+								<div className={`w-32 h-32 rounded-2xl flex items-center justify-center border-4 ${lastResult.success ? "border-blue-500 bg-blue-950" : "border-rose-500 bg-rose-950"}`}>
 									<span className="text-4xl text-white font-black">?</span>
 								</div>
 							)}
 						</div>
 						
 						<div>
-							<h3 className={`text-4xl font-black mb-2 ${lastResult.success ? "text-emerald-400" : "text-rose-400"}`}>
+							<h3 className={`text-4xl font-black mb-2 ${lastResult.success ? "text-blue-400" : "text-rose-400"}`}>
 								{lastResult.message}
 							</h3>
 							{lastResult.resident && (

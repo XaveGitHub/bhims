@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, or, like } from "drizzle-orm";
 import { db } from "../db";
 import { residents, puroks } from "../db/schema";
 import { z } from "zod";
@@ -11,6 +11,7 @@ const extractSchema = z.object({
 	gender: z.string().optional(),
 	isPwd: z.boolean().optional(),
 	isSoloParent: z.boolean().optional(),
+	search: z.string().optional(),
 });
 
 export const extractResidents = createServerFn({
@@ -26,11 +27,13 @@ export const extractResidents = createServerFn({
 				lastName: residents.lastName,
 				firstName: residents.firstName,
 				middleName: residents.middleName,
+				fullName: residents.fullName,
 				gender: residents.gender,
 				birthDate: residents.birthDate,
 				purok: residents.purok,
 				isPwd: residents.isPwd,
 				isSingleParent: residents.isSingleParent,
+				isSeniorCitizen: residents.isSeniorCitizen,
 			}).from(residents)
 			  .leftJoin(puroks, eq(residents.purok, puroks.name));
 			
@@ -53,6 +56,21 @@ export const extractResidents = createServerFn({
 			
 			if (data.isSoloParent) {
 				conditions.push(eq(residents.isSingleParent, true));
+			}
+
+			if (data.search) {
+				const searchTerms = data.search.trim().split(/\s+/);
+				const termConditions = searchTerms.map(term => {
+					const wildcardTerm = `%${term}%`;
+					return or(
+						like(residents.fullName, wildcardTerm),
+						like(residents.firstName, wildcardTerm),
+						like(residents.lastName, wildcardTerm),
+						like(residents.middleName, wildcardTerm),
+						like(residents.residentId, wildcardTerm)
+					);
+				});
+				conditions.push(and(...termConditions));
 			}
 			
 			if (conditions.length > 0) {

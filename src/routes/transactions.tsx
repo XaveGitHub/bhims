@@ -61,7 +61,7 @@ function TransactionsView() {
 				accessorKey: "id",
 				header: "Transaction ID",
 				cell: ({ row }) => (
-					<span className="font-mono font-medium text-emerald-400">
+					<span className="font-mono font-medium text-neutral-300">
 						TRX-{row.original.id?.toString().padStart(5, "0")}
 					</span>
 				),
@@ -213,7 +213,7 @@ function TransactionsView() {
 							placeholder="Search by Resident Name or Transaction ID..."
 							value={globalFilter}
 							onChange={(e) => setGlobalFilter(e.target.value)}
-							className="pl-9 bg-neutral-950 border-neutral-800 text-neutral-200 placeholder:text-neutral-600 focus:border-emerald-500 rounded-xl h-9 text-sm w-full"
+							className="pl-9 bg-neutral-950 border-neutral-800 text-neutral-200 placeholder:text-neutral-600 focus:border-blue-500 rounded-xl h-9 text-sm w-full"
 						/>
 					</div>
 					<Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -247,7 +247,7 @@ function TransactionsView() {
 				<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 min-w-0">
 					{isLoading && transactions.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
-							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-emerald-600 border-t-transparent" />
+							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-blue-600 border-t-transparent" />
 						</div>
 					) : table.getRowModel().rows.length > 0 ? (
 						<>
@@ -274,9 +274,9 @@ function TransactionsView() {
 																	header.getContext()
 																)}
 																{sorted === "asc" ? (
-																	<ChevronUp className="h-3 w-3 text-emerald-500" />
+																	<ChevronUp className="h-3 w-3 text-blue-500" />
 																) : sorted === "desc" ? (
-																	<ChevronDown className="h-3 w-3 text-emerald-500" />
+																	<ChevronDown className="h-3 w-3 text-blue-500" />
 																) : (
 																	<ArrowUpDown className="h-3 w-3 opacity-25" />
 																)}

@@ -156,7 +156,7 @@ function TemplatesPage() {
 						Manage certificates and clearances for the Resident Kiosk.
 					</p>
 				</div>
-				<Button onClick={openCreate} className="bg-emerald-600 hover:bg-emerald-500 text-white gap-2 rounded-xl px-4">
+				<Button onClick={openCreate} className="bg-blue-600 hover:bg-blue-500 text-white gap-2 rounded-xl px-4">
 					<Plus className="h-4 w-4" />
 					Add New Template
 				</Button>
@@ -200,11 +200,11 @@ function TemplatesPage() {
 									<Switch 
 										checked={tpl.isActive ?? true} 
 										onCheckedChange={() => handleToggleActive(tpl.id, tpl.isActive ?? true)}
-										className="data-[state=checked]:bg-emerald-500"
+										className="data-[state=checked]:bg-blue-500"
 									/>
 								</div>
 							</div>
-							<div className="text-xl text-emerald-400 font-black">₱{tpl.price?.toFixed(2) || "0.00"}</div>
+							<div className="text-xl text-blue-400 font-black">₱{tpl.price?.toFixed(2) || "0.00"}</div>
 						</CardContent>
 					</Card>
 				))}
@@ -221,7 +221,7 @@ function TemplatesPage() {
 			</div>
 
 			<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-				<DialogContent className="sm:max-w-[425px] bg-neutral-950 border-neutral-800 text-neutral-200">
+				<DialogContent className="sm:max-w-[425px] bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-200">
 					<DialogHeader>
 						<DialogTitle>{editingId ? "Edit Template" : "New Template"}</DialogTitle>
 					</DialogHeader>
@@ -286,7 +286,7 @@ function TemplatesPage() {
 								<Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)} className="rounded-xl">
 									Cancel
 								</Button>
-								<Button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl">
+								<Button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl">
 									{editingId ? "Save Changes" : "Create Template"}
 								</Button>
 							</div>
@@ -297,7 +297,7 @@ function TemplatesPage() {
 
 			{/* BUILDER FULLSCREEN MODAL */}
 			<Dialog open={isBuilderMode} onOpenChange={setIsBuilderMode}>
-				<DialogContent className="max-w-[850px] w-full max-h-[95vh] h-full bg-neutral-950 border-neutral-800 p-0 flex flex-col">
+				<DialogContent className="max-w-[850px] w-full max-h-[95vh] h-full bg-neutral-950 border-neutral-800/60 shadow-2xl p-0 flex flex-col">
 					<DialogHeader className="p-4 border-b border-neutral-800 hidden">
 						<DialogTitle>Template Builder</DialogTitle>
 					</DialogHeader>
@@ -316,7 +316,7 @@ function TemplatesPage() {
 
 			{/* DELETE CONFIRMATION DIALOG */}
 			<Dialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 							<Trash2 className="h-5 w-5 text-red-500" />
@@ -327,7 +327,7 @@ function TemplatesPage() {
 						<p className="text-sm text-neutral-300">
 							Are you sure you want to delete this document template? It will be permanently removed from the Resident Kiosk and cannot be undone.
 						</p>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 pt-4">
 							<Button
 								type="button"
 								onClick={() => setDeleteId(null)}

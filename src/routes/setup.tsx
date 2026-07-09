@@ -12,7 +12,7 @@ export const Route = createFileRoute("/setup")({
 
 function SetupScreen() {
 	return (
-		<div className="grid min-h-screen lg:grid-cols-2 bg-neutral-950 font-sans dark text-neutral-100 selection:bg-emerald-500/30">
+		<div className="grid min-h-screen lg:grid-cols-2 bg-neutral-950 font-sans dark text-neutral-100 selection:bg-blue-500/30">
 			{/* Left side: Setup Form Panel */}
 			<div className="relative flex flex-col p-6 md:p-10 justify-center">
 				<div
@@ -39,12 +39,12 @@ function SetupScreen() {
 					alt="Community Background"
 					className="absolute inset-0 h-full w-full object-cover filter brightness-[0.4] saturate-[0.8]"
 				/>
-				<div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-emerald-950/30 pointer-events-none z-0" />
-				<div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-emerald-800/10 blur-[100px] rounded-full z-0" />
+				<div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-blue-950/30 pointer-events-none z-0" />
+				<div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-800/10 blur-[100px] rounded-full z-0" />
 				<div className="relative z-10">
 					<h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-white mb-4 drop-shadow-xl">
 						First Time<br />
-						<span className="text-emerald-400">Setup</span>
+						<span className="text-blue-400">Setup</span>
 					</h2>
 					<p className="text-lg text-neutral-300 max-w-md leading-relaxed drop-shadow-md">
 						Create the first administrator account to get started. This setup screen will not appear again after an admin account exists.
@@ -124,13 +124,13 @@ function SetupForm() {
 		<form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
 			<div className="flex flex-col items-center text-center -mb-2">
 				<div className="relative">
-					<div className="absolute inset-0 bg-emerald-500/30 blur-xl rounded-full scale-150 z-0 animate-pulse" />
+					<div className="absolute inset-0 bg-blue-500/30 blur-xl rounded-full scale-150 z-0 animate-pulse" />
 					<img src="/barangay_logo.png" alt="Barangay Logo" className="relative z-10 w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" />
 				</div>
 				<h1 className="text-3xl font-bold tracking-[0.15em] text-white drop-shadow-sm leading-none pt-2">BHIMS</h1>
-				<div className="mt-3 flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-1.5">
-					<ShieldCheck className="h-4 w-4 text-emerald-400" />
-					<span className="text-xs font-semibold text-emerald-400">Create First Administrator</span>
+				<div className="mt-3 flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 rounded-lg px-3 py-1.5">
+					<ShieldCheck className="h-4 w-4 text-blue-400" />
+					<span className="text-xs font-semibold text-blue-400">Create First Administrator</span>
 				</div>
 			</div>
 
@@ -141,7 +141,7 @@ function SetupForm() {
 
 			{generalError && <p className="text-sm text-red-500 font-medium text-center">{generalError}</p>}
 
-			<Button type="submit" disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+			<Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
 				{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Create Administrator Account"}
 			</Button>
 		</form>

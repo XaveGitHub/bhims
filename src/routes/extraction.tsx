@@ -247,7 +247,7 @@ function ExtractionView() {
 						<Button 
 							onClick={handleExtract} 
 							disabled={isLoading} 
-							className="bg-emerald-600 hover:bg-emerald-500 text-white min-w-[140px] h-11 shadow-md rounded-xl"
+							className="bg-blue-600 hover:bg-blue-500 text-white min-w-[140px] h-11 shadow-md rounded-xl"
 						>
 							{isLoading ? (
 								<>
@@ -269,7 +269,7 @@ function ExtractionView() {
 						<div>
 							<h3 className="text-lg font-bold text-neutral-100">Extracted Results</h3>
 							<div className="flex items-center gap-3 mt-1.5 text-sm">
-								<Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 font-medium">
+								<Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20 font-medium">
 									{results.length} Residents Found
 								</Badge>
 								<span className="text-neutral-500 font-medium">{new Date().toLocaleDateString()}</span>
@@ -280,7 +280,7 @@ function ExtractionView() {
 							<Button
 								onClick={exportToExcel}
 								variant="outline"
-								className="flex-1 sm:flex-none bg-neutral-950 border-neutral-800 text-emerald-400 hover:bg-neutral-800 hover:text-emerald-300 h-9 rounded-xl"
+								className="flex-1 sm:flex-none bg-neutral-950 border-neutral-800 text-blue-400 hover:bg-neutral-800 hover:text-blue-300 h-9 rounded-xl"
 							>
 								<Download className="h-4 w-4 mr-2" />
 								Export

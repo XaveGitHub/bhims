@@ -711,7 +711,7 @@ function ImportView() {
 							fileInputRef.current?.click();
 						}
 					}}
-					className="flex flex-col items-center justify-center border-2 border-dashed border-neutral-800 hover:border-emerald-600/50 hover:bg-emerald-950/5 bg-neutral-900/20 rounded-2xl p-16 text-center cursor-pointer transition-all duration-200 group h-80 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+					className="flex flex-col items-center justify-center border-2 border-dashed border-neutral-800 hover:border-blue-600/50 hover:bg-blue-950/5 bg-neutral-900/20 rounded-2xl p-16 text-center cursor-pointer transition-all duration-200 group h-80 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 				>
 					<input
 						type="file"
@@ -721,9 +721,9 @@ function ImportView() {
 						className="hidden"
 					/>
 
-					<div className="p-4 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 group-hover:text-emerald-400 group-hover:border-emerald-900/30 transition-all duration-300 mb-4 shadow-lg shadow-neutral-950/50">
+					<div className="p-4 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 group-hover:text-blue-400 group-hover:border-blue-900/30 transition-all duration-300 mb-4 shadow-lg shadow-neutral-950/50">
 						{loading ? (
-							<RefreshCw className="h-8 w-8 animate-spin text-emerald-400" />
+							<RefreshCw className="h-8 w-8 animate-spin text-blue-400" />
 						) : (
 							<Upload className="h-8 w-8" />
 						)}
@@ -739,7 +739,7 @@ function ImportView() {
 
 					<Button
 						type="button"
-						className="mt-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all"
+						className="mt-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all"
 						disabled={loading}
 					>
 						Select File From PC
@@ -753,7 +753,7 @@ function ImportView() {
 					{/* File summary */}
 					<Card className="flex items-center justify-between p-4 bg-neutral-950/40 backdrop-blur-xl border-white/5 shadow-lg rounded-2xl">
 						<div className="flex items-center gap-3">
-							<div className="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-900/20 text-emerald-400">
+							<div className="p-2.5 rounded-xl bg-blue-950/30 border border-blue-900/20 text-blue-400">
 								<FileSpreadsheet className="h-5 w-5" />
 							</div>
 							<div>
@@ -784,7 +784,7 @@ function ImportView() {
 					<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg overflow-hidden p-8 space-y-8">
 						<div>
 							<h3 className="font-bold text-lg text-neutral-100 flex items-center gap-2">
-								<Database className="h-4.5 w-4.5 text-emerald-500" />
+								<Database className="h-4.5 w-4.5 text-blue-500" />
 								<span>Map Excel Columns to Database Fields</span>
 							</h3>
 							<p className="text-xs text-neutral-400 mt-1">
@@ -819,7 +819,7 @@ function ImportView() {
 										<SelectTrigger
 											className={`w-full bg-neutral-950 border text-xs px-3 py-2 rounded-lg focus:outline-none h-10 ${
 												mappings[field.key]
-													? "border-emerald-800/60 text-emerald-400 font-semibold"
+													? "border-blue-800/60 text-blue-400 font-semibold"
 													: "border-neutral-800 text-neutral-500"
 											}`}
 										>
@@ -953,7 +953,7 @@ function ImportView() {
 														</span>
 													)}
 													{row.isRegisteredVoter && (
-														<span className="rounded-full bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+														<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
 															Voter
 														</span>
 													)}
@@ -1037,7 +1037,7 @@ function ImportView() {
 						<Button
 							onClick={handleExecuteImport}
 							disabled={loading}
-							className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-6 py-2.5 text-sm font-semibold active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-emerald-950/20"
+							className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-6 py-2.5 text-sm font-semibold active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-blue-950/20"
 						>
 							{loading ? (
 								<>
@@ -1058,7 +1058,7 @@ function ImportView() {
 			{/* STEP 3: SUCCESS */}
 			{step === 3 && (
 				<Card className="flex flex-col items-center justify-center rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-16 text-center space-y-6 h-80">
-					<div className="p-4 rounded-full bg-emerald-950/20 border border-emerald-900/30 text-emerald-400 animate-bounce">
+					<div className="p-4 rounded-full bg-blue-950/20 border border-blue-900/30 text-blue-400 animate-bounce">
 						<CheckCircle className="h-10 w-10" />
 					</div>
 
@@ -1069,7 +1069,7 @@ function ImportView() {
 						<p className="text-sm text-neutral-400 max-w-sm mx-auto leading-relaxed">
 							We parsed the columns, calculated senior citizen records, and
 							successfully inserted{" "}
-							<span className="font-bold text-emerald-400">
+							<span className="font-bold text-blue-400">
 								{importedCount.toLocaleString()}
 							</span>{" "}
 							residents into the database.
@@ -1109,7 +1109,7 @@ function ImportView() {
 
 						<Button
 							onClick={() => navigate({ to: "/residents" })}
-							className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5 text-xs font-semibold flex items-center gap-1.5"
+							className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 text-xs font-semibold flex items-center gap-1.5"
 						>
 							<span>View Residents</span>
 							<ArrowRight className="h-3.5 w-3.5" />

@@ -92,7 +92,7 @@ function QueueDashboard() {
 
 			{loading && queue.length === 0 ? (
 				<div className="flex-1 flex items-center justify-center">
-					<Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+					<Loader2 className="h-8 w-8 animate-spin text-blue-500" />
 				</div>
 			) : queue.length === 0 ? (
 				<div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-neutral-900/20 border border-neutral-800/50 rounded-3xl border-dashed">
@@ -240,7 +240,7 @@ function QueueDashboard() {
 			)}
 
 			<Dialog open={!!cancelBatch} onOpenChange={() => setCancelBatch(null)}>
-				<DialogContent className="max-w-md bg-neutral-900 border-neutral-800 text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
 							<Ban className="h-5 w-5 text-red-500" />

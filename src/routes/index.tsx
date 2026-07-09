@@ -108,9 +108,9 @@ function DashboardView() {
 			value: stats?.totalResidents ?? 0,
 			sub: "Registered residents",
 			icon: Users,
-			accent: "emerald",
-			glow: "from-emerald-500/10",
-			iconCls: "text-emerald-400 bg-emerald-950/40 border-emerald-800/40",
+			accent: "blue",
+			glow: "from-blue-500/10",
+			iconCls: "text-blue-400 bg-blue-950/40 border-blue-800/40",
 			to: "/residents",
 			search: { purok },
 		},
@@ -217,9 +217,9 @@ function DashboardView() {
 
 	const purokColors = [
 		{
-			bar: "bg-emerald-500",
-			glow: "shadow-emerald-500/30",
-			text: "text-emerald-400",
+			bar: "bg-blue-500",
+			glow: "shadow-blue-500/30",
+			text: "text-blue-400",
 		},
 		{ bar: "bg-teal-500", glow: "shadow-teal-500/30", text: "text-teal-400" },
 		{ bar: "bg-cyan-500", glow: "shadow-cyan-500/30", text: "text-cyan-400" },
@@ -287,7 +287,7 @@ function DashboardView() {
 						key={card.title}
 						to={card.to as any}
 						search={card.search as any}
-						className="block outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl"
+						className="block outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl"
 					>
 						<Card
 							className="relative h-full overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
@@ -402,7 +402,7 @@ function DashboardView() {
 									<div>
 										<div className="flex items-center justify-between text-sm mb-1.5">
 											<div className="flex items-center gap-2">
-												<span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shrink-0" />
+												<span className="h-2.5 w-2.5 rounded-full bg-blue-400 shrink-0" />
 												<span className="font-semibold text-neutral-300">
 													Male
 												</span>
@@ -411,7 +411,7 @@ function DashboardView() {
 												<span className="font-bold text-neutral-100">
 													{(stats?.totalMale ?? 0).toLocaleString()}
 												</span>
-												<Badge className="bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 text-[10px] px-1.5 py-0 font-bold">
+												<Badge className="bg-blue-950/60 text-blue-400 border border-blue-800/40 text-[10px] px-1.5 py-0 font-bold">
 													{totalGenderCount > 0
 														? (
 																((stats?.totalMale ?? 0) / totalGenderCount) *
@@ -424,7 +424,7 @@ function DashboardView() {
 										</div>
 										<div className="h-2.5 w-full rounded-full bg-neutral-900 overflow-hidden border border-white/5">
 											<div
-												className="h-full rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/30 transition-all duration-700"
+												className="h-full rounded-full bg-blue-500 shadow-sm shadow-blue-500/30 transition-all duration-700"
 												style={{
 													width: `${totalGenderCount > 0 ? ((stats?.totalMale ?? 0) / totalGenderCount) * 100 : 0}%`,
 												}}
@@ -512,12 +512,12 @@ function DashboardView() {
 									{/* Split bar */}
 									<div className="flex rounded-full overflow-hidden h-2.5 mt-4 border border-white/5 bg-neutral-900">
 										{[
-											{ count: stats.ageBrackets["0-5"], color: "bg-sky-500" },
-											{ count: stats.ageBrackets["6-12"], color: "bg-cyan-500" },
-											{ count: stats.ageBrackets["13-17"], color: "bg-indigo-500" },
-											{ count: stats.ageBrackets["18-35"], color: "bg-violet-500" },
-											{ count: stats.ageBrackets["36-50"], color: "bg-purple-500" },
-											{ count: stats.ageBrackets["51-65+"], color: "bg-amber-500" },
+											{ count: stats.ageBrackets["0-5"], color: "bg-blue-400" },
+											{ count: stats.ageBrackets["6-12"], color: "bg-teal-400" },
+											{ count: stats.ageBrackets["13-17"], color: "bg-cyan-400" },
+											{ count: stats.ageBrackets["18-35"], color: "bg-sky-500" },
+											{ count: stats.ageBrackets["36-50"], color: "bg-blue-500" },
+											{ count: stats.ageBrackets["51-65+"], color: "bg-indigo-500" },
 										].map((bracket, i) => (
 											<div
 												key={i}
@@ -693,7 +693,7 @@ function DashboardView() {
 									</p>
 								</div>
 								<Badge
-									className={`text-xs px-2 py-0.5 font-bold ${(stats?.dataCompletenessPct ?? 0) >= 90 ? "bg-emerald-950/60 text-emerald-400 border-emerald-800/40" : "bg-amber-950/60 text-amber-400 border-amber-800/40"} border`}
+									className={`text-xs px-2 py-0.5 font-bold ${(stats?.dataCompletenessPct ?? 0) >= 90 ? "bg-blue-950/60 text-blue-400 border-blue-800/40" : "bg-amber-950/60 text-amber-400 border-amber-800/40"} border`}
 								>
 									{(stats?.dataCompletenessPct ?? 0).toFixed(1)}%
 								</Badge>
@@ -702,7 +702,7 @@ function DashboardView() {
 						<CardContent className="px-5 pb-5 mt-2">
 							<div className="h-3 w-full rounded-full bg-neutral-900 overflow-hidden border border-white/5">
 								<div
-									className={`h-full rounded-full shadow-sm transition-all duration-700 ${(stats?.dataCompletenessPct ?? 0) >= 90 ? "bg-emerald-500 shadow-emerald-500/30" : "bg-amber-500 shadow-amber-500/30"}`}
+									className={`h-full rounded-full shadow-sm transition-all duration-700 ${(stats?.dataCompletenessPct ?? 0) >= 90 ? "bg-blue-500 shadow-blue-500/30" : "bg-amber-500 shadow-amber-500/30"}`}
 									style={{ width: `${stats?.dataCompletenessPct ?? 0}%` }}
 								/>
 							</div>
@@ -736,7 +736,7 @@ function DashboardView() {
 										className="flex items-center gap-3 p-2.5 rounded-xl border border-white/5 bg-neutral-950/20 hover:bg-neutral-900/30 hover:border-white/8 transition-all duration-150 group"
 									>
 										{/* Avatar */}
-										<div className="shrink-0 h-8 w-8 rounded-full bg-emerald-950/40 border border-emerald-800/30 flex items-center justify-center text-emerald-400 text-[10px] font-bold">
+										<div className="shrink-0 h-8 w-8 rounded-full bg-blue-950/40 border border-blue-800/30 flex items-center justify-center text-blue-400 text-[10px] font-bold">
 											{getInitials(activity.fullName)}
 										</div>
 										{/* Info */}
@@ -748,7 +748,7 @@ function DashboardView() {
 												<Badge
 													className={`text-[9px] px-1.5 py-0 shrink-0 font-bold ${
 														activity.action === "added"
-															? "bg-emerald-950/60 text-emerald-400 border-emerald-800/40"
+															? "bg-blue-950/60 text-blue-400 border-blue-800/40"
 															: "bg-blue-950/60 text-blue-400 border-blue-800/40"
 													} border`}
 												>
@@ -787,7 +787,7 @@ function DashboardView() {
 								<CardHeader className="px-5 pt-5 pb-5 cursor-pointer hover:bg-white/[0.02] transition-colors rounded-xl">
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-3">
-											<div className="p-2 rounded-xl bg-emerald-950/30 border border-emerald-900/30 text-emerald-400">
+											<div className="p-2 rounded-xl bg-blue-950/30 border border-blue-900/30 text-blue-400">
 												<Laptop className="h-4 w-4" />
 											</div>
 											<div>
@@ -814,7 +814,7 @@ function DashboardView() {
 									address in their browser:
 								</p>
 								<div className="flex items-center gap-2 rounded-xl bg-neutral-950/60 border border-white/5 p-3">
-									<span className="text-sm font-mono text-emerald-400 font-bold break-all flex-1">
+									<span className="text-sm font-mono text-blue-400 font-bold break-all flex-1">
 										http://{stats?.serverIp ?? "127.0.0.1"}:3000
 									</span>
 									<button
@@ -824,7 +824,7 @@ function DashboardView() {
 										title="Copy link"
 									>
 										{copied ? (
-											<Check className="h-4 w-4 text-emerald-400" />
+											<Check className="h-4 w-4 text-blue-400" />
 										) : (
 											<Copy className="h-4 w-4" />
 										)}

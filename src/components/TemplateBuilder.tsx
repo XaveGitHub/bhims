@@ -91,7 +91,7 @@ export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props)
 											disabled={isAdded}
 											onClick={() => addField(f.id, f.label)}
 										>
-											{isAdded ? <Check className="w-3 h-3 mr-2 text-emerald-500" /> : <Plus className="w-3 h-3 mr-2" />}
+											{isAdded ? <Check className="w-3 h-3 mr-2 text-blue-500" /> : <Plus className="w-3 h-3 mr-2" />}
 											{f.label}
 										</Button>
 									);
@@ -99,7 +99,7 @@ export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props)
 							</div>
 						</PopoverContent>
 					</Popover>
-					<Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white" onClick={() => onSave(fields)}>
+					<Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white" onClick={() => onSave(fields)}>
 						<Check className="w-4 h-4 mr-2" /> Done
 					</Button>
 				</div>

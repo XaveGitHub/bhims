@@ -91,9 +91,9 @@ export function HouseholdCombobox({
 					disabled={disabled || !purok}
 					className={cn(
 						"flex w-full items-center justify-between rounded-xl border bg-neutral-900 px-3 py-2 text-sm text-neutral-200 transition-all",
-						error ? "border-red-500 focus:ring-red-500" : "border-neutral-800 focus:ring-emerald-500/20",
+						error ? "border-red-500 focus:ring-red-500" : "border-neutral-800 focus:ring-blue-500/20",
 						(!purok || disabled) && "opacity-50 cursor-not-allowed",
-						open && "ring-2 ring-emerald-500/20 border-emerald-500/50",
+						open && "ring-2 ring-blue-500/20 border-blue-500/50",
 						className || "h-9"
 					)}
 				>
@@ -123,7 +123,7 @@ export function HouseholdCombobox({
 					<div className="overflow-y-auto p-1 max-h-[250px] overscroll-contain">
 						<button
 							type="button"
-							className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-neutral-800 hover:text-neutral-50 focus:bg-neutral-800 text-emerald-400 font-medium transition-colors"
+							className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-neutral-800 hover:text-neutral-50 focus:bg-neutral-800 text-blue-400 font-medium transition-colors"
 							onClick={() => {
 								onChange("NEW");
 								setOpen(false);

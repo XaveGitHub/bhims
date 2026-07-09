@@ -229,7 +229,7 @@ export function AddResidentModal({
 						<TabsList className="w-full grid grid-cols-3 bg-neutral-950 !p-0 border-b border-neutral-800 !rounded-none !h-12 shrink-0 items-stretch">
 							<TabsTrigger
 								value="personal"
-								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 							>
 								<span className="flex items-center justify-center gap-2">
 									Personal
@@ -240,7 +240,7 @@ export function AddResidentModal({
 							</TabsTrigger>
 							<TabsTrigger
 								value="health"
-								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 							>
 								<span className="flex items-center justify-center gap-2">
 									Health & Status
@@ -251,7 +251,7 @@ export function AddResidentModal({
 							</TabsTrigger>
 							<TabsTrigger
 								value="economic"
-								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-emerald-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-emerald-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
 							>
 								<span className="flex items-center justify-center gap-2">
 									Household & Economic
@@ -276,7 +276,7 @@ export function AddResidentModal({
 													updateField("firstName", e.target.value)
 												}
 												className={cn(
-													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
+													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
 													errors.firstName &&
 														"border-red-500 focus-visible:ring-red-500",
 												)}
@@ -295,7 +295,7 @@ export function AddResidentModal({
 													updateField("lastName", e.target.value)
 												}
 												className={cn(
-													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
+													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
 													errors.lastName &&
 														"border-red-500 focus-visible:ring-red-500",
 												)}
@@ -448,7 +448,7 @@ export function AddResidentModal({
 												value={formData.email || ""}
 												onChange={(e) => updateField("email", e.target.value)}
 												className={cn(
-													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20",
+													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
 													errors.email &&
 														"border-red-500 focus-visible:ring-red-500",
 												)}
@@ -610,7 +610,7 @@ export function AddResidentModal({
 															}
 														}}
 														placeholder="Select or type Purok..."
-														className={cn("bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-emerald-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+														className={cn("bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
 													/>
 													<datalist id="purok-options">
 														{purokOptions.map((p) => <option key={p} value={p} />)}
@@ -870,7 +870,7 @@ export function AddResidentModal({
 						<Button
 							type="submit"
 							disabled={isSaving}
-							className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 rounded-xl"
+							className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 rounded-xl"
 						>
 							{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 							Save Resident

@@ -39,11 +39,11 @@ function MonitorDashboard() {
   };
 
   return (
-    <div className="relative min-h-screen bg-neutral-950 text-white font-sans selection:bg-emerald-500/30 overflow-hidden flex flex-col z-0">
+    <div className="relative min-h-screen bg-neutral-950 text-white font-sans selection:bg-blue-500/30 overflow-hidden flex flex-col z-0">
       {/* Decorative Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-950/15 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
-      <div className="absolute top-0 left-0 h-[350px] w-[350px] rounded-full bg-emerald-950/8 blur-[120px] pointer-events-none z-[-1]" />
-      <div className="absolute bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-emerald-950/8 blur-[120px] pointer-events-none z-[-1]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-950/15 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
+      <div className="absolute top-0 left-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
+      <div className="absolute bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none z-[-1]"
         style={{
@@ -69,7 +69,7 @@ function MonitorDashboard() {
             <h1 className="text-4xl font-black tracking-tight">
               Barangay Handumanan
             </h1>
-            <p className="text-lg text-emerald-500 font-medium tracking-wider">
+            <p className="text-lg text-blue-500 font-medium tracking-wider">
               Document Request Queue
             </p>
           </div>
@@ -144,7 +144,7 @@ function MonitorDashboard() {
           <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar">
             {loading && queue.length === 0 ? (
               <div className="h-full flex items-center justify-center">
-                <Loader2 className="h-16 w-16 animate-spin text-emerald-500" />
+                <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
               </div>
             ) : readyToClaim.length === 0 ? (
               <div className="h-[400px] flex flex-col items-center justify-center text-neutral-600">

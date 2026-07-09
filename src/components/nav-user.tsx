@@ -36,7 +36,7 @@ export function NavUser({ user }: { user: UserInfo }) {
 							size="lg"
 							className="data-[state=open]:bg-neutral-900/50 data-[state=open]:text-neutral-200 text-neutral-300 hover:bg-neutral-900/50 hover:text-neutral-100 rounded-xl mb-2 transition-all p-2 h-auto"
 						>
-							<div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+							<div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
 								<Shield className="size-4.5" />
 							</div>
 							<div className="grid flex-1 text-left text-sm leading-tight ml-1">
