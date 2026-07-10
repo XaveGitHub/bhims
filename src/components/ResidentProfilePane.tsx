@@ -222,7 +222,7 @@ export function ResidentProfilePane({
 	// ── VIEW MODE RENDERING ──
 	const renderViewMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-800/50 px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-950/60 backdrop-blur-xl border border-neutral-800/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
 					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
@@ -679,7 +679,7 @@ export function ResidentProfilePane({
 	// ── EDIT MODE RENDERING ──
 	const renderEditMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-800/50 px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)] px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
 					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
