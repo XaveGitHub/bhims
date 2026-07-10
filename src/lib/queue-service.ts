@@ -4,6 +4,7 @@ import { db } from "../db";
 import { transactions } from "../db/schema";
 import { residents } from "../db/schema";
 import { documentTemplates } from "../db/schema";
+import { distributionBeneficiaries, distributionPrograms } from "../db/schema";
 import { requireStaff } from "./security";
 
 export const getActiveQueue = createServerFn({
@@ -131,7 +132,7 @@ export const getResidentTransactions = createServerFn({
 	.validator((data: { residentId: number }) => data)
 	.handler(async ({ data: { residentId } }) => {
 		await requireStaff();
-		const results = db
+		const docResults = db
 			.select({
 				id: transactions.id,
 				queueNumber: transactions.queueNumber,
@@ -146,10 +147,51 @@ export const getResidentTransactions = createServerFn({
 			.from(transactions)
 			.leftJoin(documentTemplates, eq(transactions.templateId, documentTemplates.id))
 			.where(eq(transactions.residentId, residentId))
-			.orderBy(desc(transactions.createdAt))
 			.all();
 
-		return results;
+		const docs = docResults.map(t => ({
+			type: "document",
+			id: t.id,
+			status: t.status,
+			createdAt: t.createdAt,
+			purpose: t.purpose,
+			templateName: t.templateName,
+			totalPrice: t.totalPrice,
+			remarks: t.remarks
+		}));
+
+		const ayudaResults = db
+			.select({
+				id: distributionBeneficiaries.id,
+				status: distributionBeneficiaries.status,
+				claimedAt: distributionBeneficiaries.claimedAt,
+				notes: distributionBeneficiaries.notes,
+				programName: distributionPrograms.name,
+				programDate: distributionPrograms.date,
+			})
+			.from(distributionBeneficiaries)
+			.innerJoin(distributionPrograms, eq(distributionBeneficiaries.programId, distributionPrograms.id))
+			.where(eq(distributionBeneficiaries.residentId, residentId))
+			.all();
+
+		const ayudas = ayudaResults.map(a => ({
+			type: "ayuda",
+			id: a.id,
+			status: a.status,
+			createdAt: a.claimedAt || a.programDate, // Fallback to program date if not claimed
+			purpose: "Ayuda Distribution",
+			templateName: a.programName,
+			totalPrice: 0,
+			remarks: a.notes
+		}));
+
+		const combined = [...docs, ...ayudas].sort((a: any, b: any) => {
+			const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+			const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+			return dateB - dateA;
+		});
+
+		return combined;
 	});
 
 export const getPublicQueue = createServerFn({

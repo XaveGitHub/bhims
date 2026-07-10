@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { format, parseISO } from "date-fns";
-import { Calendar as CalendarIcon, Clock, Edit2, FileText, GripHorizontal, Home, Loader2, MapPin, User, X, Printer, Download } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Edit2, FileText, GripHorizontal, Home, Loader2, MapPin, Package, User, X, Printer, Download } from "lucide-react";
 import { getResidentTransactions } from "../lib/queue-service";
 import { ResidentIdCard } from "./residents/resident-id-card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { toast } from "sonner";
 import type { Resident } from "#/routes/residents.tsx";
 import type { z } from "zod";
@@ -254,7 +254,7 @@ export function ResidentProfilePane({
 					<div className="grid grid-cols-2 gap-4">
 						<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none col-span-2">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Basic Info
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
@@ -296,7 +296,7 @@ export function ResidentProfilePane({
 
 						<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Demographics
 								</h3>
 								<div>
@@ -338,7 +338,7 @@ export function ResidentProfilePane({
 
 						<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Contact
 								</h3>
 								<div>
@@ -363,7 +363,7 @@ export function ResidentProfilePane({
 				<TabsContent value="health" className="m-0 space-y-6">
 					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
 						<CardContent className="p-4 space-y-4">
-							<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 								Health Indicators
 							</h3>
 							<div className="grid grid-cols-2 gap-y-4 gap-x-2">
@@ -430,7 +430,7 @@ export function ResidentProfilePane({
 
 					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
 						<CardContent className="p-4 space-y-4">
-							<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 								Special Status
 							</h3>
 							<div className="grid grid-cols-2 gap-y-4 gap-x-2">
@@ -482,7 +482,7 @@ export function ResidentProfilePane({
 				<TabsContent value="economic" className="m-0 space-y-6">
 					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
 						<CardContent className="p-4 space-y-3">
-							<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 								Location & Household
 							</h3>
 							<div className="grid grid-cols-2 gap-4">
@@ -540,7 +540,7 @@ export function ResidentProfilePane({
 
 					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
 						<CardContent className="p-4 space-y-3">
-							<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 								Economic Status
 							</h3>
 							<div className="grid grid-cols-2 gap-4">
@@ -590,7 +590,7 @@ export function ResidentProfilePane({
 
 					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
 						<CardContent className="p-4 space-y-4">
-							<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 								Other Statuses
 							</h3>
 							<div className="grid grid-cols-2 gap-y-4 gap-x-2">
@@ -726,7 +726,7 @@ export function ResidentProfilePane({
 					<div className="grid grid-cols-2 gap-4">
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none col-span-2">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Basic Info
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
@@ -783,7 +783,7 @@ export function ResidentProfilePane({
 
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Demographics
 								</h3>
 								<div className="space-y-4">
@@ -877,7 +877,7 @@ export function ResidentProfilePane({
 
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-400 mb-2">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Contact
 								</h3>
 								<div className="space-y-4">
@@ -916,7 +916,7 @@ export function ResidentProfilePane({
 					<div className="grid gap-6">
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-400">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Health Flags
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
@@ -981,7 +981,7 @@ export function ResidentProfilePane({
 
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-400">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Status Flags
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
@@ -1043,7 +1043,7 @@ export function ResidentProfilePane({
 					<div className="grid gap-6">
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-400">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Location & Household
 								</h3>
 								<div className="space-y-4">
@@ -1147,7 +1147,7 @@ export function ResidentProfilePane({
 
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-400">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Education & Work
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
@@ -1229,7 +1229,7 @@ export function ResidentProfilePane({
 
 						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-400">
+								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
 									Other Statuses
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
@@ -1489,23 +1489,44 @@ export function ResidentProfilePane({
 
 // ── HISTORY TIMELINE SUB-COMPONENT ──
 function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
-	if (transactions.length === 0) {
+	const [filter, setFilter] = useState<"all" | "document" | "ayuda">("all");
+
+	const filteredTransactions = useMemo(() => {
+		if (filter === "all") return transactions;
+		return transactions.filter(t => t.type === filter);
+	}, [transactions, filter]);
+
+	if (filteredTransactions.length === 0) {
 		return (
-			<div className="flex flex-col items-center justify-center py-16 text-center">
-				<div className="h-12 w-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3">
-					<FileText className="h-6 w-6 text-neutral-600" />
+			<div className="flex flex-col h-full w-full">
+				<div className="px-6 pt-0 shrink-0 flex justify-end">
+					<Select value={filter} onValueChange={(v: "all" | "document" | "ayuda") => setFilter(v)}>
+						<SelectTrigger className="bg-neutral-900/50 border-neutral-800 h-9 text-neutral-200 w-48">
+							<SelectValue placeholder="Filter records" />
+						</SelectTrigger>
+						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+							<SelectItem value="all">All Records</SelectItem>
+							<SelectItem value="document">Documents</SelectItem>
+							<SelectItem value="ayuda">Ayuda</SelectItem>
+						</SelectContent>
+					</Select>
 				</div>
-				<p className="text-sm font-semibold text-neutral-400">No Records Yet</p>
-				<p className="text-xs text-neutral-500 mt-1 max-w-[200px]">
-					This resident has no document request history.
-				</p>
+				<div className="flex flex-col items-center justify-center flex-1 py-16 text-center min-h-[250px]">
+					<div className="h-12 w-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3">
+						<FileText className="h-6 w-6 text-neutral-600" />
+					</div>
+					<p className="text-sm font-semibold text-neutral-400">No Records Yet</p>
+					<p className="text-xs text-neutral-500 mt-1 max-w-[200px]">
+						There are no records matching the selected filter.
+					</p>
+				</div>
 			</div>
 		);
 	}
 
 	// Group transactions by month
 	const grouped: Record<string, any[]> = {};
-	for (const tx of transactions) {
+	for (const tx of filteredTransactions) {
 		const date = tx.createdAt ? new Date(tx.createdAt) : new Date();
 		const key = format(date, "MMMM yyyy");
 		if (!grouped[key]) grouped[key] = [];
@@ -1519,13 +1540,28 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 		"Processing": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Processing" },
 		"Pending": { dot: "bg-amber-500 shadow-amber-500/40", badge: "bg-amber-500/15 text-amber-400 border-amber-500/30", label: "Pending" },
 		"Cancelled": { dot: "bg-red-500 shadow-red-500/40", badge: "bg-red-500/15 text-red-400 border-red-500/30", label: "Cancelled" },
+		"Claimed": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Claimed" },
+		"Unclaimed": { dot: "bg-neutral-500 shadow-neutral-500/40", badge: "bg-neutral-500/15 text-neutral-400 border-neutral-500/30", label: "Unclaimed" },
 	};
 
 	const getStatus = (status: string) =>
 		statusConfig[status] || { dot: "bg-neutral-500", badge: "bg-neutral-500/15 text-neutral-400 border-neutral-500/30", label: status };
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col h-full w-full">
+			<div className="px-6 pt-0 pb-0 shrink-0 flex justify-end">
+				<Select value={filter} onValueChange={(v: "all" | "document" | "ayuda") => setFilter(v)}>
+					<SelectTrigger className="bg-neutral-900/50 border-neutral-800 h-9 text-neutral-200 w-48">
+						<SelectValue placeholder="Filter records" />
+					</SelectTrigger>
+					<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+						<SelectItem value="all">All Records</SelectItem>
+						<SelectItem value="document">Documents</SelectItem>
+						<SelectItem value="ayuda">Ayuda</SelectItem>
+					</SelectContent>
+				</Select>
+			</div>
+			<div className="flex-1 overflow-y-auto p-6 space-y-6">
 			{Object.entries(grouped).map(([month, items]) => (
 				<div key={month}>
 					<div className="flex items-center gap-2 mb-4">
@@ -1546,30 +1582,34 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 								return (
 									<div key={tx.id} className="relative group">
 										{/* Timeline dot */}
-										<div className={`absolute -left-6 top-3 h-3.5 w-3.5 rounded-full border-2 border-neutral-950 ${config.dot} shadow-lg`} />
+										<div className={`absolute -left-6 top-1/2 -translate-y-1/2 h-3.5 w-3.5 rounded-full border-2 border-neutral-950 ${config.dot} shadow-lg`} />
 
 										<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none hover:bg-neutral-900/60 transition-colors">
 											<CardContent className="p-3.5">
 												<div className="flex items-start justify-between gap-3">
 													<div className="min-w-0 flex-1">
 														<div className="flex items-center gap-2">
-															<FileText className="h-3.5 w-3.5 text-neutral-500 shrink-0" />
-															<span className="text-sm font-semibold text-neutral-200 truncate">
-																{tx.templateName || "Document"}
+															{tx.type === "ayuda" ? (
+																<Package className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+															) : (
+																<FileText className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+															)}
+															<span className={cn("text-sm font-semibold truncate", tx.type === "ayuda" ? "text-purple-300" : "text-neutral-200")}>
+																{tx.templateName || (tx.type === "ayuda" ? "Ayuda Distribution" : "Document")}
 															</span>
 														</div>
 														{tx.purpose && (
-															<p className="text-xs text-neutral-400 mt-1.5 ml-5.5 line-clamp-2">
+															<p className="text-xs text-neutral-400 mt-1.5 ml-5 line-clamp-2">
 																{tx.purpose}
 															</p>
 														)}
-														<div className="flex items-center gap-3 mt-2 ml-5.5">
+														<div className="flex items-center gap-3 mt-2 ml-5">
 															<span className="text-[11px] text-neutral-500">
-																{format(date, "MMM d, yyyy • h:mm a")}
+																{format(date, "MMM d, yyyy   h:mm a")}
 															</span>
 															{tx.totalPrice > 0 && (
 																<span className="text-[11px] text-neutral-500">
-																	₱{tx.totalPrice.toFixed(2)}
+																	• ₱{tx.totalPrice.toFixed(2)}
 																</span>
 															)}
 															<span className="text-[11px] text-neutral-600 font-mono">
@@ -1593,6 +1633,7 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 					</div>
 				</div>
 			))}
+			</div>
 		</div>
 	);
 }
