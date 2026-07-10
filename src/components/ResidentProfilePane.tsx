@@ -222,28 +222,28 @@ export function ResidentProfilePane({
 	// ── VIEW MODE RENDERING ──
 	const renderViewMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="w-full grid grid-cols-4 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-14 shrink-0 items-stretch">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-800/50 px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
 				>
 					Personal
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
 				>
 					Health
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
 				>
 					Household
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
 				>
 					History
 				</TabsTrigger>
@@ -679,10 +679,10 @@ export function ResidentProfilePane({
 	// ── EDIT MODE RENDERING ──
 	const renderEditMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="w-full grid grid-cols-3 bg-neutral-950 p-0 border-b border-neutral-800 rounded-none h-14 shrink-0 items-stretch">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-800/50 px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Personal
@@ -693,10 +693,10 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
-						Health & Status
+						Health
 						{hasHealthErrors && (
 							<span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
 						)}
@@ -704,14 +704,20 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
-						Household & Economic
+						Household
 						{hasEconomicErrors && (
 							<span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
 						)}
 					</span>
+				</TabsTrigger>
+				<TabsTrigger
+					value="history"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+				>
+					History
 				</TabsTrigger>
 			</TabsList>
 
@@ -1296,6 +1302,9 @@ export function ResidentProfilePane({
 							</CardContent>
 						</Card>
 					</div>
+				</TabsContent>
+				<TabsContent value="history" className="m-0">
+					<ResidentHistoryTimeline transactions={historyTransactions} />
 				</TabsContent>
 			</div>
 		</Tabs>

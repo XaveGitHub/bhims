@@ -211,8 +211,8 @@ export function AddResidentModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-3xl bg-neutral-900 border-neutral-800 text-neutral-100 p-0 sm:rounded-2xl overflow-hidden h-[85vh] flex flex-col gap-0">
-				<DialogHeader className="px-6 py-4 border-b border-neutral-800 shrink-0">
+			<DialogContent className="max-w-3xl bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-0 sm:rounded-2xl overflow-hidden h-[85vh] flex flex-col gap-0">
+				<DialogHeader className="px-6 py-5 shrink-0">
 					<DialogTitle className="text-xl font-bold text-neutral-100">
 						Add New Resident Profile
 					</DialogTitle>
@@ -226,44 +226,35 @@ export function AddResidentModal({
 						defaultValue="personal"
 						className="w-full flex-1 flex flex-col min-h-0 overflow-hidden"
 					>
-						<TabsList className="w-full grid grid-cols-3 bg-neutral-950 !p-0 border-b border-neutral-800 !rounded-none !h-12 shrink-0 items-stretch">
-							<TabsTrigger
-								value="personal"
-								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
-							>
+						<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-800/50 px-2 py-[26px] rounded-full mx-6 mt-2 mb-0 shrink-0">
+							<TabsTrigger value="personal" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Personal
 									{hasPersonalErrors && (
-										<span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+										<span className="h-2 w-2 rounded-full bg-red-500 animate-pulse shrink-0" />
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger
-								value="health"
-								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
-							>
+							<TabsTrigger value="health" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Health & Status
 									{hasHealthErrors && (
-										<span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+										<span className="h-2 w-2 rounded-full bg-red-500 animate-pulse shrink-0" />
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger
-								value="economic"
-								className="rounded-none text-xs font-bold text-neutral-400 data-[state=active]:!bg-neutral-900 data-[state=active]:!text-blue-400 border-r border-neutral-800 last:border-r-0 border-b border-neutral-800 data-[state=active]:border-b-neutral-900 border-t-2 border-t-transparent data-[state=active]:!border-t-blue-500 hover:text-neutral-300 hover:bg-neutral-900/40 transition-all select-none cursor-pointer !h-full flex items-center justify-center shadow-none"
-							>
+							<TabsTrigger value="economic" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Household & Economic
 									{hasEconomicErrors && (
-										<span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+										<span className="h-2 w-2 rounded-full bg-red-500 animate-pulse shrink-0" />
 									)}
 								</span>
 							</TabsTrigger>
 						</TabsList>
 
-						<div className="flex-1 overflow-y-auto p-6 min-h-0">
-							<TabsContent value="personal" className="m-0 space-y-6">
+						<div className="flex-1 overflow-y-auto px-6 pb-6 pt-4 min-h-0">
+							<TabsContent value="personal" className="m-0 space-y-6 bg-neutral-900/30 p-6 rounded-xl border border-neutral-800/50 shadow-inner">
 								<div className="space-y-4">
 									<div className="grid grid-cols-2 gap-4">
 										<div className="space-y-1.5">
@@ -461,7 +452,7 @@ export function AddResidentModal({
 								</div>
 							</TabsContent>
 
-							<TabsContent value="health" className="m-0 space-y-6">
+							<TabsContent value="health" className="m-0 space-y-6 bg-neutral-900/30 p-6 rounded-xl border border-neutral-800/50 shadow-inner">
 								<div className="grid grid-cols-2 gap-8">
 									<div className="space-y-4">
 										<h4 className="text-sm font-semibold text-neutral-200 mb-2">
@@ -590,7 +581,7 @@ export function AddResidentModal({
 								</div>
 							</TabsContent>
 
-							<TabsContent value="economic" className="m-0 space-y-6">
+							<TabsContent value="economic" className="m-0 space-y-6 bg-neutral-900/30 p-6 rounded-xl border border-neutral-800/50 shadow-inner">
 								<div className="space-y-6">
 									<div className="space-y-4">
 										<h4 className="text-sm font-semibold text-neutral-200 mb-3">
@@ -858,23 +849,28 @@ export function AddResidentModal({
 						</div>
 					</Tabs>
 
-					<div className="p-4 border-t border-neutral-800 shrink-0 flex items-center justify-end gap-2 bg-neutral-950">
-						<Button
-							type="button"
-							variant="ghost"
-							onClick={onClose}
-							className="text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-xl"
-						>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							disabled={isSaving}
-							className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 rounded-xl"
-						>
-							{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-							Save Resident
-						</Button>
+					<div className="px-6 py-4 border-t border-neutral-800/60 bg-neutral-900/40 flex justify-between items-center shrink-0">
+						<div className="text-sm font-medium text-neutral-500">
+							Complete all required fields (*)
+						</div>
+						<div className="flex gap-3">
+							<Button
+								type="button"
+								variant="ghost"
+								onClick={onClose}
+								className="rounded-xl text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 px-5"
+							>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								disabled={isSaving}
+								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 shadow-sm"
+							>
+								{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+								Save Resident
+							</Button>
+						</div>
 					</div>
 				</form>
 			</DialogContent>
