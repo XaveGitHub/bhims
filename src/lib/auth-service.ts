@@ -149,6 +149,16 @@ export const getBarangayName = createServerFn({ method: "GET" }).handler(async (
 	return nameSetting[0]?.value || "Barangay Handumanan";
 });
 
+// ── Server function: get current app theme ──
+export const getAppTheme = createServerFn({ method: "GET" }).handler(async () => {
+	const themeSetting = db
+		.select()
+		.from(settings)
+		.where(eq(settings.key as any, "app_theme"))
+		.all();
+	return themeSetting[0]?.value || "classic";
+});
+
 async function requireAdmin() {
 	const { getCookie } = await import("@tanstack/react-start/server");
 	const cookie = getCookie("bhims_session_v2");

@@ -95,7 +95,7 @@ function QueueDashboard() {
 					<Loader2 className="h-8 w-8 animate-spin text-primary" />
 				</div>
 			) : queue.length === 0 ? (
-				<div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-card/20 border border-border rounded-3xl border-dashed">
+				<div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-card/20 border border-border rounded-xl border-dashed">
 					<CheckCircle2 className="h-16 w-16 text-muted-foreground mb-4" />
 					<h3 className="text-xl font-medium text-foreground/80">All Caught Up!</h3>
 					<p className="text-muted-foreground mt-2 max-w-sm">
@@ -107,7 +107,7 @@ function QueueDashboard() {
 					{queue.map((item) => (
 						<Card 
 							key={item.queueNumber} 
-							className={`bg-background rounded-3xl border-2 transition-all ${
+							className={`bg-background rounded-xl border-2 transition-all ${
 								item.status === 'Pending' ? 'border-border hover:border-border' :
 								item.status === 'Processing' ? 'border-primary/20 dark:border-primary/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]' :
 								'border-emerald-200 dark:border-emerald-900/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
@@ -116,7 +116,7 @@ function QueueDashboard() {
 							<CardHeader className="pb-0 pt-6 px-6">
 								<div className="flex flex-col items-center justify-center">
 									<p className="text-xs font-bold tracking-widest text-muted-foreground">Queue Number</p>
-									<CardTitle className="text-5xl font-black tabular-nums tracking-tighter mt-1 text-foreground">
+									<CardTitle className="text-5xl font-semibold tabular-nums tracking-tighter mt-1 text-foreground">
 										{item.queueNumber.toString().padStart(4, '0')}
 									</CardTitle>
 									<Badge variant="outline" className={`mt-3
@@ -240,7 +240,7 @@ function QueueDashboard() {
 			)}
 
 			<Dialog open={!!cancelBatch} onOpenChange={() => setCancelBatch(null)}>
-				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<Ban className="h-5 w-5 text-red-500" />

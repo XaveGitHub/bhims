@@ -203,7 +203,7 @@ function TransactionsView() {
 				</div>
 			</div>
 
-			<div className="rounded-2xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
+			<div className="rounded-xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
 				<div className="flex flex-col sm:flex-row gap-2">
 					<div className="relative flex-1">
 						<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground pointer-events-none">
@@ -244,7 +244,7 @@ function TransactionsView() {
 			</div>
 
 			<div className="flex flex-col gap-6 max-h-[calc(100vh-16rem)]">
-				<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 min-w-0">
+				<Card className="rounded-xl border-border bg-card shadow-sm flex flex-col overflow-hidden p-0 gap-0 min-w-0">
 					{isLoading && transactions.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
 							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-primary border-t-transparent" />
@@ -252,7 +252,7 @@ function TransactionsView() {
 					) : table.getRowModel().rows.length > 0 ? (
 						<>
 							<Table wrapperClassName={`flex-1 overflow-y-auto custom-scrollbar transition-opacity duration-200 ${isLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-								<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md border-b border-border">
+								<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
 									{table.getHeaderGroups().map((hg) => (
 										<TableRow key={hg.id} className="border-0 hover:bg-transparent">
 											{hg.headers.map((header) => {
@@ -261,7 +261,7 @@ function TransactionsView() {
 												return (
 													<TableHead
 														key={header.id}
-														className="text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-surface-strong text-left"
+														className="text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-card text-left"
 													>
 														{header.isPlaceholder ? null : canSort ? (
 															<button

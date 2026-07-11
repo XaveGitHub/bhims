@@ -41,7 +41,7 @@ function SetupScreen() {
 				/>
 				<div className="absolute inset-0 bg-background pointer-events-none z-0" />
 				<div className="relative z-10">
-					<h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-foreground mb-4 drop-shadow-xl">
+					<h2 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight text-foreground mb-4 drop-shadow-xl">
 						First Time<br />
 						<span className="text-primary">Setup</span>
 					</h2>

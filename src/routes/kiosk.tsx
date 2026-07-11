@@ -265,7 +265,7 @@ function KioskPage() {
 					<div className="flex flex-col items-center text-center gap-2 md:gap-3">
 						<img src="/barangay_logo.png" alt="Logo" className="w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-[0_0_25px_rgba(59,130,246,0.7)]" />
 						<div>
-							<h1 className="font-extrabold text-2xl md:text-3xl lg:text-4xl tracking-tight text-foreground leading-tight">Barangay Handumanan</h1>
+							<h1 className="font-semibold text-2xl md:text-3xl lg:text-4xl tracking-tight text-foreground leading-tight">Barangay Handumanan</h1>
 							<p className="text-sm md:text-base lg:text-lg text-primary font-medium tracking-wide mt-0 md:mt-1">Self-Service Kiosk</p>
 						</div>
 					</div>
@@ -279,28 +279,28 @@ function KioskPage() {
 				{step === "WELCOME" && (
 					<div className="w-full flex flex-col items-center justify-start animate-in fade-in zoom-in-95 duration-700 mt-0">
 						<div className="flex flex-col items-center w-full max-w-6xl">
-							<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black tracking-tight text-foreground mb-4 md:mb-8 lg:mb-16 pb-2 leading-tight text-center drop-shadow-sm px-4">
+							<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-semibold tracking-tight text-foreground mb-4 md:mb-8 lg:mb-16 pb-2 leading-tight text-center drop-shadow-sm px-4">
 								Are you a new or existing resident?
 							</h1>
 
 							<div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-10 w-full px-2 md:px-4">
 								<button 
 									onClick={() => setStep("IDENTIFY_SCAN")}
-									className="group relative flex flex-col items-center justify-center bg-background rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-4 sm:p-6 md:p-8 lg:p-16 shadow-2xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 border-2 border-primary/20 overflow-hidden"
+									className="group relative flex flex-col items-center justify-center bg-background rounded-xl md:rounded-xl lg:rounded-xl p-4 sm:p-6 md:p-8 lg:p-16 shadow-md shadow-primary/20 transition-all hover:scale-105 active:scale-95 border-2 border-primary/20 overflow-hidden"
 								>
 									<div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity" />
-									<ScanBarcode className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground mb-2 md:mb-4 lg:mb-8 drop-shadow-2xl group-hover:scale-110 transition-transform duration-500" />
-									<h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-black text-foreground drop-shadow-md whitespace-nowrap">Existing Resident</h2>
+									<ScanBarcode className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground mb-2 md:mb-4 lg:mb-8 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+									<h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-semibold text-foreground drop-shadow-md whitespace-nowrap">Existing Resident</h2>
 									<p className="text-primary mt-1 md:mt-2 text-[10px] sm:text-xs md:text-sm lg:text-lg font-bold tracking-wide">I already have a record</p>
 								</button>
 
 								<button 
 									onClick={() => setStep("REGISTER_NEW_RESIDENT")}
-									className="group relative flex flex-col items-center justify-center bg-background hover:bg-accent backdrop-blur-xl rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-4 sm:p-6 md:p-8 lg:p-16 shadow-2xl transition-all hover:scale-105 active:scale-95 border-2 border-border overflow-hidden"
+									className="group relative flex flex-col items-center justify-center bg-background hover:bg-accent rounded-xl md:rounded-xl lg:rounded-xl p-4 sm:p-6 md:p-8 lg:p-16 shadow-md transition-all hover:scale-105 active:scale-95 border-2 border-border overflow-hidden"
 								>
 									<div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity" />
-									<UserPlus className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground mb-2 md:mb-4 lg:mb-8 drop-shadow-2xl group-hover:scale-110 transition-transform duration-500" />
-									<h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-black text-foreground drop-shadow-md whitespace-nowrap">New Resident</h2>
+									<UserPlus className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground mb-2 md:mb-4 lg:mb-8 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+									<h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-semibold text-foreground drop-shadow-md whitespace-nowrap">New Resident</h2>
 									<p className="text-foreground/80 mt-1 md:mt-2 text-[10px] sm:text-xs md:text-sm lg:text-lg font-bold tracking-wide">I need to register</p>
 								</button>
 							</div>
@@ -311,9 +311,9 @@ function KioskPage() {
 				{/* 2A. IDENTIFY: SCAN */}
 				{step === "IDENTIFY_SCAN" && (
 					<div className="w-full max-w-2xl flex flex-col items-center animate-in fade-in slide-in-from-right-8 duration-500">
-						<div className="bg-surface-strong backdrop-blur-2xl border border-border p-12 rounded-[3rem] w-full shadow-2xl text-center">
+						<div className="bg-card border border-border p-12 rounded-xl w-full shadow-md text-center">
 							<ScanBarcode className="w-24 h-24 text-primary mx-auto mb-8 animate-pulse" />
-							<h2 className="text-4xl font-extrabold text-foreground mb-4">Scan your ID</h2>
+							<h2 className="text-4xl font-semibold text-foreground mb-4">Scan your ID</h2>
 							<p className="text-lg text-muted-foreground mb-10">Place your barcode under the scanner.</p>
 							
 							<form onSubmit={handleScanLogin} className="max-w-xs mx-auto space-y-6">
@@ -322,13 +322,13 @@ function KioskPage() {
 										autoFocus
 										aria-invalid={!!error}
 										placeholder="Or type code..." 
-										className="h-14 bg-background/50 text-center text-lg tracking-[0.3em] font-mono rounded-2xl transition-all shadow-inner placeholder:normal-case placeholder:tracking-normal border-border/80 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50"
+										className="h-14 bg-card text-center text-lg tracking-[0.3em] font-mono rounded-xl transition-all shadow-inner placeholder:normal-case placeholder:tracking-normal border-border focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50"
 										value={barcode}
 										onChange={(e) => { setBarcode(e.target.value.toUpperCase()); setError(null); }}
 									/>
 									{error && <p className="text-red-400 text-sm font-medium animate-in fade-in text-center">{error}</p>}
 								</div>
-								<Button type="submit" disabled={loading || !barcode} className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
+								<Button type="submit" disabled={loading || !barcode} className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-xl shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
 									{loading ? <Loader2 size={32} className="animate-spin" /> : "Continue"}
 								</Button>
 							</form>
@@ -356,13 +356,13 @@ function KioskPage() {
 				{/* 2B. IDENTIFY: SEARCH */}
 				{step === "IDENTIFY_SEARCH" && (
 					<div className="w-full max-w-2xl flex flex-col items-center animate-in fade-in slide-in-from-left-8 duration-500">
-						<div className="bg-surface-strong backdrop-blur-2xl border border-border p-10 md:p-12 rounded-[3rem] w-full shadow-2xl">
+						<div className="bg-card border border-border p-10 md:p-12 rounded-xl w-full shadow-md">
 							<div className="flex items-center justify-between mb-8">
 								<div>
-									<h2 className="text-4xl font-extrabold text-foreground mb-2">Search Records</h2>
+									<h2 className="text-4xl font-semibold text-foreground mb-2">Search Records</h2>
 									<p className="text-muted-foreground">Enter your exact details to find your record.</p>
 								</div>
-								<div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+								<div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
 									<Search className="w-8 h-8 text-primary" />
 								</div>
 							</div>
@@ -377,7 +377,7 @@ function KioskPage() {
 											<Input 
 												autoFocus
 												aria-invalid={!!error}
-												className="h-14 bg-background/50 text-lg rounded-xl border-border/80 pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={firstName}
 												onChange={(e) => { setFirstName(e.target.value); setError(null); }}
 											/>
@@ -389,7 +389,7 @@ function KioskPage() {
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
 												aria-invalid={!!error}
-												className="h-14 bg-background/50 text-lg rounded-xl border-border/80 pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={lastName}
 												onChange={(e) => { setLastName(e.target.value); setError(null); }}
 											/>
@@ -404,8 +404,8 @@ function KioskPage() {
 												type="button"
 												variant="outline"
 												className={cn(
-													"justify-start text-left font-normal bg-background/50 h-14 text-lg rounded-xl transition-all border",
-													error ? 'border-red-500 bg-red-500/10 text-red-100 hover:bg-red-500/20' : 'border-border/80 hover:bg-card',
+													"justify-start text-left font-normal bg-card h-14 text-lg rounded-xl transition-all border",
+													error ? 'border-red-500 bg-red-500/10 text-red-100 hover:bg-red-500/20' : 'border-border hover:bg-card',
 													!birthDate && "text-muted-foreground"
 												)}
 											>
@@ -435,7 +435,7 @@ function KioskPage() {
 										</PopoverContent>
 									</Popover>
 								</div>
-								<Button type="submit" disabled={loading || !firstName || !lastName || !birthDate} className="w-full h-14 mt-4 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
+								<Button type="submit" disabled={loading || !firstName || !lastName || !birthDate} className="w-full h-14 mt-4 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-xl shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
 									{loading ? <Loader2 size={32} className="animate-spin" /> : "Search"}
 								</Button>
 							</form>
@@ -454,13 +454,13 @@ function KioskPage() {
 				{/* 2C. IDENTIFY: NEW REGISTRATION */}
 				{step === "REGISTER_NEW_RESIDENT" && (
 					<div className="w-full max-w-3xl flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-500">
-						<div className="bg-surface-strong backdrop-blur-2xl border border-border p-10 md:p-12 rounded-[3rem] w-full shadow-2xl text-center relative overflow-hidden">
+						<div className="bg-card border border-border p-10 md:p-12 rounded-xl w-full shadow-md text-center relative overflow-hidden">
 							
 							<div className="mb-8">
-								<div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 mx-auto mb-4">
+								<div className="w-20 h-20 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 mx-auto mb-4">
 									<UserPlus className="w-10 h-10 text-primary" />
 								</div>
-								<h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-2">New Resident</h2>
+								<h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-2">New Resident</h2>
 								<p className="text-muted-foreground">Fill in your basic details to get started.</p>
 							</div>
 							
@@ -489,7 +489,7 @@ function KioskPage() {
 											<Input 
 												autoFocus
 												aria-invalid={!!error && !regFirstName}
-												className="h-14 bg-background/50 text-lg rounded-xl border-border/80 pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={regFirstName}
 												onChange={(e) => { setRegFirstName(e.target.value); setError(null); }}
 												placeholder="e.g. Juan"
@@ -502,7 +502,7 @@ function KioskPage() {
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
 												aria-invalid={!!error && !regLastName}
-												className="h-14 bg-background/50 text-lg rounded-xl border-border/80 pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={regLastName}
 												onChange={(e) => { setRegLastName(e.target.value); setError(null); }}
 												placeholder="e.g. Dela Cruz"
@@ -522,8 +522,8 @@ function KioskPage() {
 														type="button"
 														variant="outline"
 														className={cn(
-															"w-full justify-start text-left font-normal bg-background/50 h-14 text-lg rounded-xl transition-all border pl-12",
-															(error && !regBirthDate) ? 'border-red-500 bg-red-500/10' : 'border-border/80 hover:bg-card',
+															"w-full justify-start text-left font-normal bg-card h-14 text-lg rounded-xl transition-all border pl-12",
+															(error && !regBirthDate) ? 'border-red-500 bg-red-500/10' : 'border-border hover:bg-card',
 															!regBirthDate && "text-muted-foreground"
 														)}
 													>
@@ -559,7 +559,7 @@ function KioskPage() {
 										<div className="relative">
 											<Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Select value={regGender} onValueChange={(v) => { setRegGender(v); setError(null); }}>
-												<SelectTrigger className={cn("w-full h-14 bg-background/50 text-lg rounded-xl border-border/80 pl-12 focus:ring-primary/50", (error && !regGender) && "border-red-500")}>
+												<SelectTrigger className={cn("w-full h-14 bg-card text-lg rounded-xl border-border pl-12 focus:ring-primary/50", (error && !regGender) && "border-red-500")}>
 													<SelectValue placeholder="Select gender" />
 												</SelectTrigger>
 												<SelectContent className="bg-card border-border text-foreground">
@@ -577,7 +577,7 @@ function KioskPage() {
 										<div className="relative">
 											<MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Select value={regPurok} onValueChange={(v) => { setRegPurok(v); setError(null); }}>
-												<SelectTrigger className={cn("w-full h-14 bg-background/50 text-lg rounded-xl border-border/80 pl-12 focus:ring-primary/50", (error && !regPurok) && "border-red-500")}>
+												<SelectTrigger className={cn("w-full h-14 bg-card text-lg rounded-xl border-border pl-12 focus:ring-primary/50", (error && !regPurok) && "border-red-500")}>
 													<SelectValue placeholder="Select Purok" />
 												</SelectTrigger>
 												<SelectContent className="bg-card border-border text-foreground max-h-[250px]">
@@ -594,7 +594,7 @@ function KioskPage() {
 											<Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Input 
 												type="tel"
-												className="h-14 bg-background/50 text-lg rounded-xl border-border/80 pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50" 
+												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50" 
 												value={regContactNumber}
 												onChange={(e) => setRegContactNumber(e.target.value)}
 												placeholder="Optional"
@@ -603,7 +603,7 @@ function KioskPage() {
 									</div>
 								</div>
 
-								<Button type="submit" disabled={loading || !regFirstName || !regLastName || !regBirthDate || !regGender || !regPurok} className="w-full h-16 mt-8 bg-primary hover:bg-primary/90 text-primary-foreground text-xl font-bold rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
+								<Button type="submit" disabled={loading || !regFirstName || !regLastName || !regBirthDate || !regGender || !regPurok} className="w-full h-16 mt-8 bg-primary hover:bg-primary/90 text-primary-foreground text-xl font-bold rounded-xl shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
 									{loading ? <Loader2 size={32} className="animate-spin" /> : "Complete Registration & Continue"}
 								</Button>
 							</form>
@@ -623,11 +623,11 @@ function KioskPage() {
 				{step === "SELECT_DOCUMENTS" && activeResident && (
 					<div className="w-full h-full flex flex-col animate-in fade-in zoom-in-95 duration-500 pt-4 pb-8 max-w-5xl mx-auto">
 						
-						<div className="flex-1 flex flex-col min-h-0 bg-card/40 backdrop-blur-2xl border border-border rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+						<div className="flex-1 flex flex-col min-h-0 bg-card/40 border border-border rounded-xl overflow-hidden shadow-md relative">
 							{/* Header */}
-							<div className="p-8 border-b border-border bg-background/30 flex justify-between items-center">
+							<div className="p-8 border-b border-border bg-card flex justify-between items-center">
 								<div>
-									<h2 className="text-3xl font-extrabold text-foreground">Select Documents</h2>
+									<h2 className="text-3xl font-semibold text-foreground">Select Documents</h2>
 									<p className="text-muted-foreground mt-1">Tap the documents you want to request.</p>
 								</div>
 								<Button 
@@ -654,7 +654,7 @@ function KioskPage() {
 														setCart([...cart, tpl]);
 													}
 												}}
-												className={`group relative border-2 rounded-3xl p-5 cursor-pointer transition-all flex flex-col overflow-hidden h-full ${isInCart ? 'border-primary/20 bg-primary/10 shadow-lg shadow-primary/20 scale-[0.98]' : 'border-border/80 bg-background/50 hover:border-primary/20 hover:bg-surface hover:-translate-y-1'}`}
+												className={`group relative border-2 rounded-xl p-5 cursor-pointer transition-all flex flex-col overflow-hidden h-full ${isInCart ? 'border-primary/20 bg-primary/10 shadow-sm shadow-primary/20 scale-[0.98]' : 'border-border bg-card hover:border-primary/20 hover:bg-surface hover:-translate-y-1'}`}
 											>
 												{isInCart && (
 													<div className="absolute top-4 right-4 z-20 text-primary bg-background rounded-full">
@@ -678,7 +678,7 @@ function KioskPage() {
 												{/* Content Area */}
 												<div className="flex flex-col flex-1 justify-end text-center">
 													<div className="font-bold text-base text-foreground leading-tight mb-1">{tpl.name}</div>
-													<div className="text-primary font-black">₱{tpl.price?.toFixed(2) || "0.00"}</div>
+													<div className="text-primary font-semibold">₱{tpl.price?.toFixed(2) || "0.00"}</div>
 												</div>
 											</div>
 										);
@@ -701,7 +701,7 @@ function KioskPage() {
 						<div className="pointer-events-auto w-full">
 							<Button 
 								onClick={() => setStep("CHECKOUT")} 
-								className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground text-xl font-bold rounded-[2rem] shadow-[0_10px_50px_-10px_rgba(59,130,246,0.7)] border border-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-between px-8"
+								className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground text-xl font-bold rounded-xl shadow-[0_10px_50px_-10px_rgba(59,130,246,0.7)] border border-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-between px-8"
 							>
 								<span>Review Request</span>
 								<div className="flex items-center gap-3">
@@ -718,9 +718,9 @@ function KioskPage() {
 				{/* 4. CHECKOUT (Review Summary) */}
 				{step === "CHECKOUT" && activeResident && (
 					<div className="w-full max-w-2xl flex flex-col items-center animate-in fade-in slide-in-from-right-8 duration-500 h-full py-4">
-						<div className="w-full flex flex-col min-h-0 bg-surface-strong backdrop-blur-2xl border border-border rounded-[2.5rem] overflow-hidden shadow-2xl">
+						<div className="w-full flex flex-col min-h-0 bg-card border border-border rounded-xl overflow-hidden shadow-md">
 							{/* Header with Back Button */}
-							<div className="p-8 border-b border-border bg-background/50 flex items-center gap-4">
+							<div className="p-8 border-b border-border bg-card flex items-center gap-4">
 								<Button 
 									variant="ghost" 
 									onClick={() => setStep("SELECT_DOCUMENTS")}
@@ -747,7 +747,7 @@ function KioskPage() {
 								
 								{cart.length === 0 ? (
 									<div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 opacity-50 pb-10">
-										<div className="w-20 h-20 border-2 border-dashed border-neutral-600 rounded-3xl flex items-center justify-center">
+										<div className="w-20 h-20 border-2 border-dashed border-neutral-600 rounded-xl flex items-center justify-center">
 											<FileText className="w-8 h-8 text-muted-foreground" />
 										</div>
 										<p className="text-muted-foreground font-medium">No documents in cart.</p>
@@ -763,7 +763,7 @@ function KioskPage() {
 									<div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-4">
 										<div className="space-y-4 mb-8 flex-1">
 											{cart.map((item, index) => (
-												<div key={`${item.id}-${index}`} className="bg-background border border-border rounded-2xl p-4 relative group flex items-center gap-4">
+												<div key={`${item.id}-${index}`} className="bg-background border border-border rounded-xl p-4 relative group flex items-center gap-4">
 													{item.imageBase64 ? (
 														<img src={item.imageBase64.startsWith('data:image') ? item.imageBase64 : `/templates/${item.imageBase64}`} alt="" className="w-12 h-12 object-contain bg-white/5 rounded-xl p-1.5" />
 													) : (
@@ -771,7 +771,7 @@ function KioskPage() {
 													)}
 													<div className="flex-1 min-w-0 pr-10">
 														<div className="font-bold text-foreground text-lg leading-tight truncate">{item.name}</div>
-														<div className="font-black text-primary text-base mt-0.5">₱{item.price?.toFixed(2) || "0.00"}</div>
+														<div className="font-semibold text-primary text-base mt-0.5">₱{item.price?.toFixed(2) || "0.00"}</div>
 													</div>
 													<button 
 														type="button"
@@ -788,7 +788,7 @@ function KioskPage() {
 											<Label className="text-foreground/80 font-bold text-lg">What is the purpose of this request?</Label>
 											<Input 
 												placeholder="e.g. Employment, School requirement, Business..." 
-												className="h-16 bg-background/80 border-border rounded-2xl px-6 text-lg focus:border-primary/20 transition-all shadow-inner"
+												className="h-16 bg-card border-border rounded-xl px-6 text-lg focus:border-primary/20 transition-all shadow-inner"
 												value={purpose}
 												onChange={e => setPurpose(e.target.value)}
 											/>
@@ -798,10 +798,10 @@ function KioskPage() {
 							</div>
 
 							{/* Cart Footer / Checkout */}
-							<div className="p-6 bg-background/80 rounded-b-[2.5rem]">
+							<div className="p-6 bg-card rounded-b-[2.5rem]">
 								<div className="flex justify-between items-end mb-6">
 									<div className="text-muted-foreground font-medium text-lg">Total Amount</div>
-									<div className="text-3xl font-black text-foreground tracking-tight">
+									<div className="text-3xl font-semibold text-foreground tracking-tight">
 										₱{cart.reduce((total, item) => total + (item.price || 0), 0).toFixed(2)}
 									</div>
 								</div>
@@ -809,7 +809,7 @@ function KioskPage() {
 								<Button 
 									onClick={handleSubmitRequest} 
 									disabled={cart.length === 0 || !purpose || loading}
-									className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+									className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-xl shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
 								>
 									{loading ? <Loader2 size={32} className="animate-spin" /> : "Confirm Request"}
 								</Button>
@@ -823,7 +823,7 @@ function KioskPage() {
 					<div className="w-full max-w-xl flex flex-col items-center justify-center animate-in zoom-in-95 duration-700 h-full pb-24 mx-auto pt-0 -mt-2 md:-mt-4">
 						
 						{/* The Main "Receipt" Card with Speech Bubble Pointer */}
-						<div className="bg-[#111111] border border-border rounded-[2.5rem] p-8 md:p-10 pb-8 text-center shadow-2xl w-full relative flex flex-col items-center mt-4">
+						<div className="bg-[#111111] border border-border rounded-xl p-8 md:p-10 pb-8 text-center shadow-md w-full relative flex flex-col items-center mt-4">
 							
 							{/* Speech Bubble Pointer (The little triangle pointing up) */}
 							<div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#111111] rotate-45 border-t border-l border-border rounded-tl-sm" />
@@ -836,7 +836,7 @@ function KioskPage() {
 								Your queue number is
 							</div>
 							
-							<div className="text-7xl md:text-[7rem] font-black text-foreground tracking-tighter drop-shadow-md my-2">
+							<div className="text-7xl md:text-[7rem] font-semibold text-foreground tracking-tighter drop-shadow-md my-2">
 								{queueNumber}
 							</div>
 							
@@ -853,7 +853,7 @@ function KioskPage() {
 							
 							<Button 
 								onClick={handleReset}
-								className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98]"
+								className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-xl shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98]"
 							>
 								Start New Request
 							</Button>

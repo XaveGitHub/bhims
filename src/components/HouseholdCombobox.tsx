@@ -105,10 +105,11 @@ export function HouseholdCombobox({
 			</PopoverTrigger>
 
 			<PopoverContent 
-				className="p-0 w-[var(--radix-popover-trigger-width)] border-border bg-card shadow-xl overflow-hidden rounded-xl" 
+				className="p-0 w-[var(--radix-popover-trigger-width)] border-border bg-card shadow-xl overflow-hidden rounded-xl flex flex-col" 
 				align="start"
+				style={{ maxHeight: 'var(--radix-popover-content-available-height)' }}
 			>
-				<div className="flex flex-col">
+				<div className="flex flex-col flex-1 overflow-hidden">
 					<div className="flex items-center border-b border-border/60 px-3 pb-1 pt-2 shrink-0">
 						<Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
 						<input
@@ -120,10 +121,13 @@ export function HouseholdCombobox({
 						/>
 						{loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground ml-2" />}
 					</div>
-					<div className="overflow-y-auto p-1 max-h-[250px] overscroll-contain">
+					<div 
+						className="overflow-y-auto p-1 overscroll-contain flex-1 min-h-0"
+						style={{ maxHeight: 'min(250px, calc(var(--radix-popover-content-available-height) - 45px))' }}
+					>
 						<button
 							type="button"
-							className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-muted hover:text-foreground focus:bg-muted text-primary font-medium transition-colors"
+							className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary text-primary font-medium transition-colors"
 							onClick={() => {
 								onChange("NEW");
 								setOpen(false);
@@ -154,7 +158,7 @@ export function HouseholdCombobox({
 								<button
 									key={hh.householdId}
 									type="button"
-									className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-muted hover:text-foreground focus:bg-muted text-foreground transition-colors"
+									className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary text-foreground transition-colors"
 									onClick={() => {
 										setSelectedValue(hh);
 										onChange(hh.householdId);

@@ -287,7 +287,7 @@ function HouseholdsView() {
 		return (
 			<div
 				onClick={() => setDrawerResident(member as Resident)}
-				className={`member-card-node w-56 h-[116px] p-4 rounded-xl border bg-background/50 shadow-sm transition-all hover:bg-card flex flex-col justify-between border-border shrink-0 relative z-10 overflow-hidden group cursor-pointer hover:border-neutral-600`}
+				className={`member-card-node w-56 h-[116px] p-4 rounded-xl border bg-card shadow-sm transition-all hover:bg-card flex flex-col justify-between border-border shrink-0 relative z-10 overflow-hidden group cursor-pointer hover:border-neutral-600`}
 			>
 				<div className="flex items-start justify-between relative z-10 pl-1">
 					<span
@@ -362,9 +362,9 @@ function HouseholdsView() {
 
 			<div className="flex flex-col md:flex-row gap-6 h-[calc(100vh-16rem)] overflow-hidden">
 				{/* Left Column: Households list */}
-				<Card className="w-full md:w-80 bg-background/60 backdrop-blur-xl border-border shadow-lg flex flex-col overflow-hidden shrink-0 h-1/2 md:h-full p-0 gap-0">
+				<Card className="w-full md:w-80 bg-card border-border shadow-sm flex flex-col overflow-hidden shrink-0 h-1/2 md:h-full p-0 gap-0">
 					{/* List Header */}
-					<div className="p-4 border-b border-border/80 space-y-4 bg-card/20">
+					<div className="p-4 border-b border-border space-y-4 bg-card/20">
 						<div className="space-y-1">
 							<h3 className="font-bold text-foreground flex items-center gap-2">
 								<Home className="h-4 w-4 text-primary" />
@@ -384,7 +384,7 @@ function HouseholdsView() {
 									placeholder="Search head of family..."
 									value={search}
 									onChange={(e) => setSearch(e.target.value)}
-									className="pl-8 py-2 bg-background/50 border-border/80 text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/50 focus-visible:border-primary/20 h-9 rounded-xl"
+									className="pl-8 py-2 bg-card border-border text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/50 focus-visible:border-primary/20 h-9 rounded-xl"
 								/>
 							</div>
 
@@ -410,7 +410,7 @@ function HouseholdsView() {
 					</div>
 
 					{/* List scroll area */}
-					<div className="flex-1 overflow-y-auto divide-y divide-border/60 bg-background/20">
+					<div className="flex-1 overflow-y-auto divide-y divide-border/60 bg-card">
 						{loadingList ? (
 							<div className="flex h-40 items-center justify-center">
 								<div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -435,11 +435,11 @@ function HouseholdsView() {
 											{h.headName}
 										</h4>
 										<div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground mt-1">
-											<span className="bg-card border border-border/80 px-2 py-0.5 rounded-full truncate">
+											<span className="bg-card border border-border px-2 py-0.5 rounded-full truncate">
 												{h.purok}
 											</span>
 											{(h.block || h.lot) && (
-												<span className="bg-card border border-border/80 px-2 py-0.5 rounded-full truncate">
+												<span className="bg-card border border-border px-2 py-0.5 rounded-full truncate">
 													{h.block ? `Blk ${h.block}` : ""} {h.lot ? `Lot ${h.lot}` : ""}
 												</span>
 											)}
@@ -466,7 +466,7 @@ function HouseholdsView() {
 				</Card>
 
 				{/* Right Column: Family Tree Detail panel */}
-				<Card className="flex-1 bg-background/60 backdrop-blur-xl border-border shadow-lg flex flex-col overflow-hidden h-1/2 md:h-full relative p-0 gap-0">
+				<Card className="flex-1 bg-card border-border shadow-sm flex flex-col overflow-hidden h-1/2 md:h-full relative p-0 gap-0">
 					{/* Subtle grid background */}
 					<div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
@@ -486,7 +486,7 @@ function HouseholdsView() {
 								<div className="p-6 border-b border-border flex items-center justify-between shrink-0">
 									<div>
 										<div className="flex items-center gap-3">
-											<h3 className="font-extrabold text-xl text-foreground">
+											<h3 className="font-semibold text-xl text-foreground">
 												Household Family Tree
 											</h3>
 											<button
@@ -512,7 +512,7 @@ function HouseholdsView() {
 											</span>
 										</div>
 									</div>
-									<div className="p-3 bg-background border border-border text-muted-foreground rounded-2xl flex items-center gap-2 text-xs font-semibold">
+									<div className="p-3 bg-background border border-border text-muted-foreground rounded-xl flex items-center gap-2 text-xs font-semibold">
 										<Users className="h-4 w-4 text-primary" />
 										<span>
 											{(detail.head ? 1 : 0) +
@@ -527,7 +527,7 @@ function HouseholdsView() {
 								{/* Interactive Family Tree Canvas */}
 								<div className="flex-1 overflow-hidden relative bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/20 via-neutral-950 to-neutral-950">
 									{/* Zoom Controls */}
-									<div className="absolute bottom-6 right-6 z-50 flex flex-col gap-2 bg-surface backdrop-blur-md p-2 rounded-xl border border-border shadow-xl pointer-events-auto">
+									<div className="absolute bottom-6 right-6 z-50 flex flex-col gap-2 bg-surface p-2 rounded-xl border border-border shadow-xl pointer-events-auto">
 										<button type="button" onClick={() => setZoom(z => Math.min(z + 0.1, 2))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-muted hover:bg-muted text-foreground/80 font-bold">+</button>
 										<button type="button" onClick={() => setZoom(1)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-muted hover:bg-muted text-foreground/80 text-xs font-bold">1x</button>
 										<button type="button" onClick={() => setZoom(z => Math.max(z - 0.1, 0.3))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-muted hover:bg-muted text-foreground/80 font-bold">-</button>
@@ -753,7 +753,7 @@ function HouseholdsView() {
 
 			{/* Edit Household Modal */}
 			<Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-				<DialogContent className="sm:max-w-[425px] bg-background border-border/60 shadow-2xl">
+				<DialogContent className="sm:max-w-[425px] bg-background border-border/60 shadow-md">
 					<form onSubmit={handleEditSubmit}>
 						<DialogHeader>
 							<DialogTitle className="text-xl text-foreground">

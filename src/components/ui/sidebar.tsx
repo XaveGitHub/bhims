@@ -180,7 +180,7 @@ const Sidebar = React.forwardRef<
 			return (
 				<div
 					className={cn(
-						"flex h-full w-[var(--sidebar-width)] flex-col bg-background/40 backdrop-blur-2xl border-r border-border text-foreground",
+						"flex h-full w-[var(--sidebar-width)] flex-col bg-sidebar border-r border-border text-sidebar-foreground",
 						className,
 					)}
 					ref={ref}
@@ -202,7 +202,7 @@ const Sidebar = React.forwardRef<
 					<div
 						ref={ref}
 						className={cn(
-							"relative flex w-[var(--sidebar-width-mobile)] max-w-xs flex-col bg-background/50 backdrop-blur-2xl border-r border-border h-full p-4 animate-in slide-in-from-left duration-250",
+							"relative flex w-[var(--sidebar-width-mobile)] max-w-xs flex-col bg-sidebar border-r border-border h-full p-4 animate-in slide-in-from-left duration-250",
 							side === "right" &&
 								"ml-auto border-l border-r-0 slide-in-from-right",
 							className,
@@ -237,7 +237,7 @@ const Sidebar = React.forwardRef<
 				/>
 				<div
 					className={cn(
-						"duration-200 fixed inset-y-0 z-10 hidden h-screen w-[var(--sidebar-width)] flex-col bg-background/40 backdrop-blur-2xl border-r border-border text-foreground transition-all md:flex",
+						"duration-200 fixed inset-y-0 z-10 hidden h-screen w-[var(--sidebar-width)] flex-col bg-sidebar border-r border-border text-sidebar-foreground transition-all md:flex",
 						side === "left" ? "left-0" : "right-0 border-l border-r-0",
 						// Collapsible offcanvas
 						"group-data-[collapsible=offcanvas]:translate-x-[-100%]",
@@ -409,7 +409,7 @@ const SidebarGroupLabel = React.forwardRef<
 			ref={ref}
 			data-slot="sidebar-group-label"
 			className={cn(
-				"px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground truncate group-data-[collapsible=icon]:hidden",
+				"flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:hidden",
 				className,
 			)}
 			{...props}
@@ -467,17 +467,17 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
 const sidebarMenuButtonVariants = cva(
-	"peer/menu-button flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-xl select-none cursor-pointer",
+	"peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
 	{
 		variants: {
 			variant: {
-				default: "",
-				outline: "border border-neutral-800",
+				default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+				outline: "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
 			},
 			size: {
-				default: "h-10 text-sm",
-				sm: "h-8 text-xs",
-				lg: "h-12 text-base",
+				default: "h-8 text-sm",
+				sm: "h-7 text-xs",
+				lg: "h-12 text-sm group-data-[collapsible=icon]:!p-0",
 			},
 		},
 		defaultVariants: {
@@ -505,10 +505,9 @@ const SidebarMenuButton = React.forwardRef<
 			<Comp
 				ref={ref}
 				data-slot="sidebar-menu-button"
+				data-active={isActive}
 				className={cn(
 					sidebarMenuButtonVariants({ variant, size }),
-					isActive &&
-						"bg-accent text-accent-foreground font-medium",
 					className,
 				)}
 				{...props}

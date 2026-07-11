@@ -199,7 +199,7 @@ function AccountsView() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h2 className="text-2xl font-extrabold tracking-tight text-foreground">
+					<h2 className="text-2xl font-semibold tracking-tight text-foreground">
 						User Management
 					</h2>
 					<p className="text-sm text-muted-foreground mt-1">
@@ -214,7 +214,7 @@ function AccountsView() {
 				</Button>
 			</div>
 
-			<Card className="rounded-2xl border-border bg-card backdrop-blur-xl shadow-lg p-0 space-y-0 overflow-hidden">
+			<Card className="rounded-xl border-border bg-card shadow-sm p-0 space-y-0 overflow-hidden">
 				<Table>
 					<TableHeader className="bg-muted/50">
 						<TableRow className="border-border hover:bg-transparent">
@@ -271,7 +271,7 @@ function AccountsView() {
 				open={isAccountModalOpen}
 				onOpenChange={setIsAccountModalOpen}
 			>
-				<DialogContent className="max-w-md bg-background border-border text-foreground p-6 sm:rounded-2xl shadow-2xl">
+				<DialogContent className="max-w-md bg-background border-border text-foreground p-6 sm:rounded-xl shadow-md">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground">
 							Edit Account
@@ -336,7 +336,7 @@ function AccountsView() {
 				open={isCreateModalOpen}
 				onOpenChange={setIsCreateModalOpen}
 			>
-				<DialogContent className="max-w-md bg-background border-border text-foreground p-6 sm:rounded-2xl shadow-2xl">
+				<DialogContent className="max-w-md bg-background border-border text-foreground p-6 sm:rounded-xl shadow-md">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground">
 							Add New Account
@@ -418,7 +418,7 @@ function AccountsView() {
 				open={isDeleteModalOpen}
 				onOpenChange={setIsDeleteModalOpen}
 			>
-				<DialogContent className="max-w-md bg-background border-border shadow-2xl text-foreground p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-border shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-red-500 flex items-center gap-2">
 							<Trash2 className="h-5 w-5" />

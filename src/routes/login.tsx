@@ -23,7 +23,7 @@ function LoginScreen() {
 				
 				{/* Text positioned at the bottom left */}
 				<div className="relative z-10">
-					<h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-foreground mb-4 drop-shadow-xl">
+					<h2 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight text-foreground mb-4 drop-shadow-xl">
 						Empowering<br/>
 						<span className="text-primary">Barangay Handumanan</span>
 					</h2>

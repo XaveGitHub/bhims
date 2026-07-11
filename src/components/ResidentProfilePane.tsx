@@ -17,6 +17,7 @@ import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { HouseholdCombobox } from "./HouseholdCombobox";
+import { PurokCombobox } from "./PurokCombobox";
 type ResidentInputForm = z.infer<typeof residentSchema>;
 
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -225,25 +226,25 @@ export function ResidentProfilePane({
 			<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					Personal
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					Health
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					Household
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					History
 				</TabsTrigger>
@@ -682,7 +683,7 @@ export function ResidentProfilePane({
 			<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Personal
@@ -693,7 +694,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Health
@@ -704,7 +705,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Household
@@ -715,7 +716,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					History
 				</TabsTrigger>
@@ -1050,21 +1051,19 @@ export function ResidentProfilePane({
 									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 										<div className="space-y-1.5">
 											<Label className="text-xs text-muted-foreground">Purok *</Label>
-											<Input
-												list="purok-options"
+											<PurokCombobox
 												value={formData.purok || ""}
-												onChange={(e) => {
-													updateField("purok", e.target.value);
+												onChange={(val) => {
+													updateField("purok", val);
 													if (formData.householdId && formData.householdId !== "NEW") {
 														updateField("householdId", undefined);
 													}
 												}}
+												options={purokOptions}
 												placeholder="Select or type Purok..."
-												className={cn("bg-card border-border h-9 text-foreground transition-all duration-200 focus-visible:ring-primary/50", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+												error={!!errors.purok}
+												className="bg-card border-border h-9"
 											/>
-											<datalist id="purok-options">
-												{purokOptions.map((p) => <option key={p} value={p} />)}
-											</datalist>
 											{errors.purok && (
 												<p className="text-xs text-red-500 font-medium mt-1">{errors.purok}</p>
 											)}
@@ -1334,7 +1333,7 @@ export function ResidentProfilePane({
 								variant="ghost"
 								size="icon"
 								onClick={() => setShowPreview(true)}
-								className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary rounded-lg transition-all"
+								className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
 								title="Preview & Print ID Card"
 							>
 								<Printer className="h-4 w-4" />
@@ -1343,7 +1342,7 @@ export function ResidentProfilePane({
 								variant="ghost"
 								size="icon"
 								onClick={() => setIsEditing(true)}
-								className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary rounded-lg transition-all"
+								className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
 								title="Edit Profile"
 							>
 								<Edit2 className="h-4 w-4" />
@@ -1389,7 +1388,7 @@ export function ResidentProfilePane({
 								</div>
 								<div className="flex flex-wrap gap-1 mt-2">
 									{resident.isHeadOfHousehold && (
-										<Badge className="bg-primary text-primary border-primary/20 hover:bg-primary px-2 py-0 text-[10px] rounded-full">
+										<Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 px-2 py-0 text-[10px] rounded-full">
 											Household Head
 										</Badge>
 									)}

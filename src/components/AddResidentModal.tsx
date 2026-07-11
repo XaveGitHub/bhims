@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { HouseholdCombobox } from "./HouseholdCombobox";
+import { PurokCombobox } from "./PurokCombobox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar as CalendarComponent } from "./ui/calendar";
 import {
@@ -227,7 +228,7 @@ export function AddResidentModal({
 						className="w-full flex-1 flex flex-col min-h-0 overflow-hidden"
 					>
 						<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-2 mb-0 shrink-0">
-							<TabsTrigger value="personal" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all">
+							<TabsTrigger value="personal" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Personal
 									{hasPersonalErrors && (
@@ -235,7 +236,7 @@ export function AddResidentModal({
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger value="health" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all">
+							<TabsTrigger value="health" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Health & Status
 									{hasHealthErrors && (
@@ -243,7 +244,7 @@ export function AddResidentModal({
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger value="economic" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all">
+							<TabsTrigger value="economic" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Household & Economic
 									{hasEconomicErrors && (
@@ -591,21 +592,19 @@ export function AddResidentModal({
 											<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 												<div className="space-y-1.5">
 													<Label className="text-xs text-muted-foreground">Purok *</Label>
-													<Input
-														list="purok-options"
+													<PurokCombobox
 														value={formData.purok || ""}
-														onChange={(e) => {
-															updateField("purok", e.target.value);
+														onChange={(val) => {
+															updateField("purok", val);
 															if (formData.householdId && formData.householdId !== "NEW") {
 																updateField("householdId", undefined);
 															}
 														}}
+														options={purokOptions}
 														placeholder="Select or type Purok..."
-														className={cn("bg-background border-border h-10 text-foreground transition-all duration-200 focus-visible:ring-primary/50", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+														error={!!errors.purok}
+														className="bg-background border-border h-10"
 													/>
-													<datalist id="purok-options">
-														{purokOptions.map((p) => <option key={p} value={p} />)}
-													</datalist>
 													{errors.purok && (
 														<p className="text-xs text-red-500 font-medium mt-1">{errors.purok}</p>
 													)}

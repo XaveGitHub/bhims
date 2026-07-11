@@ -18,7 +18,7 @@ import {
 } from "../components/ui/sidebar";
 import { Toaster } from "../components/ui/sonner";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-import { getBarangayName, isFirstRun } from "../lib/auth-service";
+import { getBarangayName, getAppTheme, isFirstRun } from "../lib/auth-service";
 import { getClientAuth, getClientUser } from "../lib/client-auth";
 import appCss from "../styles.css?url";
 import { TooltipProvider } from "../components/ui/tooltip";
@@ -99,24 +99,37 @@ function RootLayout() {
 	const isSetupPage = location.pathname === "/setup";
 	const isFullscreenPage = isLoginPage || isKioskPage || isSetupPage || isMonitorPage;
 	const [brgyName, setBrgyName] = useState("Barangay Handumanan");
+	const [appTheme, setAppTheme] = useState("classic");
 
 	useEffect(() => {
 		if (!isFullscreenPage) {
 			getBarangayName().then(setBrgyName);
 		}
+		// Always fetch appTheme for both fullscreen and internal pages to ensure UI consistency
+		getAppTheme().then(setAppTheme);
 	}, [isFullscreenPage]);
+
+	// Listen for theme changes across tabs/windows
+	useEffect(() => {
+		const handleThemeChange = (e: Event) => {
+			const customEvent = e as CustomEvent;
+			if (customEvent.detail?.theme) setAppTheme(customEvent.detail.theme);
+		};
+		window.addEventListener("app-theme-change", handleThemeChange);
+		return () => window.removeEventListener("app-theme-change", handleThemeChange);
+	}, []);
 
 	// If we are on a fullscreen page (login/kiosk), just render the child route directly without the layout shell
 	if (isFullscreenPage) {
 		return (
-			<RootDocument>
+			<RootDocument appTheme={appTheme}>
 				<Outlet />
 			</RootDocument>
 		);
 	}
 
 	return (
-		<RootDocument>
+		<RootDocument appTheme={appTheme}>
 			{/* Fixed decorative background — outside the sidebar flex context so it doesn't break peer selectors */}
 			<div className="fixed inset-0 bg-background z-[-2]" />
 			<div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/5 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
@@ -140,7 +153,7 @@ function RootLayout() {
 				{/* Main Content Area */}
 				<SidebarInset className="flex flex-col bg-transparent">
 					{/* Top Navbar */}
-					<header className="flex h-16 items-center justify-between border-b border-border bg-background px-6 backdrop-blur-md shrink-0 sticky top-0 z-20">
+					<header className="flex h-16 items-center justify-between border-b border-border bg-background px-6 shrink-0 sticky top-0 z-20">
 						<div className="flex items-center gap-3">
 							<SidebarTrigger className="text-muted-foreground hover:text-foreground/90" />
 							<h1 className="text-lg font-bold tracking-tight text-foreground hidden sm:block">
@@ -172,14 +185,14 @@ function RootLayout() {
 	);
 }
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children, appTheme }: { children: React.ReactNode, appTheme?: string }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
 			<body>
-				<ThemeProvider defaultTheme="dark" storageKey="bhims-theme">
+				<ThemeProvider defaultTheme="dark" storageKey="bhims-theme" appTheme={appTheme}>
 					<TooltipProvider delayDuration={150}>
 						{children}
 					</TooltipProvider>

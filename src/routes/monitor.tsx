@@ -56,7 +56,7 @@ function MonitorDashboard() {
       />
 
       {/* Header */}
-      <header className="px-10 py-6 flex items-center justify-between border-b border-border bg-card/50 backdrop-blur-xl shrink-0">
+      <header className="px-10 py-6 flex items-center justify-between border-b border-border bg-card/50 shrink-0">
         <div className="flex items-center gap-4">
           <img
             src="/barangay_logo.png"
@@ -64,7 +64,7 @@ function MonitorDashboard() {
             className="w-16 h-16 object-contain drop-shadow-xl"
           />
           <div>
-            <h1 className="text-4xl font-black tracking-tight">
+            <h1 className="text-4xl font-semibold tracking-tight">
               Barangay Handumanan
             </h1>
             <p className="text-lg text-primary font-medium tracking-wider">
@@ -73,7 +73,7 @@ function MonitorDashboard() {
           </div>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-4xl font-black tracking-tighter">
+          <span className="text-4xl font-semibold tracking-tighter">
             {new Date().toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
@@ -94,7 +94,7 @@ function MonitorDashboard() {
         {/* LEFT COLUMN: PREPARING (Processing) */}
         <div className="flex-1 border-r border-border flex flex-col bg-transparent">
           <div className="px-10 py-8 shrink-0">
-            <h2 className="text-5xl font-black tracking-tight text-foreground/80 uppercase">
+            <h2 className="text-5xl font-semibold tracking-tight text-foreground/80 uppercase">
               Preparing
             </h2>
             <p className="text-2xl text-primary">
@@ -118,7 +118,7 @@ function MonitorDashboard() {
                     key={item.queueNumber}
                     className="flex items-center justify-center py-4"
                   >
-                    <span className={`${getTextSize(processing.length)} font-black tracking-tighter text-foreground drop-shadow-md`}>
+                    <span className={`${getTextSize(processing.length)} font-semibold tracking-tighter text-foreground drop-shadow-md`}>
                       {String(item.queueNumber).padStart(4, "0")}
                     </span>
                   </div>
@@ -131,7 +131,7 @@ function MonitorDashboard() {
         {/* RIGHT COLUMN: NOW SERVING (Ready to Claim) */}
         <div className="flex-1 flex flex-col bg-transparent">
           <div className="px-10 py-8 shrink-0">
-            <h2 className="text-5xl font-black tracking-tight text-foreground mb-2 uppercase">
+            <h2 className="text-5xl font-semibold tracking-tight text-foreground mb-2 uppercase">
               Ready to Claim
             </h2>
             <p className="text-2xl text-emerald-400">
@@ -155,7 +155,7 @@ function MonitorDashboard() {
                     key={item.queueNumber}
                     className="flex items-center justify-center py-4"
                   >
-                    <span className={`${getTextSize(readyToClaim.length)} font-black tracking-tighter text-foreground drop-shadow-md`}>
+                    <span className={`${getTextSize(readyToClaim.length)} font-semibold tracking-tighter text-foreground drop-shadow-md`}>
                       {String(item.queueNumber).padStart(4, "0")}
                     </span>
                   </div>

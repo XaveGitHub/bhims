@@ -164,11 +164,11 @@ function TemplatesPage() {
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 				{templates.map((tpl) => (
-					<Card key={tpl.id} className="bg-card border-border overflow-hidden group transition-all hover:border-border/80 rounded-3xl shadow-xl flex flex-col h-full">
+					<Card key={tpl.id} className="bg-card border-border overflow-hidden group transition-all hover:border-border rounded-xl shadow-xl flex flex-col h-full">
 						{/* Image Area */}
 						<div className="w-full h-48 relative flex items-center justify-center p-6">
 							{/* Hover Overlay with Actions */}
-							<div className="absolute inset-0 bg-card/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20 backdrop-blur-sm">
+							<div className="absolute inset-0 bg-card/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20 ">
 								<Button size="sm" variant="secondary" onClick={() => openEdit(tpl)} className="h-9 px-4 rounded-xl font-bold shadow-xl">
 									<Edit className="h-4 w-4 mr-2" /> Edit
 								</Button>
@@ -204,13 +204,13 @@ function TemplatesPage() {
 									/>
 								</div>
 							</div>
-							<div className="text-xl text-primary font-black">₱{tpl.price?.toFixed(2) || "0.00"}</div>
+							<div className="text-xl text-primary font-semibold">₱{tpl.price?.toFixed(2) || "0.00"}</div>
 						</CardContent>
 					</Card>
 				))}
 				
 				{templates.length === 0 && (
-					<div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-2xl">
+					<div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-xl">
 						<FileImage className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
 						<h3 className="text-lg font-bold text-muted-foreground">No Templates Found</h3>
 						<p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
@@ -221,7 +221,7 @@ function TemplatesPage() {
 			</div>
 
 			<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-				<DialogContent className="sm:max-w-[425px] bg-card border-border/60 shadow-2xl text-foreground">
+				<DialogContent className="sm:max-w-[425px] bg-card border-border/60 shadow-md text-foreground">
 					<DialogHeader>
 						<DialogTitle>{editingId ? "Edit Template" : "New Template"}</DialogTitle>
 					</DialogHeader>
@@ -297,7 +297,7 @@ function TemplatesPage() {
 
 			{/* BUILDER FULLSCREEN MODAL */}
 			<Dialog open={isBuilderMode} onOpenChange={setIsBuilderMode}>
-				<DialogContent className="max-w-[850px] w-full max-h-[95vh] h-full bg-card border-border/60 shadow-2xl p-0 flex flex-col">
+				<DialogContent className="max-w-[850px] w-full max-h-[95vh] h-full bg-card border-border/60 shadow-md p-0 flex flex-col">
 					<DialogHeader className="p-4 border-b border-border hidden">
 						<DialogTitle>Template Builder</DialogTitle>
 					</DialogHeader>
@@ -316,7 +316,7 @@ function TemplatesPage() {
 
 			{/* DELETE CONFIRMATION DIALOG */}
 			<Dialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
-				<DialogContent className="max-w-md bg-card border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-card border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<Trash2 className="h-5 w-5 text-red-500" />

@@ -312,7 +312,7 @@ function DistributionsPage() {
 				<div className="border border-border/60 rounded-xl bg-card/40 shadow-sm flex-1 flex flex-col overflow-hidden">
 					<div className="flex-1 overflow-auto">
 						<Table>
-							<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md">
+							<TableHeader className="sticky top-0 z-10 bg-surface ">
 								<TableRow className="border-border hover:bg-transparent">
 									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Program Name</TableHead>
@@ -370,7 +370,7 @@ function DistributionsPage() {
 
 			{/* Create Modal */}
 			<Dialog open={isCreating} onOpenChange={setIsCreating}>
-				<DialogContent className="max-w-4xl bg-background border-border/60 p-0 shadow-2xl flex flex-col max-h-[85vh] overflow-hidden rounded-2xl">
+				<DialogContent className="max-w-4xl bg-background border-border/60 p-0 shadow-md flex flex-col max-h-[85vh] overflow-hidden rounded-xl">
 					<div className="px-6 pt-6">
 						<DialogHeader>
 							<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
@@ -472,7 +472,7 @@ function DistributionsPage() {
 								className={`h-10 px-4 rounded-xl border text-sm font-medium transition-all ${
 									isPwd 
 									? "bg-primary/10 border-primary/20 text-primary" 
-									: "bg-background/50 border-border text-muted-foreground hover:bg-card"
+									: "bg-card border-border text-muted-foreground hover:bg-card"
 								}`}
 							>
 								PWD
@@ -482,7 +482,7 @@ function DistributionsPage() {
 								className={`h-10 px-4 rounded-xl border text-sm font-medium transition-all ${
 									isSoloParent 
 									? "bg-purple-100 border-purple-300 text-purple-700 dark:bg-purple-500/20 dark:border-purple-500/50 dark:text-purple-400" 
-									: "bg-background/50 border-border text-muted-foreground hover:bg-card"
+									: "bg-card border-border text-muted-foreground hover:bg-card"
 								}`}
 							>
 								Solo Parent
@@ -512,7 +512,7 @@ function DistributionsPage() {
 						<div className="flex flex-col flex-1 border border-border/60 rounded-xl bg-muted/20 overflow-hidden min-h-0">
 							<div className="flex-1 overflow-auto custom-scrollbar">
 								<Table>
-									<TableHeader className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm shadow-[0_1px_0_rgba(255,255,255,0.05)]">
+									<TableHeader className="sticky top-0 z-10 bg-card/95 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
 								<TableRow className="border-border hover:bg-transparent">
 										<TableHead className="w-12 text-center h-10">
 											<Checkbox 
@@ -647,7 +647,7 @@ function DistributionsPage() {
 
 			{/* Delete Confirmation Dialog */}
 			<Dialog open={programToDelete !== null} onOpenChange={(open) => !open && setProgramToDelete(null)}>
-				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<Trash2 className="w-5 h-5 text-red-500" />
@@ -843,7 +843,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 									placeholder="Search resident name or ID..."
 									value={searchQuery}
 									onChange={(e) => setSearchQuery(e.target.value)}
-									className="pl-9 h-11 bg-background/50 border-border text-foreground rounded-xl focus-visible:ring-primary/50 w-full"
+									className="pl-9 h-11 bg-card border-border text-foreground rounded-xl focus-visible:ring-primary/50 w-full"
 								/>
 							</div>
 						</div>
@@ -897,7 +897,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 					</div>
 					<div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] custom-scrollbar">
 						<Table>
-							<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md">
+							<TableHeader className="sticky top-0 z-10 bg-surface ">
 								<TableRow className="border-border hover:bg-transparent">
 									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">ID</TableHead>
@@ -1089,7 +1089,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center p-6">
+		<div className="fixed inset-0 z-50 bg-background/95 flex flex-col items-center justify-center p-6">
 			<form onSubmit={handleScanSubmit} className="absolute opacity-0 pointer-events-none">
 				<input
 					ref={inputRef}
@@ -1113,7 +1113,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 				<div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto animate-pulse">
 					<ScanBarcode className="w-10 h-10" />
 				</div>
-				<h2 className="text-3xl font-black text-foreground">Scanner Mode Active</h2>
+				<h2 className="text-3xl font-semibold text-foreground">Scanner Mode Active</h2>
 				<p className="text-muted-foreground max-w-sm mx-auto">
 					Ready. Point your USB Barcode Scanner at the Resident ID to instantly mark them as claimed.
 				</p>
@@ -1126,7 +1126,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 						<span className="font-bold text-xl">Processing Scan...</span>
 					</div>
 				) : lastResult ? (
-					<div className={`w-full p-8 rounded-3xl border-2 flex items-center gap-8 shadow-2xl transition-all duration-300 transform scale-100 ${
+					<div className={`w-full p-8 rounded-xl border-2 flex items-center gap-8 shadow-md transition-all duration-300 transform scale-100 ${
 						lastResult.success 
 							? "bg-primary/10 border-primary/20 shadow-primary/20" 
 							: "bg-rose-950/50 border-rose-500/50 shadow-rose-900/20"
@@ -1136,17 +1136,17 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 								<img 
 									src={lastResult.resident.photoBase64} 
 									alt="Resident" 
-									className={`w-32 h-32 rounded-2xl object-cover border-4 ${lastResult.success ? "border-primary/20" : "border-rose-500"}`} 
+									className={`w-32 h-32 rounded-xl object-cover border-4 ${lastResult.success ? "border-primary/20" : "border-rose-500"}`} 
 								/>
 							) : (
-								<div className={`w-32 h-32 rounded-2xl flex items-center justify-center border-4 ${lastResult.success ? "border-primary/20 bg-primary/10" : "border-rose-500 bg-rose-950"}`}>
-									<span className="text-4xl text-foreground font-black">?</span>
+								<div className={`w-32 h-32 rounded-xl flex items-center justify-center border-4 ${lastResult.success ? "border-primary/20 bg-primary/10" : "border-rose-500 bg-rose-950"}`}>
+									<span className="text-4xl text-foreground font-semibold">?</span>
 								</div>
 							)}
 						</div>
 						
 						<div>
-							<h3 className={`text-4xl font-black mb-2 ${lastResult.success ? "text-primary" : "text-rose-400"}`}>
+							<h3 className={`text-4xl font-semibold mb-2 ${lastResult.success ? "text-primary" : "text-rose-400"}`}>
 								{lastResult.message}
 							</h3>
 							{lastResult.resident && (
@@ -1158,7 +1158,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 						</div>
 					</div>
 				) : (
-					<div className="w-full h-full border-2 border-dashed border-border rounded-3xl flex items-center justify-center text-muted-foreground font-medium text-xl">
+					<div className="w-full h-full border-2 border-dashed border-border rounded-xl flex items-center justify-center text-muted-foreground font-medium text-xl">
 						Waiting for scan...
 					</div>
 				)}

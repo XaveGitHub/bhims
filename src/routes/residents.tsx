@@ -744,7 +744,7 @@ function ResidentsView() {
 				</div>
 			</div>
 			{/* Search + filter bar */}
-			<div className="rounded-2xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
+			<div className="rounded-xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
 				<div className="flex flex-col sm:flex-row gap-2">
 					{/* Search — debounced */}
 					<div className="relative flex-1">
@@ -888,7 +888,7 @@ function ResidentsView() {
 				ref={containerRef}
 				className="flex flex-col md:flex-row gap-6 max-h-[calc(100vh-16rem)]"
 			>
-				<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 flex-1 min-w-0">
+				<Card className="rounded-xl border-border bg-card shadow-sm flex flex-col overflow-hidden p-0 gap-0 flex-1 min-w-0">
 					{loading && residentsList.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
 							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-primary border-t-transparent" />
@@ -896,7 +896,7 @@ function ResidentsView() {
 					) : residentsList.length > 0 ? (
 						<>
 								<Table wrapperClassName={`flex-1 overflow-y-auto custom-scrollbar transition-opacity duration-200 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-								<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md border-b border-border">
+								<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
 									{table.getHeaderGroups().map((hg) => (
 										<TableRow
 											key={hg.id}
@@ -911,7 +911,7 @@ function ResidentsView() {
 														style={{
 															width: header.getSize() !== 150 ? header.getSize() : undefined,
 														}}
-														className={`text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-surface-strong ${
+														className={`text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-card ${
 															["age", "purok", "blkLot", "demographics"].includes(header.column.id) 
 															? "text-center" 
 															: "text-left"
@@ -1093,7 +1093,7 @@ function ResidentsView() {
 			/>
 			{/* DELETE CONFIRMATION DIALOG */}
 			<Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<Trash2 className="h-5 w-5 text-red-500" />
@@ -1130,7 +1130,7 @@ function ResidentsView() {
 			{/* Floating Bulk Action Bar */}
 			{selectedIds.length > 0 && (
 				<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10 fade-in duration-300">
-					<div className="bg-card border border-border shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-4">
+					<div className="bg-card border border-border shadow-md rounded-xl px-4 py-3 flex items-center gap-4">
 						<span className="text-sm font-medium text-foreground whitespace-nowrap">
 							{selectedIds.length} selected
 						</span>
@@ -1187,7 +1187,7 @@ function ResidentsView() {
 			
 			{/* BULK DELETE CONFIRMATION DIALOG */}
 			<Dialog open={isBulkDeleteModalOpen} onOpenChange={setIsBulkDeleteModalOpen}>
-				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<AlertTriangle className="h-5 w-5 text-red-500" />
@@ -1219,7 +1219,7 @@ function ResidentsView() {
 			
 			{/* BULK PUROK CONFIRMATION DIALOG */}
 			<Dialog open={!!bulkPurokToUpdate} onOpenChange={(open) => !open && setBulkPurokToUpdate(null)}>
-				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<Map className="h-5 w-5 text-primary" />
@@ -1251,7 +1251,7 @@ function ResidentsView() {
 			
 			{/* ARCHIVE CONFIRMATION DIALOG */}
 			<Dialog open={!!archiveModalIds} onOpenChange={(open) => !open && setArchiveModalIds(null)}>
-				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x text-amber-500"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>

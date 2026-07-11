@@ -173,7 +173,7 @@ function DocumentMetricsView() {
 			{/* Top Cards */}
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 				{/* Prints Card */}
-				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+				<Card className="relative h-full overflow-hidden border-border border-border bg-card shadow-sm group hover:border-border transition-all duration-300">
 					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
@@ -182,7 +182,7 @@ function DocumentMetricsView() {
 									{timeframe} Prints
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-foreground">
+									<span className="text-3xl font-semibold tracking-tighter text-foreground">
 										{metrics.timeframePrints.toLocaleString()}
 									</span>
 								</div>
@@ -195,7 +195,7 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Revenue Card */}
-				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+				<Card className="relative h-full overflow-hidden border-border border-border bg-card shadow-sm group hover:border-border transition-all duration-300">
 					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
@@ -204,7 +204,7 @@ function DocumentMetricsView() {
 									{timeframe} Revenue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-foreground">
+									<span className="text-3xl font-semibold tracking-tighter text-foreground">
 										₱{metrics.timeframeRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 									</span>
 								</div>
@@ -217,7 +217,7 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Pending Card */}
-				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+				<Card className="relative h-full overflow-hidden border-border border-border bg-card shadow-sm group hover:border-border transition-all duration-300">
 					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
@@ -226,7 +226,7 @@ function DocumentMetricsView() {
 									Pending in Queue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-foreground">
+									<span className="text-3xl font-semibold tracking-tighter text-foreground">
 										{metrics.pendingQueue.toLocaleString()}
 									</span>
 								</div>
@@ -239,7 +239,7 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Total Revenue Card */}
-				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+				<Card className="relative h-full overflow-hidden border-border border-border bg-card shadow-sm group hover:border-border transition-all duration-300">
 					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
@@ -248,7 +248,7 @@ function DocumentMetricsView() {
 									Total Lifetime Revenue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-foreground">
+									<span className="text-3xl font-semibold tracking-tighter text-foreground">
 										₱{metrics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 									</span>
 								</div>
@@ -264,7 +264,7 @@ function DocumentMetricsView() {
 			{/* Charts Section */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				{/* Print Volume Trend */}
-				<Card className="border-border border-border bg-background/60 backdrop-blur-xl shadow-lg py-0 gap-0 flex flex-col">
+				<Card className="border-border border-border bg-card shadow-sm py-0 gap-0 flex flex-col">
 					<CardHeader className="px-5 pt-5 pb-3">
 						<CardTitle className="text-base font-bold text-foreground">
 							Print Volume Trend
@@ -294,7 +294,7 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Sales Trend */}
-				<Card className="border-border border-border bg-background/60 backdrop-blur-xl shadow-lg py-0 gap-0 flex flex-col">
+				<Card className="border-border border-border bg-card shadow-sm py-0 gap-0 flex flex-col">
 					<CardHeader className="px-5 pt-5 pb-3">
 						<CardTitle className="text-base font-bold text-foreground">
 							Sales / Revenue Trend
@@ -335,7 +335,7 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Most Requested Templates */}
-				<Card className="border-border border-border bg-background/60 backdrop-blur-xl shadow-lg py-0 gap-0 lg:col-span-2">
+				<Card className="border-border border-border bg-card shadow-sm py-0 gap-0 lg:col-span-2">
 					<CardHeader className="px-5 pt-5 pb-3">
 						<CardTitle className="text-base font-bold text-foreground">
 							Most Requested Documents

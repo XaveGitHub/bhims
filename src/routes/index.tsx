@@ -290,7 +290,7 @@ function DashboardView() {
 						className="block outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-xl"
 					>
 						<Card
-							className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg group hover:border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+							className="relative h-full overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer"
 						>
 							<div
 								className={`absolute inset-0 bg-gradient-to-br ${card.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
@@ -299,13 +299,13 @@ function DashboardView() {
 								<div className="flex items-start justify-between gap-3">
 									<div className="min-w-0 flex-1">
 										<h3
-											className="text-sm font-bold text-foreground/80 mb-1.5 truncate"
+											className="text-sm font-medium text-muted-foreground mb-1.5 truncate"
 											title={card.title}
 										>
 											{card.title}
 										</h3>
 										<div className="flex items-baseline gap-2 truncate">
-											<span className="text-3xl font-black tracking-tighter text-foreground">
+											<span className="text-2xl font-bold tracking-tight text-foreground">
 												{card.value.toLocaleString()}
 											</span>
 										</div>
@@ -326,9 +326,9 @@ function DashboardView() {
 			<div className="grid gap-5 lg:grid-cols-5">
 				{/* LEFT: Purok Distribution (60% width, lg:col-span-3) */}
 				<div className="lg:col-span-3 flex flex-col h-full">
-					<Card className="flex-1 border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg py-0 gap-0">
+					<Card className="flex-1 py-0 gap-0 flex flex-col">
 						<CardHeader className="px-5 pt-5 pb-4">
-							<CardTitle className="text-base font-bold text-foreground">
+							<CardTitle className="text-base">
 								Purok Distribution
 							</CardTitle>
 							<p className="text-xs text-muted-foreground mt-0.5">
@@ -350,7 +350,7 @@ function DashboardView() {
 														{purok.purok}
 													</span>
 													<div className="flex items-center gap-2">
-														<span className="text-foreground font-bold">
+														<span className="text-foreground font-semibold">
 															{purok.count.toLocaleString()}
 														</span>
 														<span className="text-xs text-muted-foreground">
@@ -386,9 +386,9 @@ function DashboardView() {
 				{/* RIGHT: Demographics Stack (40% width, lg:col-span-2) */}
 				<div className="flex flex-col gap-5 lg:col-span-2">
 					{/* Gender Breakdown */}
-					<Card className="border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg py-0 gap-0">
+					<Card className="py-0 gap-0 flex flex-col">
 						<CardHeader className="px-5 pt-5 pb-3">
-							<CardTitle className="text-base font-bold text-foreground">
+							<CardTitle className="text-base">
 								Gender Breakdown
 							</CardTitle>
 							<p className="text-xs text-muted-foreground mt-0.5">
@@ -403,12 +403,12 @@ function DashboardView() {
 										<div className="flex items-center justify-between text-sm mb-1.5">
 											<div className="flex items-center gap-2">
 												<span className="h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
-												<span className="font-semibold text-foreground/80">
+												<span className="font-medium text-foreground">
 													Male
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<span className="font-bold text-foreground">
+												<span className="font-semibold text-foreground">
 													{(stats?.totalMale ?? 0).toLocaleString()}
 												</span>
 												<Badge className="bg-accent text-primary border border-primary/20 dark:bg-primary/10 dark:text-primary dark:border-primary/20 text-[10px] px-1.5 py-0 font-bold">
@@ -436,12 +436,12 @@ function DashboardView() {
 										<div className="flex items-center justify-between text-sm mb-1.5">
 											<div className="flex items-center gap-2">
 												<span className="h-2.5 w-2.5 rounded-full bg-pink-400 shrink-0" />
-												<span className="font-semibold text-foreground/80">
+												<span className="font-medium text-foreground">
 													Female
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<span className="font-bold text-foreground">
+												<span className="font-semibold text-foreground">
 													{(stats?.totalFemale ?? 0).toLocaleString()}
 												</span>
 												<Badge className="bg-pink-100 text-pink-700 border border-pink-200 dark:bg-pink-950/60 dark:text-pink-400 dark:border-pink-800/40 text-[10px] px-1.5 py-0 font-bold">
@@ -474,9 +474,9 @@ function DashboardView() {
 					</Card>
 
 					{/* Age Demographics */}
-					<Card className="border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg py-0 gap-0">
+					<Card className="py-0 gap-0">
 						<CardHeader className="px-5 pt-5 pb-3">
-							<CardTitle className="text-base font-bold text-foreground">
+							<CardTitle className="text-base">
 								Age Demographics
 							</CardTitle>
 							<p className="text-xs text-muted-foreground mt-0.5">
@@ -498,11 +498,11 @@ function DashboardView() {
 											<div key={bracket.label} className="flex items-center justify-between text-sm">
 												<div className="flex items-center gap-2">
 													<span className={`h-2.5 w-2.5 rounded-full ${bracket.color} shrink-0`} />
-													<span className="font-semibold text-foreground/80">
+													<span className="font-medium text-foreground">
 														{bracket.label}
 													</span>
 												</div>
-												<span className="font-bold text-foreground">
+												<span className="font-semibold text-foreground">
 													{bracket.count.toLocaleString()}
 												</span>
 											</div>
@@ -537,9 +537,9 @@ function DashboardView() {
 					</Card>
 
 					{/* Demographic Rings */}
-					<Card className="border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg py-0 gap-0">
+					<Card className="py-0 gap-0">
 						<CardHeader className="px-5 pt-5 pb-3">
-							<CardTitle className="text-base font-bold text-foreground">
+							<CardTitle className="text-base">
 								Demographic Ratios
 							</CardTitle>
 							<p className="text-xs text-muted-foreground mt-0.5">
@@ -604,7 +604,7 @@ function DashboardView() {
 												x="70"
 												y="64"
 												textAnchor="middle"
-												className="fill-neutral-400 text-[8px] font-semibold select-none pointer-events-none"
+												className="fill-muted-foreground text-[8px] font-semibold select-none pointer-events-none"
 											>
 												{hoveredRing !== null
 													? ringData[hoveredRing].label
@@ -614,7 +614,7 @@ function DashboardView() {
 												x="70"
 												y="82"
 												textAnchor="middle"
-												className="fill-neutral-100 text-[16px] font-black tracking-tight select-none pointer-events-none"
+												className="fill-foreground text-[16px] font-semibold tracking-tight select-none pointer-events-none"
 											>
 												{hoveredRing !== null
 													? `${ringData[hoveredRing].pct.toFixed(0)}%`
@@ -624,7 +624,7 @@ function DashboardView() {
 												x="70"
 												y="94"
 												textAnchor="middle"
-												className="fill-neutral-500 text-[8px] select-none pointer-events-none"
+												className="fill-muted-foreground text-[8px] select-none pointer-events-none"
 											>
 												{hoveredRing !== null
 													? `${ringData[hoveredRing].value.toLocaleString()} residents`
@@ -648,7 +648,7 @@ function DashboardView() {
 															? "bg-muted/40 border-border"
 															: anyHov
 																? "opacity-25 border-transparent"
-																: "bg-background/20 border-border"
+																: "bg-card border-border"
 													}`}
 												>
 													<div className="flex items-center gap-2">
@@ -681,7 +681,7 @@ function DashboardView() {
 					</Card>
 
 					{/* Data Completeness */}
-					<Card className="border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg py-0 gap-0">
+					<Card className="border-border border-border bg-card transform-gpu shadow-sm py-0 gap-0">
 						<CardHeader className="px-5 pt-5 pb-3">
 							<div className="flex items-center justify-between">
 								<div>
@@ -714,7 +714,7 @@ function DashboardView() {
 			{/* ── Bottom Row: Recent Activity + LAN ───────────────── */}
 			<div className="grid gap-5 lg:grid-cols-[1fr_360px]">
 				{/* Recent Activity Feed */}
-				<Card className="border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg py-0 gap-0">
+				<Card className="border-border border-border bg-card transform-gpu shadow-sm py-0 gap-0">
 					<CardHeader className="px-5 pt-5 pb-4">
 						<div className="flex items-center justify-between">
 							<div>
@@ -733,7 +733,7 @@ function DashboardView() {
 								{stats.recentActivity.map((activity) => (
 									<div
 										key={activity.id}
-										className="flex items-center gap-3 p-2.5 rounded-xl border border-border bg-background/20 hover:bg-card/30 hover:border-border transition-all duration-150 group"
+										className="flex items-center gap-3 p-2.5 rounded-xl border border-border bg-card hover:bg-card/30 hover:border-border transition-all duration-150 group"
 									>
 										{/* Avatar */}
 										<div className="shrink-0 h-8 w-8 rounded-full bg-accent border border-primary/20 dark:bg-primary/10 dark:border-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">
@@ -781,7 +781,7 @@ function DashboardView() {
 
 				{/* Collapsible LAN Network Card */}
 				<Collapsible open={lanOpen} onOpenChange={setLanOpen}>
-					<Card className="border-border border-border bg-background/60 backdrop-blur-xl transform-gpu shadow-lg py-0 gap-0">
+					<Card className="border-border border-border bg-card transform-gpu shadow-sm py-0 gap-0">
 						<CollapsibleTrigger asChild>
 							<button type="button" className="w-full text-left">
 								<CardHeader className="px-5 pt-5 pb-5 cursor-pointer hover:bg-accent/50 transition-colors rounded-xl">
@@ -813,7 +813,7 @@ function DashboardView() {
 									Ensure they are on the same local router, then enter this
 									address in their browser:
 								</p>
-								<div className="flex items-center gap-2 rounded-xl bg-background/60 border border-border p-3">
+								<div className="flex items-center gap-2 rounded-xl bg-card border border-border p-3">
 									<span className="text-sm font-mono text-foreground font-bold break-all flex-1">
 										http://{stats?.serverIp ?? "127.0.0.1"}:3000
 									</span>
@@ -830,7 +830,7 @@ function DashboardView() {
 										)}
 									</button>
 								</div>
-								<div className="rounded-xl border border-border bg-background/30 p-3 text-[11px] text-muted-foreground space-y-1.5 leading-relaxed">
+								<div className="rounded-xl border border-border bg-card p-3 text-[11px] text-muted-foreground space-y-1.5 leading-relaxed">
 									<span className="font-semibold text-muted-foreground">
 										Instructions:
 									</span>

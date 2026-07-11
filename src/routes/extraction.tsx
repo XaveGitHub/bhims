@@ -226,7 +226,7 @@ function ExtractionView() {
 							className={`h-11 px-4 rounded-xl border text-sm font-medium transition-all ${
 								isPwd 
 								? "bg-primary/10 border-primary/20 text-primary" 
-								: "bg-background/50 border-border text-muted-foreground hover:bg-card"
+								: "bg-card border-border text-muted-foreground hover:bg-card"
 							}`}
 						>
 							PWD
@@ -236,7 +236,7 @@ function ExtractionView() {
 							className={`h-11 px-4 rounded-xl border text-sm font-medium transition-all ${
 								isSoloParent 
 								? "bg-purple-500/20 border-purple-500/50 text-purple-400" 
-								: "bg-background/50 border-border text-muted-foreground hover:bg-card"
+								: "bg-card border-border text-muted-foreground hover:bg-card"
 							}`}
 						>
 							Solo Parent
@@ -297,7 +297,7 @@ function ExtractionView() {
 					</div>
 					<div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] custom-scrollbar">
 						<Table>
-							<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md">
+							<TableHeader className="sticky top-0 z-10 bg-surface ">
 								<TableRow className="border-border hover:bg-transparent">
 									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Last Name</TableHead>

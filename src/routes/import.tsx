@@ -683,7 +683,7 @@ function ImportView() {
 		<div className="space-y-6 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			{/* Header */}
 			<div>
-				<h2 className="text-2xl font-extrabold tracking-tight text-foreground">
+				<h2 className="text-2xl font-semibold tracking-tight text-foreground">
 					Data Import
 				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
@@ -693,7 +693,7 @@ function ImportView() {
 			</div>
 
 			{error && (
-				<div className="p-4 bg-red-950/40 border border-red-500/30 rounded-2xl text-sm text-red-400 flex items-center gap-3">
+				<div className="p-4 bg-red-950/40 border border-red-500/30 rounded-xl text-sm text-red-400 flex items-center gap-3">
 					<AlertCircle className="h-5 w-5 shrink-0" />
 					<span>{error}</span>
 				</div>
@@ -713,7 +713,7 @@ function ImportView() {
 							fileInputRef.current?.click();
 						}
 					}}
-					className="flex flex-col items-center justify-center border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/10 bg-card/20 rounded-2xl p-16 text-center cursor-pointer transition-all duration-200 group h-80 focus:outline-none focus:ring-2 focus:ring-primary/50"
+					className="flex flex-col items-center justify-center border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/10 bg-card/20 rounded-xl p-16 text-center cursor-pointer transition-all duration-200 group h-80 focus:outline-none focus:ring-2 focus:ring-primary/50"
 				>
 					<input
 						type="file"
@@ -723,7 +723,7 @@ function ImportView() {
 						className="hidden"
 					/>
 
-					<div className="p-4 rounded-full bg-card border border-border text-muted-foreground group-hover:text-primary group-hover:border-primary/20 transition-all duration-300 mb-4 shadow-lg shadow-neutral-950/50">
+					<div className="p-4 rounded-full bg-card border border-border text-muted-foreground group-hover:text-primary group-hover:border-primary/20 transition-all duration-300 mb-4 shadow-sm shadow-neutral-950/50">
 						{loading ? (
 							<RefreshCw className="h-8 w-8 animate-spin text-primary" />
 						) : (
@@ -753,7 +753,7 @@ function ImportView() {
 			{step === 2 && (
 				<div className="space-y-6">
 					{/* File summary */}
-					<Card className="flex items-center justify-between p-4 bg-background/60 backdrop-blur-xl border-border shadow-lg rounded-2xl">
+					<Card className="flex items-center justify-between p-4 bg-card border-border shadow-sm rounded-xl">
 						<div className="flex items-center gap-3">
 							<div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary">
 								<FileSpreadsheet className="h-5 w-5" />
@@ -783,7 +783,7 @@ function ImportView() {
 					</Card>
 
 					{/* Mapping Table */}
-					<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg overflow-hidden p-8 space-y-8">
+					<Card className="rounded-xl border-border bg-card shadow-sm overflow-hidden p-8 space-y-8">
 						<div>
 							<h3 className="font-bold text-lg text-foreground flex items-center gap-2">
 								<Database className="h-4.5 w-4.5 text-primary" />
@@ -799,7 +799,7 @@ function ImportView() {
 							{DB_FIELDS.map((field) => (
 								<div
 									key={field.key}
-									className="flex flex-col space-y-2 p-3 rounded-xl border border-border/80 bg-background/25"
+									className="flex flex-col space-y-2 p-3 rounded-xl border border-border bg-card"
 								>
 									<div className="flex items-start justify-between">
 										<div>
@@ -861,7 +861,7 @@ function ImportView() {
 					</Card>
 
 					{/* Mapped Data Preview */}
-					<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-8 space-y-5">
+					<Card className="rounded-xl border-border bg-card shadow-sm p-8 space-y-5">
 						<div>
 							<h4 className="font-bold text-sm text-foreground">
 								Import Preview (First 3 Rows) 
@@ -1023,7 +1023,7 @@ function ImportView() {
 						<Button
 							onClick={handleExecuteImport}
 							disabled={loading}
-							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 py-2.5 text-sm font-semibold active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 py-2.5 text-sm font-semibold active:scale-95 transition-all flex items-center gap-2 shadow-sm shadow-primary/20"
 						>
 							{loading ? (
 								<>
@@ -1043,13 +1043,13 @@ function ImportView() {
 
 			{/* STEP 3: SUCCESS */}
 			{step === 3 && (
-				<Card className="flex flex-col items-center justify-center rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-16 text-center space-y-6 h-80">
+				<Card className="flex flex-col items-center justify-center rounded-xl border-border bg-card shadow-sm p-16 text-center space-y-6 h-80">
 					<div className="p-4 rounded-full bg-primary/10 border border-primary/20 text-primary animate-bounce">
 						<CheckCircle className="h-10 w-10" />
 					</div>
 
 					<div className="space-y-4">
-						<h3 className="font-extrabold text-2xl text-foreground">
+						<h3 className="font-semibold text-2xl text-foreground">
 							Import Completed Successfully!
 						</h3>
 						<p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">

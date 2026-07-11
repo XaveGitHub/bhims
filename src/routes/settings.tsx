@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
 	AlertTriangle,
 	Download,
+	Palette,
 	RefreshCw,
 	Settings,
 	ShieldAlert,
@@ -20,6 +21,7 @@ import {
 } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { useTheme } from "../components/theme-provider";
 import {
 	clearAllData,
 	downloadBackup,
@@ -32,7 +34,7 @@ export const Route = createFileRoute("/settings")({
 	component: SettingsView,
 });
 
-let cachedSettings: { barangayName: string } | null = null;
+let cachedSettings: { barangayName: string; appTheme?: string } | null = null;
 
 // Manual prefetcher for hover-optimizations
 export const prefetchSettingsData = async () => {
@@ -47,9 +49,11 @@ export const prefetchSettingsData = async () => {
 
 function SettingsView() {
 	const restoreInputRef = useRef<HTMLInputElement>(null);
+	const { setAppTheme: setGlobalAppTheme } = useTheme();
 
 	// Settings Form state
 	const [brgyName, setBrgyName] = useState(cachedSettings?.barangayName || "");
+	const [appTheme, setAppTheme] = useState(cachedSettings?.appTheme || "classic");
 
 	// Loading & statuses
 	const [loading, setLoading] = useState(!cachedSettings);
@@ -64,6 +68,7 @@ function SettingsView() {
 	const loadSettings = useCallback(async (force = false) => {
 		if (!force && cachedSettings) {
 			setBrgyName(cachedSettings.barangayName);
+			setAppTheme(cachedSettings.appTheme || "classic");
 			setLoading(false);
 			return;
 		}
@@ -72,6 +77,7 @@ function SettingsView() {
 		try {
 			const data = await getSettings();
 			setBrgyName(data.barangayName);
+			setAppTheme(data.appTheme || "classic");
 			cachedSettings = data;
 		} catch (err) {
 			console.error("Error fetching settings:", err);
@@ -95,7 +101,7 @@ function SettingsView() {
 
 		try {
 			const result = await updateSettings({
-				data: { barangayName: brgyName },
+				data: { barangayName: brgyName, appTheme },
 			});
 			if (result.success) {
 				toast.success("Settings updated successfully.");
@@ -234,7 +240,7 @@ function SettingsView() {
 		<div className="space-y-8 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			{/* Header */}
 			<div>
-				<h2 className="text-2xl font-extrabold tracking-tight text-foreground">
+				<h2 className="text-2xl font-semibold tracking-tight text-foreground">
 					System Settings
 				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
@@ -243,7 +249,7 @@ function SettingsView() {
 			</div>
 
 			{/* Settings Form */}
-			<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-6 space-y-6">
+			<Card className="rounded-xl border-border bg-card shadow-sm p-6 space-y-6">
 				<form onSubmit={handleSaveSettings} className="space-y-6">
 					<h3 className="text-lg font-bold text-foreground flex items-center gap-2">
 						<Settings className="h-4.5 w-4.5 text-primary" />
@@ -264,6 +270,46 @@ function SettingsView() {
 								className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary/20 rounded-xl"
 							/>
 						</div>
+
+						{/* App Theme */}
+						<div className="space-y-3 pt-2">
+							<Label className="text-foreground flex items-center gap-2">
+								<Palette className="w-4 h-4 text-muted-foreground" />
+								Application Theme
+							</Label>
+							<div className="grid grid-cols-3 gap-3">
+								<button
+									type="button"
+									onClick={() => {
+										setAppTheme("classic");
+										setGlobalAppTheme("classic");
+									}}
+									className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${appTheme === "classic" ? "border-primary bg-primary/10 shadow-sm" : "border-border bg-background hover:bg-accent"}`}
+								>
+									<span className="font-semibold text-sm">Classic</span>
+								</button>
+								<button
+									type="button"
+									onClick={() => {
+										setAppTheme("modern");
+										setGlobalAppTheme("modern");
+									}}
+									className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${appTheme === "modern" ? "border-primary bg-primary/10 shadow-sm" : "border-border bg-background hover:bg-accent"}`}
+								>
+									<span className="font-semibold text-sm">Modern</span>
+								</button>
+								<button
+									type="button"
+									onClick={() => {
+										setAppTheme("ocean");
+										setGlobalAppTheme("ocean");
+									}}
+									className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${appTheme === "ocean" ? "border-primary bg-primary/10 shadow-sm" : "border-border bg-background hover:bg-accent"}`}
+								>
+									<span className="font-semibold text-sm">Ocean</span>
+								</button>
+							</div>
+						</div>
 					</div>
 
 					<Button
@@ -277,7 +323,7 @@ function SettingsView() {
 			</Card>
 
 			{/* Database Backup & Restore */}
-			<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-6 space-y-6">
+			<Card className="rounded-xl border-border bg-card shadow-sm p-6 space-y-6">
 				<div>
 					<h3 className="text-lg font-bold text-foreground flex items-center gap-2">
 						<Download className="h-4.5 w-4.5 text-primary" />
@@ -291,7 +337,7 @@ function SettingsView() {
 
 				<div className="grid gap-4 sm:grid-cols-2">
 					{/* Backup */}
-					<div className="p-4 rounded-xl border border-border/80 bg-background/20 flex flex-col justify-between space-y-4">
+					<div className="p-4 rounded-xl border border-border bg-card flex flex-col justify-between space-y-4">
 						<div className="space-y-1">
 							<h4 className="font-bold text-sm text-foreground">
 								Download Backup
@@ -317,7 +363,7 @@ function SettingsView() {
 					</div>
 
 					{/* Restore */}
-					<div className="p-4 rounded-xl border border-border/80 bg-background/20 flex flex-col justify-between space-y-4">
+					<div className="p-4 rounded-xl border border-border bg-card flex flex-col justify-between space-y-4">
 						<div className="space-y-1">
 							<h4 className="font-bold text-sm text-foreground">
 								Restore Backup
@@ -367,7 +413,7 @@ function SettingsView() {
 			</Card>
 
 			{/* Danger Zone */}
-			<Card className="rounded-2xl border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/10 backdrop-blur-xl shadow-lg p-6 space-y-5">
+			<Card className="rounded-xl border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/10 shadow-sm p-6 space-y-5">
 				<div>
 					<h3 className="text-lg font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
 						<ShieldAlert className="h-4.5 w-4.5" />
@@ -378,7 +424,7 @@ function SettingsView() {
 					</p>
 				</div>
 
-				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-red-500/20 bg-background/30">
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-red-500/20 bg-card">
 					<div className="space-y-1">
 						<h4 className="font-bold text-sm text-foreground">Delete All Records</h4>
 						<p className="text-[10px] text-muted-foreground leading-normal max-w-sm">
@@ -407,7 +453,7 @@ function SettingsView() {
 					}
 				}}
 			>
-				<DialogContent className="max-w-md bg-background border-red-500/30 shadow-2xl text-foreground p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-red-500/30 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-red-400 flex items-center gap-2">
 							<Trash2 className="h-5 w-5" />
@@ -468,7 +514,7 @@ function SettingsView() {
 				open={isRestoreConfirmOpen}
 				onOpenChange={setIsRestoreConfirmOpen}
 			>
-				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<AlertTriangle className="h-5 w-5 text-amber-500" />
