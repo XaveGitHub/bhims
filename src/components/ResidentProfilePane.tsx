@@ -1409,7 +1409,7 @@ export function ResidentProfilePane({
 										</Badge>
 									)}
 									{resident.isRegisteredVoter && (
-										<Badge className="bg-primary text-primary border-primary/20 hover:bg-primary px-2 py-0 text-[10px] rounded-full">
+										<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-400/10 dark:text-emerald-400 dark:border-emerald-400/20">
 											Voter
 										</Badge>
 									)}
@@ -1462,7 +1462,7 @@ export function ResidentProfilePane({
 					<DialogTitle className="text-2xl font-bold tracking-tight text-foreground/90 flex-1">
 						ID Card Preview
 					</DialogTitle>
-					<div className="flex gap-2 mr-6 mt-0!">
+					<div className="flex gap-2 mr-10 mt-0!">
 						<Button 
 							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
 							onClick={downloadID}

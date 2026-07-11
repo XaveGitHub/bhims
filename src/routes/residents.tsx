@@ -522,16 +522,16 @@ function ResidentsView() {
 								<Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-normal">Deceased</Badge>
 							)}
 							{r.isPwd && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-purple-700 border-purple-200">PWD</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-400/10 dark:text-purple-400 dark:border-purple-400/20">PWD</Badge>
 							)}
 							{r.isSeniorCitizen && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-amber-700 border-amber-200">Senior</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-400/10 dark:text-amber-400 dark:border-amber-400/20">Senior</Badge>
 							)}
 							{r.isRegisteredVoter && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-primary border-primary/20">Voter</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-400/10 dark:text-emerald-400 dark:border-emerald-400/20">Voter</Badge>
 							)}
 							{r.isSingleParent && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-pink-700 border-pink-200">Solo Parent</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-pink-100 text-pink-700 border-pink-200 dark:bg-pink-400/10 dark:text-pink-400 dark:border-pink-400/20">Solo Parent</Badge>
 							)}
 							{r.isBedBound && (
 								<span className="rounded-full bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-700 dark:text-red-400">
