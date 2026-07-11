@@ -61,7 +61,7 @@ function TransactionsView() {
 				accessorKey: "id",
 				header: "Transaction ID",
 				cell: ({ row }) => (
-					<span className="font-mono font-medium text-neutral-300">
+					<span className="font-mono font-medium text-foreground/80">
 						TRX-{row.original.id?.toString().padStart(5, "0")}
 					</span>
 				),
@@ -74,7 +74,7 @@ function TransactionsView() {
 				accessorKey: "createdAt",
 				header: "Date & Time",
 				cell: ({ row }) => (
-					<span className="text-neutral-300">
+					<span className="text-foreground/80">
 						{row.original.createdAt
 							? format(new Date(row.original.createdAt), "MMM d, yyyy - h:mm a")
 							: "—"}
@@ -86,7 +86,7 @@ function TransactionsView() {
 				id: "residentName",
 				header: "Resident Name",
 				cell: ({ row }) => (
-					<span className="font-medium text-neutral-200">
+					<span className="font-medium text-foreground">
 						{row.original.resident?.firstName} {row.original.resident?.lastName}
 					</span>
 				),
@@ -95,7 +95,7 @@ function TransactionsView() {
 				accessorKey: "template.name",
 				header: "Document Requested",
 				cell: ({ row }) => (
-					<span className="text-neutral-300 capitalize">
+					<span className="text-foreground/80 capitalize">
 						{row.original.template?.name || "Unknown Document"}
 					</span>
 				),
@@ -107,14 +107,14 @@ function TransactionsView() {
 					const status = row.original.status;
 					const styles: Record<string, string> = {
 						"Ready to Claim": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-						Completed: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-						Released: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-						Processing: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-						Pending: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-						Cancelled: "bg-red-500/15 text-red-400 border-red-500/30",
+						Completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30",
+						Released: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30",
+						Processing: "bg-accent text-primary dark:bg-primary dark:text-primary border-primary/20 dark:border-primary/20",
+						Pending: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400 border-amber-200 dark:border-amber-500/30",
+						Cancelled: "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400 border-red-200 dark:border-red-500/30",
 					};
 					return (
-						<Badge variant="outline" className={`${styles[status] || "bg-neutral-500/15 text-neutral-400"} font-bold`}>
+						<Badge variant="outline" className={`${styles[status] || "bg-accent/15 text-muted-foreground"} font-bold`}>
 							{status}
 						</Badge>
 					);
@@ -124,7 +124,7 @@ function TransactionsView() {
 				accessorKey: "totalPrice",
 				header: "Price",
 				cell: ({ row }) => (
-					<span className="text-neutral-300">
+					<span className="text-foreground/80">
 						{row.original.totalPrice > 0 ? `₱${row.original.totalPrice.toFixed(2)}` : "Free"}
 					</span>
 				),
@@ -194,33 +194,33 @@ function TransactionsView() {
 		<div className="space-y-6 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 				<div>
-					<h2 className="text-2xl font-bold tracking-tight text-neutral-100">
+					<h2 className="text-2xl font-bold tracking-tight text-foreground">
 						Transactions History
 					</h2>
-					<p className="text-sm text-neutral-500 mt-0.5">
+					<p className="text-sm text-muted-foreground mt-0.5">
 						View and search all document requests and their statuses
 					</p>
 				</div>
 			</div>
 
-			<div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-3 sm:p-4 space-y-3">
+			<div className="rounded-2xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
 				<div className="flex flex-col sm:flex-row gap-2">
 					<div className="relative flex-1">
-						<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500 pointer-events-none">
+						<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground pointer-events-none">
 							<Search className="h-4 w-4" />
 						</span>
 						<Input
 							placeholder="Search by Resident Name or Transaction ID..."
 							value={globalFilter}
 							onChange={(e) => setGlobalFilter(e.target.value)}
-							className="pl-9 bg-neutral-950 border-neutral-800 text-neutral-200 placeholder:text-neutral-600 focus:border-blue-500 rounded-xl h-9 text-sm w-full"
+							className="pl-9 bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary/20 rounded-xl h-9 text-sm w-full"
 						/>
 					</div>
 					<Select value={statusFilter} onValueChange={setStatusFilter}>
-						<SelectTrigger className="w-full sm:w-40 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
+						<SelectTrigger className="w-full sm:w-40 bg-card border-border text-foreground/80 rounded-xl h-9 text-sm">
 							<SelectValue placeholder="All Status" />
 						</SelectTrigger>
-						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+						<SelectContent className="bg-card border-border text-foreground">
 							<SelectItem value="All">All Status</SelectItem>
 							<SelectItem value="Pending">Pending</SelectItem>
 							<SelectItem value="Processing">Processing</SelectItem>
@@ -230,10 +230,10 @@ function TransactionsView() {
 						</SelectContent>
 					</Select>
 					<Select value={timeframeFilter} onValueChange={setTimeframeFilter}>
-						<SelectTrigger className="w-full sm:w-40 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
+						<SelectTrigger className="w-full sm:w-40 bg-card border-border text-foreground/80 rounded-xl h-9 text-sm">
 							<SelectValue placeholder="All Time" />
 						</SelectTrigger>
-						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+						<SelectContent className="bg-card border-border text-foreground">
 							<SelectItem value="All Time">All Time</SelectItem>
 							<SelectItem value="Today">Today</SelectItem>
 							<SelectItem value="This Week">This Week</SelectItem>
@@ -244,15 +244,15 @@ function TransactionsView() {
 			</div>
 
 			<div className="flex flex-col gap-6 max-h-[calc(100vh-16rem)]">
-				<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 min-w-0">
+				<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 min-w-0">
 					{isLoading && transactions.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
-							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-blue-600 border-t-transparent" />
+							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-primary border-t-transparent" />
 						</div>
 					) : table.getRowModel().rows.length > 0 ? (
 						<>
 							<Table wrapperClassName={`flex-1 overflow-y-auto custom-scrollbar transition-opacity duration-200 ${isLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-								<TableHeader className="sticky top-0 z-10 bg-neutral-900/80 backdrop-blur-md border-b border-neutral-800">
+								<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md border-b border-border">
 									{table.getHeaderGroups().map((hg) => (
 										<TableRow key={hg.id} className="border-0 hover:bg-transparent">
 											{hg.headers.map((header) => {
@@ -261,22 +261,22 @@ function TransactionsView() {
 												return (
 													<TableHead
 														key={header.id}
-														className="text-neutral-400 font-medium h-10 px-5 whitespace-nowrap bg-neutral-900/60 text-left"
+														className="text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-surface-strong text-left"
 													>
 														{header.isPlaceholder ? null : canSort ? (
 															<button
 																type="button"
 																onClick={header.column.getToggleSortingHandler()}
-																className="flex items-center gap-1.5 hover:text-neutral-200 transition-colors outline-none"
+																className="flex items-center gap-1.5 hover:text-foreground transition-colors outline-none"
 															>
 																{flexRender(
 																	header.column.columnDef.header,
 																	header.getContext()
 																)}
 																{sorted === "asc" ? (
-																	<ChevronUp className="h-3 w-3 text-blue-500" />
+																	<ChevronUp className="h-3 w-3 text-primary" />
 																) : sorted === "desc" ? (
-																	<ChevronDown className="h-3 w-3 text-blue-500" />
+																	<ChevronDown className="h-3 w-3 text-primary" />
 																) : (
 																	<ArrowUpDown className="h-3 w-3 opacity-25" />
 																)}
@@ -294,7 +294,7 @@ function TransactionsView() {
 									{table.getRowModel().rows.map((row) => (
 										<TableRow
 											key={row.id}
-											className="border-b border-neutral-800/60 hover:bg-neutral-900/40 transition-colors"
+											className="border-b border-border/60 hover:bg-muted/50 transition-colors"
 										>
 											{row.getVisibleCells().map((cell) => (
 												<TableCell key={cell.id} className="px-5 py-3 align-middle">
@@ -306,19 +306,19 @@ function TransactionsView() {
 								</TableBody>
 							</Table>
 
-							<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-neutral-800/60 bg-neutral-900/10 shrink-0">
+							<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border/60 bg-muted/20 shrink-0">
 								<div className="flex items-center gap-2">
-									<span className="text-sm text-neutral-400">Rows per page:</span>
+									<span className="text-sm text-muted-foreground">Rows per page:</span>
 									<Select
 										value={String(table.getState().pagination.pageSize)}
 										onValueChange={(val) => {
 											table.setPageSize(Number(val));
 										}}
 									>
-										<SelectTrigger className="w-24 h-8 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl">
+										<SelectTrigger className="w-24 h-8 bg-card border-border text-foreground/80 rounded-xl">
 											<SelectValue />
 										</SelectTrigger>
-										<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+										<SelectContent className="bg-card border-border text-foreground rounded-xl">
 											{[10, 25, 50, 100].map(pageSize => (
 												<SelectItem key={pageSize} value={String(pageSize)}>
 													{pageSize}
@@ -328,7 +328,7 @@ function TransactionsView() {
 									</Select>
 								</div>
 								<div className="flex items-center gap-4">
-									<div className="text-sm text-neutral-400">
+									<div className="text-sm text-muted-foreground">
 										Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
 									</div>
 									<div className="flex gap-2">
@@ -337,7 +337,7 @@ function TransactionsView() {
 											size="sm"
 											onClick={() => table.previousPage()}
 											disabled={!table.getCanPreviousPage()}
-											className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 hover:bg-neutral-800"
+											className="bg-background border-border text-foreground/80 h-8 rounded-xl disabled:opacity-50 hover:bg-muted"
 										>
 											Previous
 										</Button>
@@ -346,7 +346,7 @@ function TransactionsView() {
 											size="sm"
 											onClick={() => table.nextPage()}
 											disabled={!table.getCanNextPage()}
-											className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 hover:bg-neutral-800"
+											className="bg-background border-border text-foreground/80 h-8 rounded-xl disabled:opacity-50 hover:bg-muted"
 										>
 											Next
 										</Button>
@@ -356,11 +356,11 @@ function TransactionsView() {
 						</>
 					) : (
 						<div className="flex flex-col items-center justify-center py-20 text-center">
-							<AlertCircle className="h-10 w-10 text-neutral-600 mb-2" />
-							<p className="text-sm font-semibold text-neutral-400">
+							<AlertCircle className="h-10 w-10 text-muted-foreground mb-2" />
+							<p className="text-sm font-semibold text-muted-foreground">
 								No Transactions Found
 							</p>
-							<p className="text-xs text-neutral-500 max-w-xs mt-1">
+							<p className="text-xs text-muted-foreground max-w-xs mt-1">
 								No records match your search query.
 							</p>
 						</div>

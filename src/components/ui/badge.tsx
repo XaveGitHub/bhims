@@ -13,35 +13,52 @@ const badgeVariants = cva(
 				secondary:
 					"bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
 				destructive:
-					"bg-destructive text-white focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90",
+					"bg-destructive text-foreground focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90",
 				outline:
 					"border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
 				ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
 				link: "text-primary underline-offset-4 [a&]:hover:underline",
 			},
+			size: {
+				sm: "text-[10px] px-2 py-0.5",
+				md: "text-xs px-2.5 py-1",
+				lg: "text-sm px-3 py-1.5",
+				icon: "p-2.5 rounded-xl",
+			},
 		},
 		defaultVariants: {
 			variant: "default",
+			size: "md",
 		},
 	},
 );
 
 function Badge({
 	className,
-	variant = "default",
+	variant,
+	size,
 	asChild = false,
+	icon: Icon,
+	children,
 	...props
 }: React.ComponentProps<"span"> &
-	VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+	VariantProps<typeof badgeVariants> & { 
+		asChild?: boolean;
+		icon?: React.ElementType;
+	}) {
 	const Comp = asChild ? Slot.Root : "span";
 
 	return (
 		<Comp
 			data-slot="badge"
 			data-variant={variant}
-			className={cn(badgeVariants({ variant }), className)}
+			data-size={size}
+			className={cn(badgeVariants({ variant, size }), className)}
 			{...props}
-		/>
+		>
+			{Icon && <Icon className="mr-1 h-3 w-3" />}
+			{children}
+		</Comp>
 	);
 }
 

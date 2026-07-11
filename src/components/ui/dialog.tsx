@@ -55,14 +55,14 @@ function DialogContent({
 			<DialogPrimitive.Content
 				data-slot="dialog-content"
 				className={cn(
-					"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg gap-4 border border-neutral-800 bg-neutral-900 p-6 shadow-lg duration-200 transform -translate-x-1/2 -translate-y-1/2 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-2xl md:w-full",
+					"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg gap-4 border border-border bg-background p-6 shadow-lg duration-200 transform -translate-x-1/2 -translate-y-1/2 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-2xl md:w-full",
 					className,
 				)}
 				aria-describedby={props['aria-describedby'] || undefined}
 				{...props}
 			>
 				{children}
-				<DialogPrimitive.Close className="absolute right-4 top-4 rounded-lg p-1.5 opacity-70 ring-offset-background transition-all hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-neutral-400 hover:text-red-400 hover:bg-neutral-800">
+				<DialogPrimitive.Close className="absolute right-4 top-4 rounded-lg p-1.5 opacity-70 ring-offset-background transition-all hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:text-red-400 hover:bg-muted">
 					<XIcon className="h-4 w-4" />
 					<span className="sr-only">Close</span>
 				</DialogPrimitive.Close>
@@ -111,7 +111,7 @@ function DialogTitle({
 		<DialogPrimitive.Title
 			data-slot="dialog-title"
 			className={cn(
-				"text-lg font-semibold leading-none tracking-tight text-neutral-100",
+				"text-lg font-semibold leading-none tracking-tight text-foreground",
 				className,
 			)}
 			{...props}
@@ -126,7 +126,7 @@ function DialogDescription({
 	return (
 		<DialogPrimitive.Description
 			data-slot="dialog-description"
-			className={cn("text-sm text-neutral-400", className)}
+			className={cn("text-sm text-muted-foreground", className)}
 			{...props}
 		/>
 	);

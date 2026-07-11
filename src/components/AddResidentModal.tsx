@@ -211,9 +211,9 @@ export function AddResidentModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-3xl bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-0 sm:rounded-2xl overflow-hidden h-[85vh] flex flex-col gap-0">
+			<DialogContent className="max-w-3xl bg-background border-border/60 shadow-2xl text-foreground p-0 sm:rounded-2xl overflow-hidden h-[85vh] flex flex-col gap-0">
 				<DialogHeader className="px-6 py-5 shrink-0">
-					<DialogTitle className="text-xl font-bold text-neutral-100">
+					<DialogTitle className="text-xl font-bold text-foreground">
 						Add New Resident Profile
 					</DialogTitle>
 				</DialogHeader>
@@ -226,8 +226,8 @@ export function AddResidentModal({
 						defaultValue="personal"
 						className="w-full flex-1 flex flex-col min-h-0 overflow-hidden"
 					>
-						<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-950/60 backdrop-blur-xl border border-neutral-800/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-2 mb-0 shrink-0">
-							<TabsTrigger value="personal" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all">
+						<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-2 mb-0 shrink-0">
+							<TabsTrigger value="personal" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Personal
 									{hasPersonalErrors && (
@@ -235,7 +235,7 @@ export function AddResidentModal({
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger value="health" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all">
+							<TabsTrigger value="health" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Health & Status
 									{hasHealthErrors && (
@@ -243,7 +243,7 @@ export function AddResidentModal({
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger value="economic" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all">
+							<TabsTrigger value="economic" className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Household & Economic
 									{hasEconomicErrors && (
@@ -254,11 +254,11 @@ export function AddResidentModal({
 						</TabsList>
 
 						<div className="flex-1 overflow-y-auto px-6 pb-6 pt-4 min-h-0">
-							<TabsContent value="personal" className="m-0 space-y-6 bg-neutral-900/30 p-6 rounded-xl border border-neutral-800/50 shadow-inner">
+							<TabsContent value="personal" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border shadow-inner">
 								<div className="space-y-4">
 									<div className="grid grid-cols-2 gap-4">
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												First Name *
 											</Label>
 											<Input
@@ -267,7 +267,7 @@ export function AddResidentModal({
 													updateField("firstName", e.target.value)
 												}
 												className={cn(
-													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
+													"bg-background border-border h-10 text-foreground transition-all duration-200 focus-visible:ring-primary/50",
 													errors.firstName &&
 														"border-red-500 focus-visible:ring-red-500",
 												)}
@@ -277,7 +277,7 @@ export function AddResidentModal({
 											)}
 										</div>
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Last Name *
 											</Label>
 											<Input
@@ -286,7 +286,7 @@ export function AddResidentModal({
 													updateField("lastName", e.target.value)
 												}
 												className={cn(
-													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
+													"bg-background border-border h-10 text-foreground transition-all duration-200 focus-visible:ring-primary/50",
 													errors.lastName &&
 														"border-red-500 focus-visible:ring-red-500",
 												)}
@@ -296,7 +296,7 @@ export function AddResidentModal({
 											)}
 										</div>
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Middle Name
 											</Label>
 											<Input
@@ -304,23 +304,23 @@ export function AddResidentModal({
 												onChange={(e) =>
 													updateField("middleName", e.target.value)
 												}
-												className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+												className="bg-background border-border h-10 text-foreground"
 											/>
 										</div>
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">Suffix</Label>
+											<Label className="text-xs text-muted-foreground">Suffix</Label>
 											<Input
 												value={formData.suffix || ""}
 												onChange={(e) => updateField("suffix", e.target.value)}
 												placeholder="Jr, Sr, III"
-												className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+												className="bg-background border-border h-10 text-foreground"
 											/>
 										</div>
 									</div>
 
 									<div className="grid grid-cols-2 gap-4">
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Birthdate
 											</Label>
 											<Popover open={isDatePopoverOpen} onOpenChange={setIsDatePopoverOpen}>
@@ -329,9 +329,9 @@ export function AddResidentModal({
 														type="button"
 														variant="outline"
 														className={cn(
-															"w-full justify-start text-left font-normal bg-neutral-950 border-neutral-800 text-neutral-200 h-10",
+															"w-full justify-start text-left font-normal bg-background border-border text-foreground h-10",
 															!formData.birthDate &&
-																"text-neutral-500",
+																"text-muted-foreground",
 														)}
 													>
 														<CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
@@ -345,7 +345,7 @@ export function AddResidentModal({
 														)}
 													</Button>
 												</PopoverTrigger>
-												<PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-800 text-neutral-200" align="start">
+												<PopoverContent className="w-auto p-0 bg-card border-border text-foreground" align="start">
 													<CalendarComponent
 														mode="single"
 														selected={
@@ -373,32 +373,32 @@ export function AddResidentModal({
 											</Popover>
 										</div>
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">Gender</Label>
+											<Label className="text-xs text-muted-foreground">Gender</Label>
 											<Select
 												value={formData.gender || undefined}
 												onValueChange={(val) => updateField("gender", val)}
 											>
-												<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
+												<SelectTrigger className="bg-card border-border h-10 text-foreground rounded-xl">
 													<SelectValue placeholder="Select gender" />
 												</SelectTrigger>
-												<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+												<SelectContent className="bg-card border-border text-foreground">
 													<SelectItem value="Male">Male</SelectItem>
 													<SelectItem value="Female">Female</SelectItem>
 												</SelectContent>
 											</Select>
 										</div>
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Civil Status
 											</Label>
 											<Select
 												value={formData.civilStatus || undefined}
 												onValueChange={(val) => updateField("civilStatus", val)}
 											>
-												<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
+												<SelectTrigger className="bg-card border-border h-10 text-foreground rounded-xl">
 													<SelectValue placeholder="Select status" />
 												</SelectTrigger>
-												<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+												<SelectContent className="bg-card border-border text-foreground">
 													<SelectItem value="Single">Single</SelectItem>
 													<SelectItem value="Married">Married</SelectItem>
 													<SelectItem value="Widowed">Widowed</SelectItem>
@@ -407,7 +407,7 @@ export function AddResidentModal({
 											</Select>
 										</div>
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Religion
 											</Label>
 											<Input
@@ -415,14 +415,14 @@ export function AddResidentModal({
 												onChange={(e) =>
 													updateField("religion", e.target.value)
 												}
-												className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+												className="bg-background border-border h-10 text-foreground"
 											/>
 										</div>
 									</div>
 
 									<div className="grid grid-cols-2 gap-4">
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Contact Number
 											</Label>
 											<Input
@@ -430,16 +430,16 @@ export function AddResidentModal({
 												onChange={(e) =>
 													updateField("contactNumber", e.target.value)
 												}
-												className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+												className="bg-background border-border h-10 text-foreground"
 											/>
 										</div>
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">Email</Label>
+											<Label className="text-xs text-muted-foreground">Email</Label>
 											<Input
 												value={formData.email || ""}
 												onChange={(e) => updateField("email", e.target.value)}
 												className={cn(
-													"bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
+													"bg-background border-border h-10 text-foreground transition-all duration-200 focus-visible:ring-primary/50",
 													errors.email &&
 														"border-red-500 focus-visible:ring-red-500",
 												)}
@@ -452,15 +452,15 @@ export function AddResidentModal({
 								</div>
 							</TabsContent>
 
-							<TabsContent value="health" className="m-0 space-y-6 bg-neutral-900/30 p-6 rounded-xl border border-neutral-800/50 shadow-inner">
+							<TabsContent value="health" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border shadow-inner">
 								<div className="grid grid-cols-2 gap-8">
 									<div className="space-y-4">
-										<h4 className="text-sm font-semibold text-neutral-200 mb-2">
+										<h4 className="text-sm font-semibold text-foreground mb-2">
 											Health Flags
 										</h4>
-										<div className="space-y-4 bg-neutral-950/50 p-4 rounded-xl border border-neutral-800/80">
+										<div className="space-y-4 bg-background/50 p-4 rounded-xl border border-border/80">
 											<div className="flex items-center justify-between">
-												<Label className="text-sm text-neutral-300">
+												<Label className="text-sm text-foreground/80">
 													Bed Bound
 												</Label>
 												<Switch
@@ -471,7 +471,7 @@ export function AddResidentModal({
 												/>
 											</div>
 											<div className="flex items-center justify-between">
-												<Label className="text-sm text-neutral-300">
+												<Label className="text-sm text-foreground/80">
 													Wheelchair Bound
 												</Label>
 												<Switch
@@ -482,7 +482,7 @@ export function AddResidentModal({
 												/>
 											</div>
 											<div className="flex items-center justify-between">
-												<Label className="text-sm text-neutral-300">
+												<Label className="text-sm text-foreground/80">
 													Dialysis Patient
 												</Label>
 												<Switch
@@ -493,7 +493,7 @@ export function AddResidentModal({
 												/>
 											</div>
 											<div className="flex items-center justify-between">
-												<Label className="text-sm text-neutral-300">
+												<Label className="text-sm text-foreground/80">
 													Cancer Patient
 												</Label>
 												<Switch
@@ -505,7 +505,7 @@ export function AddResidentModal({
 											</div>
 										</div>
 										<div className="space-y-1.5 pt-2">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Debilitating Diseases
 											</Label>
 											<Input
@@ -514,19 +514,19 @@ export function AddResidentModal({
 													updateField("debilitatingDiseases", e.target.value)
 												}
 												placeholder="e.g. Asthma, Hypertension"
-												className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+												className="bg-background border-border h-10 text-foreground"
 											/>
 										</div>
 									</div>
 
 									<div className="space-y-4">
-										<h4 className="text-sm font-semibold text-neutral-200 mb-2">
+										<h4 className="text-sm font-semibold text-foreground mb-2">
 											Special Status
 										</h4>
-										<div className="space-y-4 bg-neutral-950/50 p-4 rounded-xl border border-neutral-800/80">
+										<div className="space-y-4 bg-background/50 p-4 rounded-xl border border-border/80">
 											<div className="flex flex-col space-y-2">
 												<div className="flex items-center justify-between">
-													<Label className="text-sm text-neutral-300">
+													<Label className="text-sm text-foreground/80">
 														PWD
 													</Label>
 													<Switch
@@ -541,12 +541,12 @@ export function AddResidentModal({
 															updateField("pwdType", e.target.value)
 														}
 														placeholder="Disability Type"
-														className="bg-neutral-900 border-neutral-800 h-8 text-xs text-neutral-200 mt-2"
+														className="bg-card border-border h-8 text-xs text-foreground mt-2"
 													/>
 												)}
 											</div>
 											<div className="flex items-center justify-between">
-												<Label className="text-sm text-neutral-300">
+												<Label className="text-sm text-foreground/80">
 													Senior Citizen
 												</Label>
 												<Switch
@@ -557,7 +557,7 @@ export function AddResidentModal({
 												/>
 											</div>
 											<div className="flex items-center justify-between">
-												<Label className="text-sm text-neutral-300">
+												<Label className="text-sm text-foreground/80">
 													Single Parent
 												</Label>
 												<Switch
@@ -568,7 +568,7 @@ export function AddResidentModal({
 												/>
 											</div>
 											<div className="flex items-center justify-between">
-												<Label className="text-sm text-neutral-300">
+												<Label className="text-sm text-foreground/80">
 													Indigenous Person
 												</Label>
 												<Switch
@@ -581,16 +581,16 @@ export function AddResidentModal({
 								</div>
 							</TabsContent>
 
-							<TabsContent value="economic" className="m-0 space-y-6 bg-neutral-900/30 p-6 rounded-xl border border-neutral-800/50 shadow-inner">
+							<TabsContent value="economic" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border shadow-inner">
 								<div className="space-y-6">
 									<div className="space-y-4">
-										<h4 className="text-sm font-semibold text-neutral-200 mb-3">
+										<h4 className="text-sm font-semibold text-foreground mb-3">
 											Location & Household
 										</h4>
 										<div className="space-y-4">
 											<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 												<div className="space-y-1.5">
-													<Label className="text-xs text-neutral-400">Purok *</Label>
+													<Label className="text-xs text-muted-foreground">Purok *</Label>
 													<Input
 														list="purok-options"
 														value={formData.purok || ""}
@@ -601,7 +601,7 @@ export function AddResidentModal({
 															}
 														}}
 														placeholder="Select or type Purok..."
-														className={cn("bg-neutral-950 border-neutral-800 h-10 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+														className={cn("bg-background border-border h-10 text-foreground transition-all duration-200 focus-visible:ring-primary/50", errors.purok && "border-red-500 focus-visible:ring-red-500")}
 													/>
 													<datalist id="purok-options">
 														{purokOptions.map((p) => <option key={p} value={p} />)}
@@ -612,7 +612,7 @@ export function AddResidentModal({
 												</div>
 
 												<div className="space-y-1.5">
-													<Label className="text-xs text-neutral-400">
+													<Label className="text-xs text-muted-foreground">
 														Household *
 													</Label>
 													<HouseholdCombobox
@@ -628,7 +628,7 @@ export function AddResidentModal({
 															}
 														}}
 														error={!!errors.householdId}
-														className="h-10 bg-neutral-950"
+														className="h-10 bg-background"
 													/>
 													{errors.householdId && (
 														<p className="text-xs text-red-500 font-medium mt-1">{errors.householdId}</p>
@@ -637,28 +637,28 @@ export function AddResidentModal({
 											</div>
 											
 											{formData.isNewHousehold && (
-												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-neutral-950/50 p-3 rounded-lg border border-neutral-800/80">
+												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-background/50 p-3 rounded-lg border border-border/80">
 													<div className="space-y-1.5">
-														<Label className="text-xs text-neutral-400">Block</Label>
+														<Label className="text-xs text-muted-foreground">Block</Label>
 														<Input
 															value={formData.newHouseholdBlock || ""}
 															onChange={(e) => updateField("newHouseholdBlock", e.target.value)}
-															className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+															className="bg-background border-border h-10 text-foreground"
 														/>
 													</div>
 													<div className="space-y-1.5">
-														<Label className="text-xs text-neutral-400">Lot</Label>
+														<Label className="text-xs text-muted-foreground">Lot</Label>
 														<Input
 															value={formData.newHouseholdLot || ""}
 															onChange={(e) => updateField("newHouseholdLot", e.target.value)}
-															className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+															className="bg-background border-border h-10 text-foreground"
 														/>
 													</div>
 												</div>
 											)}
 
 											<div className="space-y-1.5 mt-4">
-												<Label className="text-xs text-neutral-400">
+												<Label className="text-xs text-muted-foreground">
 													Relationship to Head
 												</Label>
 												<Select
@@ -667,10 +667,10 @@ export function AddResidentModal({
 														updateField("relationshipToHead", val)
 													}
 												>
-													<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
+													<SelectTrigger className="bg-card border-border h-10 text-foreground rounded-xl">
 														<SelectValue placeholder="Select relationship" />
 													</SelectTrigger>
-													<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+													<SelectContent className="bg-card border-border text-foreground">
 														<SelectItem value="Head">Head</SelectItem>
 														<SelectItem value="Spouse">Spouse</SelectItem>
 														<SelectItem value="Son">Son</SelectItem>
@@ -687,12 +687,12 @@ export function AddResidentModal({
 									</div>
 
 									<div className="space-y-4">
-										<h4 className="text-sm font-semibold text-neutral-200 mb-3">
+										<h4 className="text-sm font-semibold text-foreground mb-3">
 											Education & Work
 										</h4>
 										<div className="grid grid-cols-2 gap-4">
 											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">
+												<Label className="text-xs text-muted-foreground">
 													Educational Attainment
 												</Label>
 												<Input
@@ -700,11 +700,11 @@ export function AddResidentModal({
 													onChange={(e) =>
 														updateField("educationalAttainment", e.target.value)
 													}
-													className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+													className="bg-background border-border h-10 text-foreground"
 												/>
 											</div>
 											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">
+												<Label className="text-xs text-muted-foreground">
 													Employment Status
 												</Label>
 												<Select
@@ -713,10 +713,10 @@ export function AddResidentModal({
 														updateField("employmentStatus", val)
 													}
 												>
-													<SelectTrigger className="bg-neutral-900 border-neutral-800 h-10 text-neutral-200 rounded-xl">
+													<SelectTrigger className="bg-card border-border h-10 text-foreground rounded-xl">
 														<SelectValue placeholder="Select status" />
 													</SelectTrigger>
-													<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+													<SelectContent className="bg-card border-border text-foreground">
 														<SelectItem value="Employed">Employed</SelectItem>
 														<SelectItem value="Unemployed">
 															Unemployed
@@ -730,7 +730,7 @@ export function AddResidentModal({
 												</Select>
 											</div>
 											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">
+												<Label className="text-xs text-muted-foreground">
 													Occupation
 												</Label>
 												<Input
@@ -738,11 +738,11 @@ export function AddResidentModal({
 													onChange={(e) =>
 														updateField("occupation", e.target.value)
 													}
-													className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+													className="bg-background border-border h-10 text-foreground"
 												/>
 											</div>
 											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">
+												<Label className="text-xs text-muted-foreground">
 													Monthly Income
 												</Label>
 												<Input
@@ -750,11 +750,11 @@ export function AddResidentModal({
 													onChange={(e) =>
 														updateField("monthlyIncome", e.target.value)
 													}
-													className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+													className="bg-background border-border h-10 text-foreground"
 												/>
 											</div>
 											<div className="col-span-2 space-y-1.5">
-												<Label className="text-xs text-neutral-400">
+												<Label className="text-xs text-muted-foreground">
 													Source of Livelihood
 												</Label>
 												<Input
@@ -762,19 +762,19 @@ export function AddResidentModal({
 													onChange={(e) =>
 														updateField("sourceOfLivelihood", e.target.value)
 													}
-													className="bg-neutral-950 border-neutral-800 h-10 text-neutral-200"
+													className="bg-background border-border h-10 text-foreground"
 												/>
 											</div>
 										</div>
 									</div>
 
 									<div className="space-y-4">
-										<h4 className="text-sm font-semibold text-neutral-200 mb-3">
+										<h4 className="text-sm font-semibold text-foreground mb-3">
 											Other Statuses
 										</h4>
 										<div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-											<div className="flex items-center justify-between bg-neutral-950/50 p-2 rounded-lg border border-neutral-800/80">
-												<Label className="text-xs text-neutral-300">
+											<div className="flex items-center justify-between bg-background/50 p-2 rounded-lg border border-border/80">
+												<Label className="text-xs text-foreground/80">
 													Resident Voter
 												</Label>
 												<Switch
@@ -784,8 +784,8 @@ export function AddResidentModal({
 													}
 												/>
 											</div>
-											<div className="flex items-center justify-between bg-neutral-950/50 p-2 rounded-lg border border-neutral-800/80">
-												<Label className="text-xs text-neutral-300">
+											<div className="flex items-center justify-between bg-background/50 p-2 rounded-lg border border-border/80">
+												<Label className="text-xs text-foreground/80">
 													Registered Voter
 												</Label>
 												<Switch
@@ -795,22 +795,22 @@ export function AddResidentModal({
 													}
 												/>
 											</div>
-											<div className="flex items-center justify-between bg-neutral-950/50 p-2 rounded-lg border border-neutral-800/80">
-												<Label className="text-xs text-neutral-300">OFW</Label>
+											<div className="flex items-center justify-between bg-background/50 p-2 rounded-lg border border-border/80">
+												<Label className="text-xs text-foreground/80">OFW</Label>
 												<Switch
 													checked={formData.isOfw}
 													onCheckedChange={(val) => updateField("isOfw", val)}
 												/>
 											</div>
-											<div className="flex items-center justify-between bg-neutral-950/50 p-2 rounded-lg border border-neutral-800/80">
-												<Label className="text-xs text-neutral-300">OSY</Label>
+											<div className="flex items-center justify-between bg-background/50 p-2 rounded-lg border border-border/80">
+												<Label className="text-xs text-foreground/80">OSY</Label>
 												<Switch
 													checked={formData.isOsy}
 													onCheckedChange={(val) => updateField("isOsy", val)}
 												/>
 											</div>
-											<div className="flex items-center justify-between bg-neutral-950/50 p-2 rounded-lg border border-neutral-800/80">
-												<Label className="text-xs text-neutral-300">
+											<div className="flex items-center justify-between bg-background/50 p-2 rounded-lg border border-border/80">
+												<Label className="text-xs text-foreground/80">
 													Migrant
 												</Label>
 												<Switch
@@ -820,8 +820,8 @@ export function AddResidentModal({
 													}
 												/>
 											</div>
-											<div className="flex items-center justify-between bg-neutral-950/50 p-2 rounded-lg border border-neutral-800/80">
-												<Label className="text-xs text-neutral-300">
+											<div className="flex items-center justify-between bg-background/50 p-2 rounded-lg border border-border/80">
+												<Label className="text-xs text-foreground/80">
 													National Pensioner
 												</Label>
 												<Switch
@@ -831,8 +831,8 @@ export function AddResidentModal({
 													}
 												/>
 											</div>
-											<div className="flex items-center justify-between bg-neutral-950/50 p-2 rounded-lg border border-neutral-800/80">
-												<Label className="text-xs text-neutral-300">
+											<div className="flex items-center justify-between bg-background/50 p-2 rounded-lg border border-border/80">
+												<Label className="text-xs text-foreground/80">
 													Local Pensioner
 												</Label>
 												<Switch
@@ -849,8 +849,8 @@ export function AddResidentModal({
 						</div>
 					</Tabs>
 
-					<div className="px-6 py-4 border-t border-neutral-800/60 bg-neutral-900/40 flex justify-between items-center shrink-0">
-						<div className="text-sm font-medium text-neutral-500">
+					<div className="px-6 py-4 border-t border-border/60 bg-card/40 flex justify-between items-center shrink-0">
+						<div className="text-sm font-medium text-muted-foreground">
 							Complete all required fields (*)
 						</div>
 						<div className="flex gap-3">
@@ -858,14 +858,14 @@ export function AddResidentModal({
 								type="button"
 								variant="ghost"
 								onClick={onClose}
-								className="rounded-xl text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 px-5"
+								className="rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted px-5"
 							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
 								disabled={isSaving}
-								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 shadow-sm"
+								className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 shadow-sm"
 							>
 								{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 								Save Resident

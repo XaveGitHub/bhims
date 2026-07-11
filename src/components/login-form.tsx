@@ -77,10 +77,10 @@ export function LoginForm({
         <div className="flex flex-col items-center text-center -mb-2">
           <div className="relative">
             {/* Green glowing background behind the logo */}
-            <div className="absolute inset-0 bg-blue-500/30 blur-xl rounded-full scale-150 z-0 animate-pulse" />
+            <div className="absolute inset-0 bg-primary blur-xl rounded-full scale-150 z-0 animate-pulse" />
             <img src="/barangay_logo.png" alt="Barangay Logo" className="relative z-10 w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" />
           </div>
-          <h1 className="text-3xl font-bold tracking-[0.15em] text-white drop-shadow-sm leading-none pt-2">BHIMS</h1>
+          <h1 className="text-3xl font-bold tracking-[0.15em] text-foreground drop-shadow-sm leading-none pt-2">BHIMS</h1>
         </div>
         
         {generalError && (
@@ -123,7 +123,7 @@ export function LoginForm({
         </Field>
         
         <Field className="pt-2">
-          <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+          <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign In"}
           </Button>
         </Field>

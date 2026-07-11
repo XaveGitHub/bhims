@@ -222,28 +222,28 @@ export function ResidentProfilePane({
 	// ── VIEW MODE RENDERING ──
 	const renderViewMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-950/60 backdrop-blur-xl border border-neutral-800/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					Personal
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					Health
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					Household
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					History
 				</TabsTrigger>
@@ -252,41 +252,41 @@ export function ResidentProfilePane({
 			<div className="flex-1 overflow-y-auto p-7">
 				<TabsContent value="personal" className="m-0 space-y-6">
 					<div className="grid grid-cols-2 gap-4">
-						<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none col-span-2">
+						<Card className="bg-card/40 border-border/60 shadow-none col-span-2">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Basic Info
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
 									<div>
-										<p className="text-[11px] text-neutral-500 mb-0.5">
+										<p className="text-[11px] text-muted-foreground mb-0.5">
 											First Name
 										</p>
-										<p className="text-sm font-medium text-neutral-200">
+										<p className="text-sm font-medium text-foreground">
 											{resident.firstName || "—"}
 										</p>
 									</div>
 									<div>
-										<p className="text-[11px] text-neutral-500 mb-0.5">
+										<p className="text-[11px] text-muted-foreground mb-0.5">
 											Last Name
 										</p>
-										<p className="text-sm font-medium text-neutral-200">
+										<p className="text-sm font-medium text-foreground">
 											{resident.lastName || "—"}
 										</p>
 									</div>
 									<div>
-										<p className="text-[11px] text-neutral-500 mb-0.5">
+										<p className="text-[11px] text-muted-foreground mb-0.5">
 											Middle Name
 										</p>
-										<p className="text-sm font-medium text-neutral-200">
+										<p className="text-sm font-medium text-foreground">
 											{resident.middleName || "—"}
 										</p>
 									</div>
 									<div>
-										<p className="text-[11px] text-neutral-500 mb-0.5">
+										<p className="text-[11px] text-muted-foreground mb-0.5">
 											Suffix
 										</p>
-										<p className="text-sm font-medium text-neutral-200">
+										<p className="text-sm font-medium text-foreground">
 											{resident.suffix || "—"}
 										</p>
 									</div>
@@ -294,64 +294,64 @@ export function ResidentProfilePane({
 							</CardContent>
 						</Card>
 
-						<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
+						<Card className="bg-card/40 border-border/60 shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Demographics
 								</h3>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Birthdate
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.birthDate
 											? format(parseISO(resident.birthDate), "MMMM d, yyyy")
 											: "—"}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Gender / Sex
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.gender || "—"}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Civil Status
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.civilStatus || "—"}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Religion
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.religion || "—"}
 									</p>
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
+						<Card className="bg-card/40 border-border/60 shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Contact
 								</h3>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Contact Number
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.contactNumber || "—"}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">Email</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-[11px] text-muted-foreground mb-0.5">Email</p>
+									<p className="text-sm font-medium text-foreground">
 										{resident.email || "—"}
 									</p>
 								</div>
@@ -361,9 +361,9 @@ export function ResidentProfilePane({
 				</TabsContent>
 
 				<TabsContent value="health" className="m-0 space-y-6">
-					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
+					<Card className="bg-card/40 border-border/60 shadow-none">
 						<CardContent className="p-4 space-y-4">
-							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+							<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 								Health Indicators
 							</h3>
 							<div className="grid grid-cols-2 gap-y-4 gap-x-2">
@@ -373,7 +373,7 @@ export function ResidentProfilePane({
 										className={
 											resident.isBedBound
 												? "bg-red-500/20 text-red-400 border-red-500/30"
-												: "text-neutral-500 border-neutral-800"
+												: "text-muted-foreground border-border"
 										}
 									>
 										Bed Bound
@@ -385,7 +385,7 @@ export function ResidentProfilePane({
 										className={
 											resident.isWheelchairBound
 												? "bg-amber-500/20 text-amber-400 border-amber-500/30"
-												: "text-neutral-500 border-neutral-800"
+												: "text-muted-foreground border-border"
 										}
 									>
 										Wheelchair
@@ -396,8 +396,8 @@ export function ResidentProfilePane({
 										variant={resident.isDialysisPatient ? "default" : "outline"}
 										className={
 											resident.isDialysisPatient
-												? "bg-blue-500/20 text-blue-400 border-blue-500/30"
-												: "text-neutral-500 border-neutral-800"
+												? "bg-primary text-primary border-primary/20"
+												: "text-muted-foreground border-border"
 										}
 									>
 										Dialysis
@@ -409,7 +409,7 @@ export function ResidentProfilePane({
 										className={
 											resident.isCancerPatient
 												? "bg-purple-500/20 text-purple-400 border-purple-500/30"
-												: "text-neutral-500 border-neutral-800"
+												: "text-muted-foreground border-border"
 										}
 									>
 										Cancer
@@ -418,19 +418,19 @@ export function ResidentProfilePane({
 							</div>
 
 							<div className="pt-2 mt-2">
-								<p className="text-[11px] text-neutral-500 mb-1">
+								<p className="text-[11px] text-muted-foreground mb-1">
 									Debilitating Diseases
 								</p>
-								<p className="text-sm font-medium text-neutral-200 leading-relaxed">
+								<p className="text-sm font-medium text-foreground leading-relaxed">
 									{resident.debilitatingDiseases || "None recorded"}
 								</p>
 							</div>
 						</CardContent>
 					</Card>
 
-					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
+					<Card className="bg-card/40 border-border/60 shadow-none">
 						<CardContent className="p-4 space-y-4">
-							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+							<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 								Special Status
 							</h3>
 							<div className="grid grid-cols-2 gap-y-4 gap-x-2">
@@ -439,7 +439,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isPwd
 											? "bg-indigo-500/20 text-indigo-400 border-indigo-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									PWD {resident.pwdType ? `(${resident.pwdType})` : ""}
@@ -449,7 +449,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isSeniorCitizen
 											? "bg-teal-500/20 text-teal-400 border-teal-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Senior Citizen
@@ -459,7 +459,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isSingleParent
 											? "bg-pink-500/20 text-pink-400 border-pink-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Single Parent
@@ -469,7 +469,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isIp
 											? "bg-orange-500/20 text-orange-400 border-orange-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Indigenous Person
@@ -480,36 +480,36 @@ export function ResidentProfilePane({
 				</TabsContent>
 
 				<TabsContent value="economic" className="m-0 space-y-6">
-					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
+					<Card className="bg-card/40 border-border/60 shadow-none">
 						<CardContent className="p-4 space-y-3">
-							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+							<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 								Location & Household
 							</h3>
 							<div className="grid grid-cols-2 gap-4">
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">Purok</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-[11px] text-muted-foreground mb-0.5">Purok</p>
+									<p className="text-sm font-medium text-foreground">
 										{resident.purok}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Block & Lot
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.block || resident.lot
 											? `Blk ${resident.block || "-"} Lot ${resident.lot || "-"}`
 											: "—"}
 									</p>
 								</div>
 								<div className="col-span-2">
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Relationship to Head
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.relationshipToHead || "—"}{" "}
 										{resident.isHeadOfHousehold && (
-											<span className="text-blue-400 text-xs ml-1">
+											<span className="text-primary text-xs ml-1">
 												(Head)
 											</span>
 										)}
@@ -522,14 +522,14 @@ export function ResidentProfilePane({
 									<Button
 										asChild
 										variant="outline"
-										className="w-full bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:text-neutral-100 rounded-xl h-10 font-medium cursor-pointer transition-colors"
+										className="w-full bg-card border-border hover:bg-muted hover:text-foreground rounded-xl h-10 font-medium cursor-pointer transition-colors"
 									>
 										<Link
 											to="/households"
 											search={{ householdId: resident.householdId }}
-											className="flex items-center justify-center text-neutral-200"
+											className="flex items-center justify-center text-foreground"
 										>
-											<Home className="h-4 w-4 mr-2 text-neutral-400" />
+											<Home className="h-4 w-4 mr-2 text-muted-foreground" />
 											View Full Family Tree
 										</Link>
 									</Button>
@@ -538,49 +538,49 @@ export function ResidentProfilePane({
 						</CardContent>
 					</Card>
 
-					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
+					<Card className="bg-card/40 border-border/60 shadow-none">
 						<CardContent className="p-4 space-y-3">
-							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+							<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 								Economic Status
 							</h3>
 							<div className="grid grid-cols-2 gap-4">
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Educational Attainment
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.educationalAttainment || "—"}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Employment Status
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.employmentStatus || "—"}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Occupation
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.occupation || "—"}
 									</p>
 								</div>
 								<div>
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Monthly Income
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.monthlyIncome || "—"}
 									</p>
 								</div>
 								<div className="col-span-2">
-									<p className="text-[11px] text-neutral-500 mb-0.5">
+									<p className="text-[11px] text-muted-foreground mb-0.5">
 										Source of Livelihood
 									</p>
-									<p className="text-sm font-medium text-neutral-200">
+									<p className="text-sm font-medium text-foreground">
 										{resident.sourceOfLivelihood || "—"}
 									</p>
 								</div>
@@ -588,9 +588,9 @@ export function ResidentProfilePane({
 						</CardContent>
 					</Card>
 
-					<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none">
+					<Card className="bg-card/40 border-border/60 shadow-none">
 						<CardContent className="p-4 space-y-4">
-							<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+							<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 								Other Statuses
 							</h3>
 							<div className="grid grid-cols-2 gap-y-4 gap-x-2">
@@ -599,7 +599,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isResidentVoter
 											? "bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Resident Voter
@@ -608,8 +608,8 @@ export function ResidentProfilePane({
 									variant={resident.isRegisteredVoter ? "default" : "outline"}
 									className={
 										resident.isRegisteredVoter
-											? "bg-blue-500/20 text-blue-400 border-blue-500/30"
-											: "text-neutral-500 border-neutral-800"
+											? "bg-primary text-primary border-primary/20"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Registered Voter
@@ -618,8 +618,8 @@ export function ResidentProfilePane({
 									variant={resident.isOfw ? "default" : "outline"}
 									className={
 										resident.isOfw
-											? "bg-blue-500/20 text-blue-400 border-blue-500/30"
-											: "text-neutral-500 border-neutral-800"
+											? "bg-primary text-primary border-primary/20"
+											: "text-muted-foreground border-border"
 									}
 								>
 									OFW
@@ -629,7 +629,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isOsy
 											? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Out of School Youth
@@ -639,7 +639,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isMigrant
 											? "bg-slate-500/20 text-slate-400 border-slate-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Migrant
@@ -649,7 +649,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isNationalPensioner
 											? "bg-rose-500/20 text-rose-400 border-rose-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									National Pensioner
@@ -659,7 +659,7 @@ export function ResidentProfilePane({
 									className={
 										resident.isLocalPensioner
 											? "bg-rose-500/20 text-rose-400 border-rose-500/30"
-											: "text-neutral-500 border-neutral-800"
+											: "text-muted-foreground border-border"
 									}
 								>
 									Local Pensioner
@@ -679,10 +679,10 @@ export function ResidentProfilePane({
 	// ── EDIT MODE RENDERING ──
 	const renderEditMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="flex w-[calc(100%-3rem)] bg-neutral-950/60 backdrop-blur-xl border border-neutral-800/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Personal
@@ -693,7 +693,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Health
@@ -704,7 +704,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Household
@@ -715,7 +715,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-neutral-400 hover:text-neutral-200 data-[state=active]:!bg-blue-600 data-[state=active]:!text-white transition-all"
+					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-foreground data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					History
 				</TabsTrigger>
@@ -724,19 +724,19 @@ export function ResidentProfilePane({
 			<div className="flex-1 overflow-y-auto p-6">
 				<TabsContent value="personal" className="m-0 space-y-6">
 					<div className="grid grid-cols-2 gap-4">
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none col-span-2">
+						<Card className="bg-background border-border shadow-none col-span-2">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Basic Info
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">First Name *</Label>
+										<Label className="text-xs text-muted-foreground">First Name *</Label>
 										<Input
 											value={formData.firstName || ""}
 											onChange={(e) => updateField("firstName", e.target.value)}
 											className={cn(
-												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
+												"bg-card border-border h-9 text-foreground transition-all duration-200 focus-visible:ring-primary/50",
 												errors.firstName &&
 													"border-red-500 focus-visible:ring-red-500",
 											)}
@@ -746,12 +746,12 @@ export function ResidentProfilePane({
 										)}
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Last Name *</Label>
+										<Label className="text-xs text-muted-foreground">Last Name *</Label>
 										<Input
 											value={formData.lastName || ""}
 											onChange={(e) => updateField("lastName", e.target.value)}
 											className={cn(
-												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
+												"bg-card border-border h-9 text-foreground transition-all duration-200 focus-visible:ring-primary/50",
 												errors.lastName &&
 													"border-red-500 focus-visible:ring-red-500",
 											)}
@@ -761,40 +761,40 @@ export function ResidentProfilePane({
 										)}
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Middle Name</Label>
+										<Label className="text-xs text-muted-foreground">Middle Name</Label>
 										<Input
 											value={formData.middleName || ""}
 											onChange={(e) => updateField("middleName", e.target.value)}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Suffix</Label>
+										<Label className="text-xs text-muted-foreground">Suffix</Label>
 										<Input
 											value={formData.suffix || ""}
 											onChange={(e) => updateField("suffix", e.target.value)}
 											placeholder="Jr, Sr, III"
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
+						<Card className="bg-background border-border shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Demographics
 								</h3>
 								<div className="space-y-4">
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Birthdate</Label>
+										<Label className="text-xs text-muted-foreground">Birthdate</Label>
 										<Popover open={isDatePopoverOpen} onOpenChange={setIsDatePopoverOpen}>
 											<PopoverTrigger asChild>
 												<Button
 													type="button"
 													variant="outline"
-													className="w-full justify-start text-left font-normal bg-neutral-900 border-neutral-800 text-neutral-200 hover:bg-neutral-800 hover:text-neutral-100 h-9"
+													className="w-full justify-start text-left font-normal bg-card border-border text-foreground hover:bg-muted hover:text-foreground h-9"
 												>
 													<CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
 													{formData.birthDate ? (
@@ -804,7 +804,7 @@ export function ResidentProfilePane({
 													)}
 												</Button>
 											</PopoverTrigger>
-											<PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-800 text-neutral-200" align="start">
+											<PopoverContent className="w-auto p-0 bg-card border-border text-foreground" align="start">
 												<CalendarComponent
 													mode="single"
 													selected={
@@ -832,30 +832,30 @@ export function ResidentProfilePane({
 										</Popover>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Gender</Label>
+										<Label className="text-xs text-muted-foreground">Gender</Label>
 										<Select
 											value={formData.gender || undefined}
 											onValueChange={(val) => updateField("gender", val)}
 										>
-											<SelectTrigger className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200">
+											<SelectTrigger className="bg-card border-border h-9 text-foreground">
 												<SelectValue placeholder="Select gender" />
 											</SelectTrigger>
-											<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+											<SelectContent className="bg-card border-border text-foreground">
 												<SelectItem value="Male">Male</SelectItem>
 												<SelectItem value="Female">Female</SelectItem>
 											</SelectContent>
 										</Select>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Civil Status</Label>
+										<Label className="text-xs text-muted-foreground">Civil Status</Label>
 										<Select
 											value={formData.civilStatus || undefined}
 											onValueChange={(val) => updateField("civilStatus", val)}
 										>
-											<SelectTrigger className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200">
+											<SelectTrigger className="bg-card border-border h-9 text-foreground">
 												<SelectValue placeholder="Select status" />
 											</SelectTrigger>
-											<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+											<SelectContent className="bg-card border-border text-foreground">
 												<SelectItem value="Single">Single</SelectItem>
 												<SelectItem value="Married">Married</SelectItem>
 												<SelectItem value="Widowed">Widowed</SelectItem>
@@ -864,40 +864,40 @@ export function ResidentProfilePane({
 										</Select>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Religion</Label>
+										<Label className="text-xs text-muted-foreground">Religion</Label>
 										<Input
 											value={formData.religion || ""}
 											onChange={(e) => updateField("religion", e.target.value)}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
+						<Card className="bg-background border-border shadow-none">
 							<CardContent className="p-4 space-y-3">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Contact
 								</h3>
 								<div className="space-y-4">
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">
+										<Label className="text-xs text-muted-foreground">
 											Contact Number
 										</Label>
 										<Input
 											value={formData.contactNumber || ""}
 											onChange={(e) => updateField("contactNumber", e.target.value)}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">Email</Label>
+										<Label className="text-xs text-muted-foreground">Email</Label>
 										<Input
 											value={formData.email || ""}
 											onChange={(e) => updateField("email", e.target.value)}
 											className={cn(
-												"bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20",
+												"bg-card border-border h-9 text-foreground transition-all duration-200 focus-visible:ring-primary/50",
 												errors.email &&
 													"border-red-500 focus-visible:ring-red-500",
 											)}
@@ -914,14 +914,14 @@ export function ResidentProfilePane({
 
 				<TabsContent value="health" className="m-0 space-y-6">
 					<div className="grid gap-6">
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
+						<Card className="bg-background border-border shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Health Flags
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Bed Bound
 										</Label>
 										<Switch
@@ -930,7 +930,7 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Wheelchair Bound
 										</Label>
 										<Switch
@@ -941,7 +941,7 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Dialysis Patient
 										</Label>
 										<Switch
@@ -952,7 +952,7 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Cancer Patient
 										</Label>
 										<Switch
@@ -964,7 +964,7 @@ export function ResidentProfilePane({
 									</div>
 								</div>
 								<div className="space-y-1.5 pt-2">
-									<Label className="text-xs text-neutral-400">
+									<Label className="text-xs text-muted-foreground">
 										Debilitating Diseases
 									</Label>
 									<Input
@@ -973,21 +973,21 @@ export function ResidentProfilePane({
 											updateField("debilitatingDiseases", e.target.value)
 										}
 										placeholder="e.g. Asthma, Hypertension"
-										className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+										className="bg-card border-border h-9 text-foreground"
 									/>
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
+						<Card className="bg-background border-border shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Status Flags
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
 									<div className="flex flex-col space-y-2">
 										<div className="flex items-center justify-between">
-											<Label className="text-sm text-neutral-300">PWD</Label>
+											<Label className="text-sm text-foreground/80">PWD</Label>
 											<Switch
 												checked={formData.isPwd}
 												onCheckedChange={(val) => updateField("isPwd", val)}
@@ -998,12 +998,12 @@ export function ResidentProfilePane({
 												value={formData.pwdType || ""}
 												onChange={(e) => updateField("pwdType", e.target.value)}
 												placeholder="Disability Type"
-												className="bg-neutral-900 border-neutral-800 h-8 text-xs text-neutral-200"
+												className="bg-card border-border h-8 text-xs text-foreground"
 											/>
 										)}
 									</div>
 									<div className="flex items-center justify-between h-fit mt-1">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Senior Citizen
 										</Label>
 										<Switch
@@ -1014,7 +1014,7 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Single Parent
 										</Label>
 										<Switch
@@ -1025,7 +1025,7 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Indigenous Person
 										</Label>
 										<Switch
@@ -1041,15 +1041,15 @@ export function ResidentProfilePane({
 
 				<TabsContent value="economic" className="m-0 space-y-6">
 					<div className="grid gap-6">
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
+						<Card className="bg-background border-border shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Location & Household
 								</h3>
 								<div className="space-y-4">
 									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">Purok *</Label>
+											<Label className="text-xs text-muted-foreground">Purok *</Label>
 											<Input
 												list="purok-options"
 												value={formData.purok || ""}
@@ -1060,7 +1060,7 @@ export function ResidentProfilePane({
 													}
 												}}
 												placeholder="Select or type Purok..."
-												className={cn("bg-neutral-900 border-neutral-800 h-9 text-neutral-200 transition-all duration-200 focus-visible:ring-blue-500/20", errors.purok && "border-red-500 focus-visible:ring-red-500")}
+												className={cn("bg-card border-border h-9 text-foreground transition-all duration-200 focus-visible:ring-primary/50", errors.purok && "border-red-500 focus-visible:ring-red-500")}
 											/>
 											<datalist id="purok-options">
 												{purokOptions.map((p) => <option key={p} value={p} />)}
@@ -1071,7 +1071,7 @@ export function ResidentProfilePane({
 										</div>
 
 										<div className="space-y-1.5">
-											<Label className="text-xs text-neutral-400">
+											<Label className="text-xs text-muted-foreground">
 												Household *
 											</Label>
 											<HouseholdCombobox
@@ -1095,28 +1095,28 @@ export function ResidentProfilePane({
 									</div>
 									
 									{formData.isNewHousehold && (
-										<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-neutral-950/50 p-3 rounded-lg border border-neutral-800/80">
+										<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-background/50 p-3 rounded-lg border border-border/80">
 											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">Block</Label>
+												<Label className="text-xs text-muted-foreground">Block</Label>
 												<Input
 													value={formData.newHouseholdBlock || ""}
 													onChange={(e) => updateField("newHouseholdBlock", e.target.value)}
-													className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+													className="bg-card border-border h-9 text-foreground"
 												/>
 											</div>
 											<div className="space-y-1.5">
-												<Label className="text-xs text-neutral-400">Lot</Label>
+												<Label className="text-xs text-muted-foreground">Lot</Label>
 												<Input
 													value={formData.newHouseholdLot || ""}
 													onChange={(e) => updateField("newHouseholdLot", e.target.value)}
-													className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+													className="bg-card border-border h-9 text-foreground"
 												/>
 											</div>
 										</div>
 									)}
 
 									<div className="space-y-1.5 mt-4">
-										<Label className="text-xs text-neutral-400">
+										<Label className="text-xs text-muted-foreground">
 											Relationship to Head
 										</Label>
 										<Select
@@ -1125,10 +1125,10 @@ export function ResidentProfilePane({
 												updateField("relationshipToHead", val)
 											}
 										>
-											<SelectTrigger className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200">
+											<SelectTrigger className="bg-card border-border h-9 text-foreground">
 												<SelectValue placeholder="Select relationship" />
 											</SelectTrigger>
-											<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+											<SelectContent className="bg-card border-border text-foreground">
 												<SelectItem value="Head">Head</SelectItem>
 												<SelectItem value="Spouse">Spouse</SelectItem>
 												<SelectItem value="Son">Son</SelectItem>
@@ -1145,14 +1145,14 @@ export function ResidentProfilePane({
 							</CardContent>
 						</Card>
 
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
+						<Card className="bg-background border-border shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Education & Work
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">
+										<Label className="text-xs text-muted-foreground">
 											Educational Attainment
 										</Label>
 										<Input
@@ -1160,11 +1160,11 @@ export function ResidentProfilePane({
 											onChange={(e) =>
 												updateField("educationalAttainment", e.target.value)
 											}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">
+										<Label className="text-xs text-muted-foreground">
 											Employment Status
 										</Label>
 										<Select
@@ -1173,10 +1173,10 @@ export function ResidentProfilePane({
 												updateField("employmentStatus", val)
 											}
 										>
-											<SelectTrigger className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200">
+											<SelectTrigger className="bg-card border-border h-9 text-foreground">
 												<SelectValue placeholder="Select status" />
 											</SelectTrigger>
-											<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+											<SelectContent className="bg-card border-border text-foreground">
 												<SelectItem value="Employed">Employed</SelectItem>
 												<SelectItem value="Unemployed">Unemployed</SelectItem>
 												<SelectItem value="Self-Employed">
@@ -1188,7 +1188,7 @@ export function ResidentProfilePane({
 										</Select>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">
+										<Label className="text-xs text-muted-foreground">
 											Occupation
 										</Label>
 										<Input
@@ -1196,11 +1196,11 @@ export function ResidentProfilePane({
 											onChange={(e) =>
 												updateField("occupation", e.target.value)
 											}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 									<div className="space-y-1.5">
-										<Label className="text-xs text-neutral-400">
+										<Label className="text-xs text-muted-foreground">
 											Monthly Income
 										</Label>
 										<Input
@@ -1208,11 +1208,11 @@ export function ResidentProfilePane({
 											onChange={(e) =>
 												updateField("monthlyIncome", e.target.value)
 											}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 									<div className="col-span-2 space-y-1.5">
-										<Label className="text-xs text-neutral-400">
+										<Label className="text-xs text-muted-foreground">
 											Source of Livelihood
 										</Label>
 										<Input
@@ -1220,21 +1220,21 @@ export function ResidentProfilePane({
 											onChange={(e) =>
 												updateField("sourceOfLivelihood", e.target.value)
 											}
-											className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200"
+											className="bg-card border-border h-9 text-foreground"
 										/>
 									</div>
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-neutral-950 border-neutral-800 shadow-none">
+						<Card className="bg-background border-border shadow-none">
 							<CardContent className="p-4 space-y-4">
-								<h3 className="text-sm font-semibold text-neutral-300 tracking-wide mb-3 flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground/80 tracking-wide mb-3 flex items-center gap-2">
 									Other Statuses
 								</h3>
 								<div className="grid grid-cols-2 gap-4">
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Resident Voter
 										</Label>
 										<Switch
@@ -1245,7 +1245,7 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Registered Voter
 										</Label>
 										<Switch
@@ -1256,28 +1256,28 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">OFW</Label>
+										<Label className="text-sm text-foreground/80">OFW</Label>
 										<Switch
 											checked={formData.isOfw}
 											onCheckedChange={(val) => updateField("isOfw", val)}
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">OSY</Label>
+										<Label className="text-sm text-foreground/80">OSY</Label>
 										<Switch
 											checked={formData.isOsy}
 											onCheckedChange={(val) => updateField("isOsy", val)}
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">Migrant</Label>
+										<Label className="text-sm text-foreground/80">Migrant</Label>
 										<Switch
 											checked={formData.isMigrant}
 											onCheckedChange={(val) => updateField("isMigrant", val)}
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											National Pensioner
 										</Label>
 										<Switch
@@ -1288,7 +1288,7 @@ export function ResidentProfilePane({
 										/>
 									</div>
 									<div className="flex items-center justify-between">
-										<Label className="text-sm text-neutral-300">
+										<Label className="text-sm text-foreground/80">
 											Local Pensioner
 										</Label>
 										<Switch
@@ -1312,19 +1312,19 @@ export function ResidentProfilePane({
 
 	return (
 		<>
-		<Card className="flex flex-col bg-neutral-950/80 backdrop-blur-2xl border-white/10 shadow-2xl overflow-hidden rounded-2xl h-[calc(100vh-16rem)] lg:h-[calc(100vh-12rem)] p-0 gap-0 w-full transition-all duration-300 pointer-events-auto">
+		<Card className="flex flex-col bg-background/80 backdrop-blur-2xl border-border shadow-2xl overflow-hidden rounded-2xl h-[calc(100vh-16rem)] lg:h-[calc(100vh-12rem)] p-0 gap-0 w-full transition-all duration-300 pointer-events-auto">
 			{/* Header */}
 			<div
 				className={cn(
 					"p-6 pb-4 shrink-0 relative border-b group transition-colors duration-300",
 					isEditing
-						? "bg-gradient-to-b from-blue-950/20 to-transparent border-blue-500/20"
-						: "bg-gradient-to-b from-neutral-900/60 to-transparent border-white/5"
+						? "bg-background border-primary/20"
+						: "bg-background border-border"
 				)}
 			>
 				{/* Drag Indicator Icon */}
 				<div className="drag-handle cursor-move absolute top-0 left-0 right-0 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-					<GripHorizontal className="h-4 w-4 text-neutral-500" />
+					<GripHorizontal className="h-4 w-4 text-muted-foreground" />
 				</div>
 
 				<div className="absolute top-4 right-4 flex items-center gap-1 no-drag">
@@ -1334,7 +1334,7 @@ export function ResidentProfilePane({
 								variant="ghost"
 								size="icon"
 								onClick={() => setShowPreview(true)}
-								className="h-8 w-8 text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all"
+								className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary rounded-lg transition-all"
 								title="Preview & Print ID Card"
 							>
 								<Printer className="h-4 w-4" />
@@ -1343,7 +1343,7 @@ export function ResidentProfilePane({
 								variant="ghost"
 								size="icon"
 								onClick={() => setIsEditing(true)}
-								className="h-8 w-8 text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all"
+								className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary rounded-lg transition-all"
 								title="Edit Profile"
 							>
 								<Edit2 className="h-4 w-4" />
@@ -1354,31 +1354,31 @@ export function ResidentProfilePane({
 						variant="ghost"
 						size="icon"
 						onClick={onClose}
-						className="h-8 w-8 text-neutral-400 hover:text-red-400 hover:bg-neutral-800 rounded-lg transition-all"
+						className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-muted rounded-lg transition-all"
 					>
 						<X className="h-4 w-4" />
 					</Button>
 				</div>
 				<div className="flex items-start gap-4 mt-6">
-					<div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-teal-500/20 border border-blue-500/30 flex items-center justify-center shrink-0 shadow-inner">
-						<User className="h-8 w-8 text-blue-400" />
+					<div className="h-16 w-16 rounded-2xl bg-background border border-primary/20 flex items-center justify-center shrink-0 shadow-inner">
+						<User className="h-8 w-8 text-primary" />
 					</div>
 					<div className="pt-1 min-w-0 flex-1">
 						{isEditing ? (
-							<h2 className="text-lg font-bold text-neutral-100 mb-1">
+							<h2 className="text-lg font-bold text-foreground mb-1">
 								Edit Profile
 							</h2>
 						) : (
 							<>
-								<h2 className="text-xl font-bold text-neutral-100 leading-tight">
+								<h2 className="text-xl font-bold text-foreground leading-tight">
 									{resident.fullName}
 								</h2>
-								<div className="flex items-center gap-2 mt-1.5 text-xs text-neutral-400">
+								<div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground">
 									<Badge
 										variant="outline"
-										className="bg-neutral-900 border-neutral-800 text-neutral-300 font-normal px-2 py-0"
+										className="bg-card border-border text-foreground/80 font-normal px-2 py-0"
 									>
-										<span className="text-blue-400/90 font-mono tracking-wider ml-1">
+										<span className="text-primary font-mono tracking-wider ml-1">
 											ID: {resident.residentId || resident.id.toString().padStart(4, "0")}
 										</span>
 									</Badge>
@@ -1389,7 +1389,7 @@ export function ResidentProfilePane({
 								</div>
 								<div className="flex flex-wrap gap-1 mt-2">
 									{resident.isHeadOfHousehold && (
-										<Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 px-2 py-0 text-[10px] rounded-full">
+										<Badge className="bg-primary text-primary border-primary/20 hover:bg-primary px-2 py-0 text-[10px] rounded-full">
 											Household Head
 										</Badge>
 									)}
@@ -1409,7 +1409,7 @@ export function ResidentProfilePane({
 										</Badge>
 									)}
 									{resident.isRegisteredVoter && (
-										<Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 px-2 py-0 text-[10px] rounded-full">
+										<Badge className="bg-primary text-primary border-primary/20 hover:bg-primary px-2 py-0 text-[10px] rounded-full">
 											Voter
 										</Badge>
 									)}
@@ -1427,7 +1427,7 @@ export function ResidentProfilePane({
 
 			{/* Footer Action */}
 			{isEditing && (
-				<div className="p-4 border-t border-white/5 bg-neutral-950/80 backdrop-blur-md shrink-0 flex items-center justify-end gap-2">
+				<div className="p-4 border-t border-border bg-background/80 backdrop-blur-md shrink-0 flex items-center justify-end gap-2">
 					<Button
 						variant="ghost"
 						onClick={() => {
@@ -1439,14 +1439,14 @@ export function ResidentProfilePane({
 								purok: resident.purok || "",
 							});
 						}}
-						className="text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-xl"
+						className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl"
 					>
 						Cancel
 					</Button>
 					<Button
 						onClick={handleSave}
 						disabled={isSaving}
-						className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 rounded-xl"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 rounded-xl"
 					>
 						{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 						Save Changes
@@ -1457,14 +1457,14 @@ export function ResidentProfilePane({
 
 		{/* ID Preview Dialog */}
 		<Dialog open={showPreview} onOpenChange={setShowPreview}>
-			<DialogContent className="max-w-6xl w-fit bg-neutral-950 border-white/10 p-0 overflow-hidden shadow-2xl">
-				<DialogHeader className="p-4 border-b border-white/5 bg-neutral-900/50 flex flex-row items-center justify-between">
-					<DialogTitle className="text-2xl font-bold tracking-tight text-white/90 flex-1">
+			<DialogContent className="max-w-6xl w-fit bg-background border-border p-0 overflow-hidden shadow-2xl">
+				<DialogHeader className="p-4 border-b border-border bg-card/50 flex flex-row items-center justify-between">
+					<DialogTitle className="text-2xl font-bold tracking-tight text-foreground/90 flex-1">
 						ID Card Preview
 					</DialogTitle>
 					<div className="flex gap-2 mr-6 mt-0!">
 						<Button 
-							className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl"
+							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
 							onClick={downloadID}
 							disabled={isDownloading}
 						>
@@ -1474,7 +1474,7 @@ export function ResidentProfilePane({
 					</div>
 				</DialogHeader>
 				
-				<div className="p-8 bg-neutral-900/50 flex items-center justify-center overflow-auto min-h-[400px]">
+				<div className="p-8 bg-card/50 flex items-center justify-center overflow-auto min-h-[400px]">
 					{/* The actual ID card element to be rendered and captured */}
 					<div className="relative shadow-2xl rounded-sm overflow-hidden" style={{ width: 1012, height: 318 }}>
 						<ResidentIdCard resident={resident} />
@@ -1501,10 +1501,10 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 			<div className="flex flex-col h-full w-full">
 				<div className="px-6 pt-0 shrink-0 flex justify-end">
 					<Select value={filter} onValueChange={(v: "all" | "document" | "ayuda") => setFilter(v)}>
-						<SelectTrigger className="bg-neutral-900/50 border-neutral-800 h-9 text-neutral-200 w-48">
+						<SelectTrigger className="bg-card/50 border-border h-9 text-foreground w-48">
 							<SelectValue placeholder="Filter records" />
 						</SelectTrigger>
-						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+						<SelectContent className="bg-card border-border text-foreground">
 							<SelectItem value="all">All Records</SelectItem>
 							<SelectItem value="document">Documents</SelectItem>
 							<SelectItem value="ayuda">Ayuda</SelectItem>
@@ -1512,11 +1512,11 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 					</Select>
 				</div>
 				<div className="flex flex-col items-center justify-center flex-1 py-16 text-center min-h-[250px]">
-					<div className="h-12 w-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3">
-						<FileText className="h-6 w-6 text-neutral-600" />
+					<div className="h-12 w-12 rounded-2xl bg-card border border-border flex items-center justify-center mb-3">
+						<FileText className="h-6 w-6 text-muted-foreground" />
 					</div>
-					<p className="text-sm font-semibold text-neutral-400">No Records Yet</p>
-					<p className="text-xs text-neutral-500 mt-1 max-w-[200px]">
+					<p className="text-sm font-semibold text-muted-foreground">No Records Yet</p>
+					<p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
 						There are no records matching the selected filter.
 					</p>
 				</div>
@@ -1534,27 +1534,27 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 	}
 
 	const statusConfig: Record<string, { dot: string; badge: string; label: string }> = {
-		"Ready to Claim": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Ready" },
-		"Completed": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Completed" },
-		"Released": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Released" },
-		"Processing": { dot: "bg-blue-500 shadow-blue-500/40", badge: "bg-blue-500/15 text-blue-400 border-blue-500/30", label: "Processing" },
+		"Ready to Claim": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Ready" },
+		"Completed": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Completed" },
+		"Released": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Released" },
+		"Processing": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Processing" },
 		"Pending": { dot: "bg-amber-500 shadow-amber-500/40", badge: "bg-amber-500/15 text-amber-400 border-amber-500/30", label: "Pending" },
 		"Cancelled": { dot: "bg-red-500 shadow-red-500/40", badge: "bg-red-500/15 text-red-400 border-red-500/30", label: "Cancelled" },
 		"Claimed": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Claimed" },
-		"Unclaimed": { dot: "bg-neutral-500 shadow-neutral-500/40", badge: "bg-neutral-500/15 text-neutral-400 border-neutral-500/30", label: "Unclaimed" },
+		"Unclaimed": { dot: "bg-accent shadow-neutral-500/40", badge: "bg-accent/15 text-muted-foreground border-neutral-500/30", label: "Unclaimed" },
 	};
 
 	const getStatus = (status: string) =>
-		statusConfig[status] || { dot: "bg-neutral-500", badge: "bg-neutral-500/15 text-neutral-400 border-neutral-500/30", label: status };
+		statusConfig[status] || { dot: "bg-accent", badge: "bg-accent/15 text-muted-foreground border-neutral-500/30", label: status };
 
 	return (
 		<div className="flex flex-col h-full w-full">
 			<div className="px-6 pt-0 pb-0 shrink-0 flex justify-end">
 				<Select value={filter} onValueChange={(v: "all" | "document" | "ayuda") => setFilter(v)}>
-					<SelectTrigger className="bg-neutral-900/50 border-neutral-800 h-9 text-neutral-200 w-48">
+					<SelectTrigger className="bg-card/50 border-border h-9 text-foreground w-48">
 						<SelectValue placeholder="Filter records" />
 					</SelectTrigger>
-					<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+					<SelectContent className="bg-card border-border text-foreground">
 						<SelectItem value="all">All Records</SelectItem>
 						<SelectItem value="document">Documents</SelectItem>
 						<SelectItem value="ayuda">Ayuda</SelectItem>
@@ -1565,15 +1565,15 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 			{Object.entries(grouped).map(([month, items]) => (
 				<div key={month}>
 					<div className="flex items-center gap-2 mb-4">
-						<Clock className="h-3.5 w-3.5 text-neutral-500" />
-						<span className="text-[11px] font-bold text-neutral-500 tracking-wider">
+						<Clock className="h-3.5 w-3.5 text-muted-foreground" />
+						<span className="text-[11px] font-bold text-muted-foreground tracking-wider">
 							{month}
 						</span>
 					</div>
 
 					<div className="relative pl-6">
 						{/* Vertical timeline line */}
-						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-blue-500/40 via-blue-500/20 to-transparent" />
+						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-background" />
 
 						<div className="space-y-4">
 							{items.map((tx: any) => {
@@ -1584,7 +1584,7 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 										{/* Timeline dot */}
 										<div className={`absolute -left-6 top-1/2 -translate-y-1/2 h-3.5 w-3.5 rounded-full border-2 border-neutral-950 ${config.dot} shadow-lg`} />
 
-										<Card className="bg-neutral-900/40 border-neutral-800/60 shadow-none hover:bg-neutral-900/60 transition-colors">
+										<Card className="bg-card/40 border-border/60 shadow-none hover:bg-surface-strong transition-colors">
 											<CardContent className="p-3.5">
 												<div className="flex items-start justify-between gap-3">
 													<div className="min-w-0 flex-1">
@@ -1592,27 +1592,27 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 															{tx.type === "ayuda" ? (
 																<Package className="h-3.5 w-3.5 text-purple-400 shrink-0" />
 															) : (
-																<FileText className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+																<FileText className="h-3.5 w-3.5 text-primary shrink-0" />
 															)}
-															<span className={cn("text-sm font-semibold truncate", tx.type === "ayuda" ? "text-purple-300" : "text-neutral-200")}>
+															<span className={cn("text-sm font-semibold truncate", tx.type === "ayuda" ? "text-purple-300" : "text-foreground")}>
 																{tx.templateName || (tx.type === "ayuda" ? "Ayuda Distribution" : "Document")}
 															</span>
 														</div>
 														{tx.purpose && (
-															<p className="text-xs text-neutral-400 mt-1.5 ml-5 line-clamp-2">
+															<p className="text-xs text-muted-foreground mt-1.5 ml-5 line-clamp-2">
 																{tx.purpose}
 															</p>
 														)}
 														<div className="flex items-center gap-3 mt-2 ml-5">
-															<span className="text-[11px] text-neutral-500">
+															<span className="text-[11px] text-muted-foreground">
 																{format(date, "MMM d, yyyy   h:mm a")}
 															</span>
 															{tx.totalPrice > 0 && (
-																<span className="text-[11px] text-neutral-500">
+																<span className="text-[11px] text-muted-foreground">
 																	• ₱{tx.totalPrice.toFixed(2)}
 																</span>
 															)}
-															<span className="text-[11px] text-neutral-600 font-mono">
+															<span className="text-[11px] text-muted-foreground font-mono">
 																TRX-{tx.id?.toString().padStart(5, "0")}
 															</span>
 														</div>

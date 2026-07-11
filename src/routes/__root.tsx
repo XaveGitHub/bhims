@@ -22,6 +22,8 @@ import { getBarangayName, isFirstRun } from "../lib/auth-service";
 import { getClientAuth, getClientUser } from "../lib/client-auth";
 import appCss from "../styles.css?url";
 import { TooltipProvider } from "../components/ui/tooltip";
+import { ThemeProvider } from "../components/theme-provider";
+import { ModeToggle } from "../components/mode-toggle";
 
 interface MyRouterContext {
 	queryClient: QueryClient;
@@ -116,10 +118,8 @@ function RootLayout() {
 	return (
 		<RootDocument>
 			{/* Fixed decorative background — outside the sidebar flex context so it doesn't break peer selectors */}
-			<div className="fixed inset-0 bg-neutral-950 z-[-2]" />
-			<div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-950/15 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
-			<div className="fixed top-0 left-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
-			<div className="fixed bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
+			<div className="fixed inset-0 bg-background z-[-2]" />
+			<div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/5 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
 			<div
 				className="fixed inset-0 opacity-[0.025] pointer-events-none z-[-1]"
 				style={{
@@ -140,24 +140,25 @@ function RootLayout() {
 				{/* Main Content Area */}
 				<SidebarInset className="flex flex-col bg-transparent">
 					{/* Top Navbar */}
-					<header className="flex h-16 items-center justify-between border-b border-white/5 bg-neutral-950/40 px-6 backdrop-blur-md shrink-0 sticky top-0 z-20">
+					<header className="flex h-16 items-center justify-between border-b border-border bg-background px-6 backdrop-blur-md shrink-0 sticky top-0 z-20">
 						<div className="flex items-center gap-3">
-							<SidebarTrigger className="text-neutral-400 hover:text-neutral-200" />
-							<h1 className="text-lg font-bold tracking-tight text-neutral-100 hidden sm:block">
+							<SidebarTrigger className="text-muted-foreground hover:text-foreground/90" />
+							<h1 className="text-lg font-bold tracking-tight text-foreground hidden sm:block">
 								{brgyName} BHIMS
 							</h1>
 						</div>
 
 						<div className="flex items-center gap-4">
-							<div className="flex items-center gap-2 rounded-full bg-blue-950/30 border border-blue-900/30 px-3 py-1 text-xs text-blue-400">
+							<div className="flex items-center gap-2 rounded-full bg-accent border border-primary/20 px-3 py-1 text-xs text-primary dark:bg-primary/10 dark:border-primary/20 dark:text-primary">
 								<span className="relative flex h-2 w-2">
-									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-									<span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
+									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+									<span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
 								</span>
 								<span className="font-semibold uppercase tracking-wider text-[10px]">
 									Local Server Online
 								</span>
 							</div>
+							<ModeToggle />
 						</div>
 					</header>
 
@@ -173,27 +174,29 @@ function RootLayout() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
 			<body>
-				<TooltipProvider delayDuration={150}>
-					{children}
-				</TooltipProvider>
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-						TanStackQueryDevtools,
-					]}
-				/>
-				<Toaster theme="dark" />
+				<ThemeProvider defaultTheme="dark" storageKey="bhims-theme">
+					<TooltipProvider delayDuration={150}>
+						{children}
+					</TooltipProvider>
+					<TanStackDevtools
+						config={{
+							position: "bottom-right",
+						}}
+						plugins={[
+							{
+								name: "Tanstack Router",
+								render: <TanStackRouterDevtoolsPanel />,
+							},
+							TanStackQueryDevtools,
+						]}
+					/>
+					<Toaster />
+				</ThemeProvider>
 				<Scripts />
 			</body>
 		</html>

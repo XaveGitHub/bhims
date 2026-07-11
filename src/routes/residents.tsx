@@ -21,6 +21,7 @@ import {
 	X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -355,7 +356,7 @@ function ResidentsView() {
 						}
 						onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
 						aria-label="Select all"
-						className="border-neutral-700 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+						className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
 					/>
 				),
 				cell: ({ row }) => (
@@ -363,7 +364,7 @@ function ResidentsView() {
 						checked={row.getIsSelected()}
 						onCheckedChange={(value) => row.toggleSelected(!!value)}
 						aria-label="Select row"
-						className="border-neutral-700 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 mt-1"
+						className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary mt-1"
 					/>
 				),
 				enableSorting: false,
@@ -376,7 +377,7 @@ function ResidentsView() {
 				enableSorting: false,
 				enableHiding: false,
 				cell: ({ row }) => (
-					<span className="text-xs font-mono text-neutral-400">
+					<span className="text-xs font-mono text-muted-foreground">
 						{row.original.residentId || "—"}
 					</span>
 				),
@@ -392,11 +393,11 @@ function ResidentsView() {
 					const r = row.original;
 					return (
 						<div className="flex flex-col min-w-0">
-							<span className="font-semibold text-neutral-100 text-sm leading-snug truncate">
+							<span className="font-semibold text-foreground text-sm leading-snug truncate">
 								{r.lastName} {r.suffix ? ` ${r.suffix}` : ""}
 							</span>
 							{r.contactNumber && (
-								<span className="text-[11px] text-neutral-500 leading-none mt-0.5 sm:hidden">
+								<span className="text-[11px] text-muted-foreground leading-none mt-0.5 sm:hidden">
 									{r.contactNumber}
 								</span>
 							)}
@@ -412,7 +413,7 @@ function ResidentsView() {
 				enableHiding: false,
 				sortingFn: "alphanumeric",
 				cell: ({ row }) => (
-					<span className="text-neutral-100 text-sm">{row.original.firstName}</span>
+					<span className="text-foreground text-sm">{row.original.firstName}</span>
 				),
 			},
 			{
@@ -423,7 +424,7 @@ function ResidentsView() {
 				enableHiding: false,
 				sortingFn: "alphanumeric",
 				cell: ({ row }) => (
-					<span className="text-neutral-300 text-sm">{row.original.middleName || "—"}</span>
+					<span className="text-foreground/80 text-sm">{row.original.middleName || "—"}</span>
 				),
 			},
 			{
@@ -440,10 +441,10 @@ function ResidentsView() {
 					const r = row.original;
 					return (
 						<div className="flex flex-col items-center">
-							<span className="text-sm text-neutral-200 leading-snug">
+							<span className="text-sm text-foreground leading-snug">
 								{calculateAge(r.birthDate)} yrs
 							</span>
-							<span className="text-[11px] text-neutral-500 leading-none mt-0.5">
+							<span className="text-[11px] text-muted-foreground leading-none mt-0.5">
 								{r.gender || "Unknown"}
 							</span>
 						</div>
@@ -461,7 +462,7 @@ function ResidentsView() {
 					const r = row.original;
 					return (
 						<div className="flex flex-col items-center">
-							<span className="text-sm font-medium text-neutral-200 leading-snug">
+							<span className="text-sm font-medium text-foreground leading-snug">
 								{r.purok}
 							</span>
 						</div>
@@ -478,11 +479,11 @@ function ResidentsView() {
 					return (
 						<div className="flex flex-col items-center">
 							{r.block || r.lot ? (
-								<span className="text-sm font-medium text-neutral-200 leading-snug">
+								<span className="text-sm font-medium text-foreground leading-snug">
 									Blk {r.block || "-"} Lot {r.lot || "-"}
 								</span>
 							) : (
-								<span className="text-sm font-medium text-neutral-500 italic">
+								<span className="text-sm font-medium text-muted-foreground italic">
 									{r.householdId ? `Fam. ${r.lastName}` : "—"}
 								</span>
 							)}
@@ -492,7 +493,7 @@ function ResidentsView() {
 			},
 			{
 				id: "demographics",
-				header: "Tags",
+				header: () => <div className="text-center">Tags</div>,
 				enableSorting: false,
 				enableHiding: true,
 				cell: ({ row }) => {
@@ -514,79 +515,66 @@ function ResidentsView() {
 						r.isIp ||
 						r.isMigrant;
 					if (!hasTag)
-						return <span className="text-neutral-600 text-xs">—</span>;
+						return <div className="text-center"><span className="text-muted-foreground text-xs">—</span></div>;
 					return (
-						<div className="flex flex-wrap gap-1">
+						<div className="flex flex-wrap justify-center gap-1">
 							{r.isDeceased && (
-								<span className="rounded-full bg-neutral-800 border border-neutral-700 px-2 py-0.5 text-[10px] font-semibold text-neutral-400">
-									Deceased
-								</span>
+								<Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-normal">Deceased</Badge>
 							)}
 							{r.isPwd && (
-								<span
-									className="rounded-full bg-purple-950/40 border border-purple-800/30 px-2 py-0.5 text-[10px] font-semibold text-purple-400"
-									title={r.pwdType || "PWD"}
-								>
-									PWD
-								</span>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-purple-700 border-purple-200">PWD</Badge>
 							)}
 							{r.isSeniorCitizen && (
-								<span className="rounded-full bg-amber-950/40 border border-amber-800/30 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
-									Senior
-								</span>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-amber-700 border-amber-200">Senior</Badge>
 							)}
 							{r.isRegisteredVoter && (
-								<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
-									Voter
-								</span>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-primary border-primary/20">Voter</Badge>
 							)}
 							{r.isSingleParent && (
-								<span className="rounded-full bg-pink-950/40 border border-pink-800/30 px-2 py-0.5 text-[10px] font-semibold text-pink-400">
-									Solo Parent
-								</span>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal text-pink-700 border-pink-200">Solo Parent</Badge>
 							)}
 							{r.isBedBound && (
-								<span className="rounded-full bg-red-950/40 border border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-400">
+								<span className="rounded-full bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-700 dark:text-red-400">
 									Bed Bound
 								</span>
 							)}
 							{r.isWheelchairBound && (
-								<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
+								<span className="rounded-full bg-accent dark:bg-primary/10 border border-primary/20 dark:border-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary dark:text-primary">
 									Wheelchair
 								</span>
 							)}
 							{r.isDialysisPatient && (
-								<span className="rounded-full bg-orange-950/40 border border-orange-800/30 px-2 py-0.5 text-[10px] font-semibold text-orange-400">
+								<span className="rounded-full bg-orange-100 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/30 px-2 py-0.5 text-[10px] font-semibold text-orange-700 dark:text-orange-400">
 									Dialysis
 								</span>
 							)}
 							{r.isCancerPatient && (
-								<span className="rounded-full bg-rose-950/40 border border-rose-800/30 px-2 py-0.5 text-[10px] font-semibold text-rose-400">
+								<span className="rounded-full bg-rose-100 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/30 px-2 py-0.5 text-[10px] font-semibold text-rose-700 dark:text-rose-400">
 									Cancer
 								</span>
 							)}
 							{(r.isNationalPensioner || r.isLocalPensioner) && (
-								<span className="rounded-full bg-teal-950/40 border border-teal-800/30 px-2 py-0.5 text-[10px] font-semibold text-teal-400">
+								<span className="rounded-full bg-teal-100 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800/30 px-2 py-0.5 text-[10px] font-semibold text-teal-700 dark:text-teal-400">
 									Pensioner
 								</span>
 							)}
 							{r.isOfw && (
-								<span className="rounded-full bg-indigo-950/40 border border-indigo-800/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-400">
+								<span className="rounded-full bg-indigo-100 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">
 									OFW
 								</span>
 							)}
 							{r.isOsy && (
-								<span className="rounded-full bg-yellow-950/40 border border-yellow-800/30 px-2 py-0.5 text-[10px] font-semibold text-yellow-400">
+								<span className="rounded-full bg-yellow-100 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-800/30 px-2 py-0.5 text-[10px] font-semibold text-yellow-700 dark:text-yellow-400">
 									OSY
 								</span>
 							)}
 							{r.isIp && (
-								<span className="rounded-full bg-lime-950/40 border border-lime-800/30 px-2 py-0.5 text-[10px] font-semibold text-lime-400">
+								<span className="rounded-full bg-lime-100 dark:bg-lime-950/40 border border-lime-200 dark:border-lime-800/30 px-2 py-0.5 text-[10px] font-semibold text-lime-700 dark:text-lime-400">
 									IP
 								</span>
 							)}
 							{r.isMigrant && (
-								<span className="rounded-full bg-cyan-950/40 border border-cyan-800/30 px-2 py-0.5 text-[10px] font-semibold text-cyan-400">
+								<span className="rounded-full bg-cyan-100 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/30 px-2 py-0.5 text-[10px] font-semibold text-cyan-700 dark:text-cyan-400">
 									Migrant
 								</span>
 							)}
@@ -612,7 +600,7 @@ function ResidentsView() {
 									setDrawerResident(r);
 								}}
 								disabled={hasSelection}
-								className="h-7 w-7 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-lg disabled:opacity-30 transition-all"
+								className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg disabled:opacity-30 transition-all"
 							>
 								<Eye className="h-3.5 w-3.5" />
 							</Button>
@@ -626,7 +614,7 @@ function ResidentsView() {
 									}}
 									disabled={hasSelection}
 									title="Mark as Deceased"
-									className="h-7 w-7 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-lg disabled:opacity-30"
+									className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg disabled:opacity-30"
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>
 								</Button>
@@ -639,7 +627,7 @@ function ResidentsView() {
 									handleDeleteClick(r.id);
 								}}
 								disabled={hasSelection}
-								className="h-7 w-7 text-red-400/80 hover:text-red-400 hover:bg-red-950/40 rounded-lg gap-1.5 disabled:opacity-30"
+								className="h-7 w-7 text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/40 rounded-lg gap-1.5 disabled:opacity-30"
 							>
 								<Trash2 className="h-3.5 w-3.5" />
 							</Button>
@@ -728,10 +716,10 @@ function ResidentsView() {
 			{/* Page header */}
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 				<div>
-					<h2 className="text-2xl font-bold tracking-tight text-neutral-100">
+					<h2 className="text-2xl font-bold tracking-tight text-foreground">
 						Residents
 					</h2>
-					<p className="text-sm text-neutral-500 mt-0.5">
+					<p className="text-sm text-muted-foreground mt-0.5">
 						Manage resident records
 					</p>
 				</div>
@@ -739,7 +727,7 @@ function ResidentsView() {
 					<Button
 						variant="outline"
 						onClick={() => setIsManagePuroksOpen(true)}
-						className="bg-neutral-900 border-neutral-800 text-neutral-300 hover:bg-neutral-800 hover:text-neutral-100 rounded-xl px-4"
+						className="bg-card border-border text-foreground/80 hover:bg-muted hover:text-foreground rounded-xl px-4"
 					>
 						<Map className="h-4 w-4 mr-2" />
 						<span className="hidden sm:inline">Manage Puroks</span>
@@ -748,7 +736,7 @@ function ResidentsView() {
 						onClick={() => {
 							setIsAddModalOpen(true);
 						}}
-						className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-4"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4"
 					>
 						<UserPlus className="h-4 w-4" />
 						<span>Add Resident</span>
@@ -756,18 +744,18 @@ function ResidentsView() {
 				</div>
 			</div>
 			{/* Search + filter bar */}
-			<div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-3 sm:p-4 space-y-3">
+			<div className="rounded-2xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
 				<div className="flex flex-col sm:flex-row gap-2">
 					{/* Search — debounced */}
 					<div className="relative flex-1">
-						<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500 pointer-events-none">
+						<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground pointer-events-none">
 							<Search className="h-4 w-4" />
 						</span>
 						<Input
 							placeholder="Search by name…"
 							value={searchInput}
 							onChange={(e) => handleSearchChange(e.target.value)}
-							className="pl-9 bg-neutral-950 border-neutral-800 text-neutral-200 placeholder:text-neutral-600 focus:border-blue-500 rounded-xl h-9 text-sm"
+							className="pl-9 bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary/20 rounded-xl h-9 text-sm"
 						/>
 					</div>
 					{/* Purok Filter */}
@@ -775,10 +763,10 @@ function ResidentsView() {
 						value={selectedPurok || "ALL"}
 						onValueChange={(v) => setSelectedPurok(v === "ALL" ? "" : v)}
 					>
-						<SelectTrigger className="w-full sm:w-36 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
+						<SelectTrigger className="w-full sm:w-36 bg-card border-border text-foreground/80 rounded-xl h-9 text-sm">
 							<SelectValue placeholder="All Puroks" />
 						</SelectTrigger>
-						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+						<SelectContent className="bg-card border-border text-foreground">
 							<SelectItem value="ALL">All Puroks</SelectItem>
 							{purokOptions.map((p) => (
 								<SelectItem key={p} value={p}>
@@ -798,10 +786,10 @@ function ResidentsView() {
 						value={selectedGender || "ALL"}
 						onValueChange={(v) => setSelectedGender(v === "ALL" ? "" : v)}
 					>
-						<SelectTrigger className="w-full sm:w-32 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl h-9 text-sm">
+						<SelectTrigger className="w-full sm:w-32 bg-card border-border text-foreground/80 rounded-xl h-9 text-sm">
 							<SelectValue placeholder="All Categories" />
 						</SelectTrigger>
-						<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+						<SelectContent className="bg-card border-border text-foreground">
 							<SelectItem value="ALL">All Genders</SelectItem>
 							<SelectItem value="Male">Male</SelectItem>
 							<SelectItem value="Female">Female</SelectItem>
@@ -817,37 +805,37 @@ function ResidentsView() {
 							{
 								label: "PWD",
 								active: filterPwd === true,
-								color: "bg-purple-950/40 text-purple-400 border-purple-800/50",
+								color: "bg-purple-100 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/30 px-2 py-0.5 text-[10px] font-semibold text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800/30",
 								fn: () => setFilterPwd(filterPwd === true ? undefined : true),
 							},
 							{
 								label: "Senior",
 								active: filterSenior === true,
-								color: "bg-amber-950/40 text-amber-400 border-amber-800/50",
+								color: "bg-amber-100 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/30 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/30",
 								fn: () => setFilterSenior(filterSenior === true ? undefined : true),
 							},
 							{
 								label: "Voter",
 								active: filterVoter === true,
-								color: "bg-blue-950/40 text-blue-400 border-blue-800/50",
+								color: "bg-accent dark:bg-primary/10 border border-primary/20 dark:border-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary dark:text-primary border-primary/20 dark:border-primary/20",
 								fn: () => setFilterVoter(filterVoter === true ? undefined : true),
 							},
 							{
 								label: "Solo Parent",
 								active: filterSingleParent === true,
-								color: "bg-pink-950/40 text-pink-400 border-pink-800/50",
+								color: "bg-pink-100 dark:bg-pink-950/40 border border-pink-200 dark:border-pink-800/30 px-2 py-0.5 text-[10px] font-semibold text-pink-700 dark:text-pink-400 border-pink-200 dark:border-pink-800/30",
 								fn: () => setFilterSingleParent(filterSingleParent === true ? undefined : true),
 							},
 							{
 								label: "Unemployed",
 								active: filterUnemployed === true,
-								color: "bg-red-950/40 text-red-400 border-red-800/50",
+								color: "bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/30",
 								fn: () => setFilterUnemployed(filterUnemployed === true ? undefined : true),
 							},
 							{
 								label: "Deceased",
 								active: filterDeceased === true,
-								color: "bg-neutral-800/80 text-neutral-300 border-neutral-700/50",
+								color: "bg-muted/80 text-foreground/80 border-border",
 								fn: () => setFilterDeceased(filterDeceased === true ? undefined : true),
 							},
 						] as const
@@ -859,7 +847,7 @@ function ResidentsView() {
 							className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${
 								active
 									? color
-									: "bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-700"
+									: "bg-background text-muted-foreground border-border hover:border-border"
 							}`}
 						>
 							{label}
@@ -888,7 +876,7 @@ function ResidentsView() {
 								setFilterUnemployed(undefined);
 								setSelectedGender("");
 							}}
-							className="px-2.5 py-1 rounded-full text-xs font-semibold bg-neutral-800 hover:bg-neutral-700 text-neutral-400 border border-neutral-700"
+							className="px-2.5 py-1 rounded-full text-xs font-semibold bg-muted hover:bg-border dark:bg-muted text-muted-foreground border border-border"
 						>
 							Clear all
 						</button>
@@ -900,15 +888,15 @@ function ResidentsView() {
 				ref={containerRef}
 				className="flex flex-col md:flex-row gap-6 max-h-[calc(100vh-16rem)]"
 			>
-				<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 flex-1 min-w-0">
+				<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg flex flex-col overflow-hidden p-0 gap-0 flex-1 min-w-0">
 					{loading && residentsList.length === 0 ? (
 						<div className="flex h-48 items-center justify-center">
-							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-blue-600 border-t-transparent" />
+							<div className="h-7 w-7 animate-spin rounded-full border-[3px] border-primary border-t-transparent" />
 						</div>
 					) : residentsList.length > 0 ? (
 						<>
 								<Table wrapperClassName={`flex-1 overflow-y-auto custom-scrollbar transition-opacity duration-200 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-								<TableHeader className="sticky top-0 z-10 bg-neutral-900/80 backdrop-blur-md border-b border-neutral-800">
+								<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md border-b border-border">
 									{table.getHeaderGroups().map((hg) => (
 										<TableRow
 											key={hg.id}
@@ -923,7 +911,7 @@ function ResidentsView() {
 														style={{
 															width: header.getSize() !== 150 ? header.getSize() : undefined,
 														}}
-														className={`text-neutral-400 font-medium h-10 px-5 whitespace-nowrap bg-neutral-900/60 ${
+														className={`text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-surface-strong ${
 															["age", "purok", "blkLot", "demographics"].includes(header.column.id) 
 															? "text-center" 
 															: "text-left"
@@ -933,7 +921,7 @@ function ResidentsView() {
 															<button
 																type="button"
 																onClick={header.column.getToggleSortingHandler()}
-																className={`flex items-center gap-1.5 hover:text-neutral-200 transition-colors outline-none ${
+																className={`flex items-center gap-1.5 hover:text-foreground transition-colors outline-none ${
 																	["age", "purok", "blkLot"].includes(header.column.id) 
 																	? "w-full justify-center" 
 																	: ""
@@ -944,9 +932,9 @@ function ResidentsView() {
 																	header.getContext(),
 																)}
 																{sorted === "asc" ? (
-																	<ChevronUp className="h-3 w-3 text-blue-500" />
+																	<ChevronUp className="h-3 w-3 text-primary" />
 																) : sorted === "desc" ? (
-																	<ChevronDown className="h-3 w-3 text-blue-500" />
+																	<ChevronDown className="h-3 w-3 text-primary" />
 																) : (
 																	<ArrowUpDown className="h-3 w-3 opacity-25" />
 																)}
@@ -968,12 +956,12 @@ function ResidentsView() {
 										<TableRow
 											key={row.id}
 											data-state={row.getIsSelected() ? "selected" : undefined}
-											className={`border-b border-neutral-800/60 transition-colors cursor-pointer group ${
+											className={`border-b border-border/60 transition-colors cursor-pointer group ${
 												drawerResident?.id === row.original.id
-													? "bg-neutral-800/60 hover:bg-neutral-800/60"
+													? "bg-muted/60 hover:bg-muted/60"
 													: row.getIsSelected()
-														? "bg-blue-950/20"
-														: "hover:bg-neutral-900/40"
+														? "bg-accent dark:bg-primary/10"
+														: "hover:bg-muted/50"
 											}`}
 											onClick={() => {
 												if (Object.keys(rowSelection).length > 0) {
@@ -1001,9 +989,9 @@ function ResidentsView() {
 
 							{/* Pagination controls */}
 							{totalCount > 0 && (
-								<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-neutral-800/60 bg-neutral-900/10 shrink-0">
+								<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border/60 bg-muted/20 shrink-0">
 									<div className="flex items-center gap-2">
-										<span className="text-sm text-neutral-400">Rows per page:</span>
+										<span className="text-sm text-muted-foreground">Rows per page:</span>
 										<Select
 											value={String(pageSize)}
 											onValueChange={(val) => {
@@ -1011,10 +999,10 @@ function ResidentsView() {
 												setCurrentPage(1);
 											}}
 										>
-											<SelectTrigger className="w-24 h-8 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl">
+											<SelectTrigger className="w-24 h-8 bg-card border-border text-foreground/80 rounded-xl">
 												<SelectValue />
 											</SelectTrigger>
-											<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+											<SelectContent className="bg-card border-border text-foreground rounded-xl">
 												<SelectItem value="10">10</SelectItem>
 												<SelectItem value="25">25</SelectItem>
 												<SelectItem value="50">50</SelectItem>
@@ -1024,7 +1012,7 @@ function ResidentsView() {
 									</div>
 
 									<div className="flex items-center gap-4">
-										<div className="text-sm text-neutral-400">
+										<div className="text-sm text-muted-foreground">
 											Page {currentPage} of {Math.ceil(totalCount / pageSize)}
 										</div>
 										<div className="flex gap-2">
@@ -1033,7 +1021,7 @@ function ResidentsView() {
 												size="sm"
 												onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
 												disabled={currentPage === 1 || loading}
-												className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800"
+												className="bg-background border-border text-foreground/80 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-muted"
 											>
 												Previous
 											</Button>
@@ -1042,7 +1030,7 @@ function ResidentsView() {
 												size="sm"
 												onClick={() => setCurrentPage((prev) => prev + 1)}
 												disabled={currentPage === Math.ceil(totalCount / pageSize) || loading}
-												className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800"
+												className="bg-background border-border text-foreground/80 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-muted"
 											>
 												Next
 											</Button>
@@ -1053,11 +1041,11 @@ function ResidentsView() {
 						</>
 					) : (
 						<div className="flex flex-col items-center justify-center py-20 text-center">
-							<AlertCircle className="h-10 w-10 text-neutral-600 mb-2" />
-							<p className="text-sm font-semibold text-neutral-400">
+							<AlertCircle className="h-10 w-10 text-muted-foreground mb-2" />
+							<p className="text-sm font-semibold text-muted-foreground">
 								No Residents Found
 							</p>
-							<p className="text-xs text-neutral-500 max-w-xs mt-1">
+							<p className="text-xs text-muted-foreground max-w-xs mt-1">
 								No records match your search or filters. Try adjusting your
 								query or adding a new resident.
 							</p>
@@ -1074,7 +1062,7 @@ function ResidentsView() {
 					>
 						<div
 							ref={dragNodeRef}
-							className="fixed top-20 right-4 w-[460px] lg:w-[520px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
+							className="fixed top-20 right-4 w-[460px] lg:w-[520px] z-50 pointer-events-none [&>*]:pointer-events-auto"
 						>
 							<ResidentProfilePane
 								resident={drawerResident}
@@ -1105,15 +1093,15 @@ function ResidentsView() {
 			/>
 			{/* DELETE CONFIRMATION DIALOG */}
 			<Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<Trash2 className="h-5 w-5 text-red-500" />
 							<span>Confirm Deletion</span>
 						</DialogTitle>
 					</DialogHeader>
 					<div className="mt-4 space-y-4">
-						<p className="text-sm text-neutral-300">
+						<p className="text-sm text-foreground/80">
 							Are you sure you want to delete this resident record? This action
 							is permanent and cannot be undone.
 						</p>
@@ -1124,7 +1112,7 @@ function ResidentsView() {
 									setIsDeleteModalOpen(false);
 									setResidentToDelete(null);
 								}}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
@@ -1142,11 +1130,11 @@ function ResidentsView() {
 			{/* Floating Bulk Action Bar */}
 			{selectedIds.length > 0 && (
 				<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10 fade-in duration-300">
-					<div className="bg-neutral-900 border border-neutral-700 shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-4">
-						<span className="text-sm font-medium text-blue-400 whitespace-nowrap">
+					<div className="bg-card border border-border shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-4">
+						<span className="text-sm font-medium text-foreground whitespace-nowrap">
 							{selectedIds.length} selected
 						</span>
-						<div className="h-4 w-px bg-neutral-700"></div>
+						<div className="h-4 w-px bg-border dark:bg-muted"></div>
 						<div className="flex items-center gap-2">
 							<Select
 								open={bulkPurokOpen}
@@ -1156,10 +1144,10 @@ function ResidentsView() {
 									setBulkPurokOpen(false);
 								}}
 							>
-								<SelectTrigger className="h-8 text-xs bg-neutral-800 border-neutral-700 hover:bg-neutral-700 w-[140px]">
+								<SelectTrigger className="h-8 text-xs bg-muted border-border hover:bg-border dark:bg-muted w-[140px]">
 									<SelectValue placeholder="Change Purok" />
 								</SelectTrigger>
-								<SelectContent className="bg-neutral-900 border-neutral-800">
+								<SelectContent className="bg-card border-border">
 									{purokOptions.map((p) => (
 										<SelectItem key={p} value={p} className="text-xs">
 											{p}
@@ -1171,7 +1159,7 @@ function ResidentsView() {
 								size="sm"
 								variant="outline"
 								onClick={() => setArchiveModalIds(selectedIds)}
-								className="h-8 text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700"
+								className="h-8 text-xs bg-accent/50 hover:bg-accent dark:hover:bg-muted text-foreground border border-border"
 							>
 								Archive
 							</Button>
@@ -1179,7 +1167,7 @@ function ResidentsView() {
 								size="sm"
 								variant="destructive"
 								onClick={() => setIsBulkDeleteModalOpen(true)}
-								className="h-8 text-xs bg-red-950/40 text-red-400 hover:bg-red-900 hover:text-red-300 border border-red-900/50"
+								className="h-8 text-xs bg-red-50 hover:bg-red-100 text-red-600 border-red-200 dark:bg-red-950/20 dark:hover:bg-red-900/30 dark:text-red-400 dark:border-red-500/20 border flex items-center gap-1.5"
 							>
 								<Trash2 className="w-3.5 h-3.5 mr-1.5" />
 								Delete
@@ -1188,7 +1176,7 @@ function ResidentsView() {
 								size="sm"
 								variant="ghost"
 								onClick={() => setRowSelection({})}
-								className="h-8 w-8 p-0 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-full ml-1"
+								className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full ml-1"
 							>
 								<X className="w-4 h-4" />
 							</Button>
@@ -1199,22 +1187,22 @@ function ResidentsView() {
 			
 			{/* BULK DELETE CONFIRMATION DIALOG */}
 			<Dialog open={isBulkDeleteModalOpen} onOpenChange={setIsBulkDeleteModalOpen}>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl z-[60]">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<AlertTriangle className="h-5 w-5 text-red-500" />
 							<span>Confirm Bulk Deletion</span>
 						</DialogTitle>
 					</DialogHeader>
 					<div className="mt-4 space-y-4">
-						<p className="text-sm text-neutral-300">
-							Are you sure you want to delete <strong className="text-white">{selectedIds.length}</strong> selected residents? This action is permanent and cannot be undone.
+						<p className="text-sm text-foreground/80">
+							Are you sure you want to delete <strong className="text-foreground">{selectedIds.length}</strong> selected residents? This action is permanent and cannot be undone.
 						</p>
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setIsBulkDeleteModalOpen(false)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
@@ -1231,28 +1219,28 @@ function ResidentsView() {
 			
 			{/* BULK PUROK CONFIRMATION DIALOG */}
 			<Dialog open={!!bulkPurokToUpdate} onOpenChange={(open) => !open && setBulkPurokToUpdate(null)}>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl z-[60]">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
-							<Map className="h-5 w-5 text-blue-500" />
+						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+							<Map className="h-5 w-5 text-primary" />
 							<span>Confirm Purok Update</span>
 						</DialogTitle>
 					</DialogHeader>
 					<div className="mt-4 space-y-4">
-						<p className="text-sm text-neutral-300">
-							Are you sure you want to move <strong className="text-white">{selectedIds.length}</strong> residents to <strong className="text-white">{bulkPurokToUpdate}</strong>?
+						<p className="text-sm text-foreground/80">
+							Are you sure you want to move <strong className="text-foreground">{selectedIds.length}</strong> residents to <strong className="text-foreground">{bulkPurokToUpdate}</strong>?
 						</p>
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setBulkPurokToUpdate(null)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
 							<Button
 								onClick={confirmBulkUpdatePurok}
-								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
+								className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5"
 							>
 								Update Purok
 							</Button>
@@ -1263,28 +1251,28 @@ function ResidentsView() {
 			
 			{/* ARCHIVE CONFIRMATION DIALOG */}
 			<Dialog open={!!archiveModalIds} onOpenChange={(open) => !open && setArchiveModalIds(null)}>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl z-[60]">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl z-[60]">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x text-amber-500"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>
 							<span>Confirm Archiving</span>
 						</DialogTitle>
 					</DialogHeader>
 					<div className="mt-4 space-y-4">
-						<p className="text-sm text-neutral-300">
-							Are you sure you want to mark <strong className="text-white">{archiveModalIds?.length}</strong> resident(s) as deceased? They will be moved to the archive and hidden from standard statistics.
+						<p className="text-sm text-foreground/80">
+							Are you sure you want to mark <strong className="text-foreground">{archiveModalIds?.length}</strong> resident(s) as deceased? They will be moved to the archive and hidden from standard statistics.
 						</p>
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setArchiveModalIds(null)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
 							<Button
 								onClick={confirmArchive}
-								className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl px-5"
+								className="bg-amber-600 hover:bg-amber-500 text-foreground rounded-xl px-5"
 							>
 								Archive {archiveModalIds?.length} Profile(s)
 							</Button>

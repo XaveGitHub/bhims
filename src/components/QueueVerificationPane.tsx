@@ -258,27 +258,27 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 				}
 			`}</style>
 			
-			<div className="flex flex-col h-full bg-neutral-950/95 backdrop-blur-xl border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto">
+			<div className="flex flex-col h-full bg-background/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl overflow-hidden pointer-events-auto">
 				{/* Header (Draggable) */}
-				<div className="drag-handle bg-neutral-950/80 p-5 flex flex-col border-b border-neutral-800 backdrop-blur-md shrink-0 cursor-grab active:cursor-grabbing rounded-t-2xl relative group">
+				<div className="drag-handle bg-background/80 p-5 flex flex-col border-b border-border backdrop-blur-md shrink-0 cursor-grab active:cursor-grabbing rounded-t-2xl relative group">
 					<div className="absolute top-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-						<GripHorizontal className="w-8 h-8 text-neutral-500" />
+						<GripHorizontal className="w-8 h-8 text-muted-foreground" />
 					</div>
 					<div className="flex items-center justify-between mt-2 pl-2">
 						<div className="flex items-center gap-4">
-							<div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shrink-0">
-								<Printer className="w-5 h-5 text-blue-400" />
+							<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+								<Printer className="w-5 h-5 text-primary" />
 							</div>
 							<div>
-								<h2 className="text-xl font-bold text-white tracking-tight">
+								<h2 className="text-xl font-bold text-foreground tracking-tight">
 									Queue {batch.queueNumber.toString().padStart(4, '0')}
 								</h2>
-								<p className="text-sm text-neutral-400 font-medium">
+								<p className="text-sm text-muted-foreground font-medium">
 									{batch.resident?.firstName} {batch.resident?.lastName}
 								</p>
 							</div>
 						</div>
-						<Button variant="ghost" size="icon" onClick={onClose} className="rounded-lg hover:bg-neutral-800 shrink-0 h-9 w-9 text-neutral-400 transition-all hover:text-red-400">
+						<Button variant="ghost" size="icon" onClick={onClose} className="rounded-lg hover:bg-muted shrink-0 h-9 w-9 text-muted-foreground transition-all hover:text-red-400">
 							<X className="w-4 h-4" />
 						</Button>
 					</div>
@@ -286,8 +286,8 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 				<div className="flex flex-1 overflow-hidden">
 					{/* Sidebar */}
-					<div className="w-64 bg-neutral-900/50 border-r border-neutral-800 overflow-y-auto p-4 space-y-2 shrink-0">
-						<h3 className="text-xs font-bold text-neutral-500 tracking-widest mb-3 pl-2">Documents ({batch.items.length})</h3>
+					<div className="w-64 bg-card/50 border-r border-border overflow-y-auto p-4 space-y-2 shrink-0">
+						<h3 className="text-xs font-bold text-muted-foreground tracking-widest mb-3 pl-2">Documents ({batch.items.length})</h3>
 						{batch.items.map((item: any, idx: number) => {
 							const isPrinted = printedItems[item.id] || item.status === "Ready to Claim" || item.status === "Completed";
 							return (
@@ -296,13 +296,13 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									onClick={() => setSelectedIndex(idx)}
 									className={`w-full text-left p-3 rounded-xl transition-all border ${
 										selectedIndex === idx 
-											? 'bg-blue-600/10 border-blue-500/30 text-blue-100' 
-											: 'bg-transparent border-transparent text-neutral-400 hover:bg-neutral-800'
+											? 'bg-primary/10 border-primary/20 text-primary dark:text-primary' 
+											: 'bg-transparent border-transparent text-muted-foreground hover:bg-muted'
 									}`}
 								>
 									<div className="flex justify-between items-center">
 										<span className="font-medium text-sm truncate pr-2 capitalize">{item.template?.name?.toLowerCase()}</span>
-										{isPrinted && <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />}
+										{isPrinted && <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />}
 									</div>
 								</button>
 							);
@@ -312,7 +312,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 					{/* Main Content Area */}
 					<div className="flex-1 flex overflow-hidden">
 						{/* Left: Document Preview */}
-						<div ref={previewContainerRef} className="w-7/12 bg-neutral-900/30 p-4 flex justify-center items-start border-r border-neutral-800 overflow-y-auto">
+						<div ref={previewContainerRef} className="w-7/12 bg-card/30 p-4 flex justify-center items-start border-r border-border overflow-y-auto">
 							<div style={{ width: previewScale ? 794 * previewScale : 'auto', height: previewScale ? 1123 * previewScale : 'auto', opacity: previewScale ? 1 : 0, transition: 'opacity 0.2s' }} className="shrink-0 relative">
 								<div 
 									id="print-document"
@@ -357,12 +357,12 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 											<div className="text-center">
 												<div className="w-64 h-px bg-black mb-2" />
 												<p className="font-bold capitalize text-lg">{batch.resident?.firstName?.toLowerCase()} {batch.resident?.lastName?.toLowerCase()}</p>
-												<p className="text-sm text-neutral-600">Signature of Applicant</p>
+												<p className="text-sm text-muted-foreground">Signature of Applicant</p>
 											</div>
 											<div className="text-center">
 												<div className="w-64 h-px bg-black mb-2" />
 												<p className="font-bold uppercase text-lg">Hon. Juan Dela Cruz</p>
-												<p className="text-sm text-neutral-600">Punong Barangay</p>
+												<p className="text-sm text-muted-foreground">Punong Barangay</p>
 											</div>
 										</div>
 									</div>
@@ -446,32 +446,32 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 						</div>
 
 						{/* Right: Actions */}
-						<div className="w-5/12 bg-neutral-950 p-6 flex flex-col overflow-y-auto">
+						<div className="w-5/12 bg-background p-6 flex flex-col overflow-y-auto">
 							<div className="space-y-4 flex-1">
 								<div className="flex items-center justify-between">
 									<div>
-										<h3 className="text-lg font-bold text-white mb-1">Fill & Verify</h3>
-										<p className="text-sm text-neutral-400">Fill in required fields and correct typos before printing.</p>
+										<h3 className="text-lg font-bold text-foreground mb-1">Fill & Verify</h3>
+										<p className="text-sm text-muted-foreground">Fill in required fields and correct typos before printing.</p>
 									</div>
 								</div>
 
-								<div className="grid grid-cols-2 gap-4 bg-neutral-900/50 p-4 rounded-2xl border border-neutral-800">
+								<div className="grid grid-cols-2 gap-4 bg-card/50 p-4 rounded-2xl border border-border">
 									{(hasField('fullName') || hasField('firstName')) && (
 										<>
 											<div className="space-y-2">
-												<Label className="text-neutral-400 text-xs font-bold tracking-wider">First Name</Label>
+												<Label className="text-muted-foreground text-xs font-bold tracking-wider">First Name</Label>
 												<Input 
 													value={editForm.firstName}
 													onChange={(e) => setEditForm({...editForm, firstName: e.target.value})}
-													className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+													className="bg-background border-border text-foreground h-11"
 												/>
 											</div>
 											<div className="space-y-2">
-												<Label className="text-neutral-400 text-xs font-bold tracking-wider">Last Name</Label>
+												<Label className="text-muted-foreground text-xs font-bold tracking-wider">Last Name</Label>
 												<Input 
 													value={editForm.lastName}
 													onChange={(e) => setEditForm({...editForm, lastName: e.target.value})}
-													className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+													className="bg-background border-border text-foreground h-11"
 												/>
 											</div>
 										</>
@@ -479,24 +479,24 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									
 									{hasField('purok') && (
 										<div className="space-y-2">
-											<Label className="text-neutral-400 text-xs font-bold tracking-wider">Purok</Label>
+											<Label className="text-muted-foreground text-xs font-bold tracking-wider">Purok</Label>
 											<Input 
 												value={editForm.purok}
 												onChange={(e) => setEditForm({...editForm, purok: e.target.value})}
-												className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+												className="bg-background border-border text-foreground h-11"
 											/>
 										</div>
 									)}
 									
 									{(hasField('age') || hasField('birthDate')) && (
 										<div className="space-y-2 flex flex-col justify-end">
-											<Label className="text-neutral-400 text-xs font-bold tracking-wider">Birthdate</Label>
+											<Label className="text-muted-foreground text-xs font-bold tracking-wider">Birthdate</Label>
 										<Popover>
 											<PopoverTrigger asChild>
 												<Button
 													variant="outline"
 													className={cn(
-														"bg-neutral-950 border-neutral-800 text-neutral-200 h-11 w-full justify-start text-left font-normal",
+														"bg-background border-border text-foreground h-11 w-full justify-start text-left font-normal",
 														!editForm.birthDate && "text-muted-foreground"
 													)}
 												>
@@ -504,7 +504,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 													{editForm.birthDate ? format(parseISO(editForm.birthDate), "MMM d, yyyy") : <span>Pick a date</span>}
 												</Button>
 											</PopoverTrigger>
-											<PopoverContent className="w-auto p-0 bg-neutral-950 border-neutral-800" align="start">
+											<PopoverContent className="w-auto p-0 bg-background border-border" align="start">
 												<CalendarComponent
 													mode="single"
 													selected={editForm.birthDate ? parseISO(editForm.birthDate) : undefined}
@@ -522,22 +522,22 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('purpose') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Purpose</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Purpose</Label>
 										<Input 
 											value={editForm.purpose}
 											onChange={(e) => setEditForm({...editForm, purpose: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 										/>
 									</div>
 									)}
 
 									{hasField('occupation') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Occupation</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Occupation</Label>
 										<Input 
 											value={editForm.occupation}
 											onChange={(e) => setEditForm({...editForm, occupation: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 											placeholder="e.g. Farmer, Student, None"
 										/>
 									</div>
@@ -545,12 +545,12 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('monthlyIncome') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Monthly Income (₱)</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Monthly Income (₱)</Label>
 										<Input 
 											type="number"
 											value={editForm.monthlyIncome}
 											onChange={(e) => setEditForm({...editForm, monthlyIncome: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 											placeholder="0.00"
 										/>
 									</div>
@@ -558,11 +558,11 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('civilStatus') && (
 									<div className="space-y-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Civil Status</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Civil Status</Label>
 										<Input 
 											value={editForm.civilStatus}
 											onChange={(e) => setEditForm({...editForm, civilStatus: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 											placeholder="e.g. Single"
 										/>
 									</div>
@@ -570,58 +570,58 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('yearsResident') && (
 									<div className="space-y-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Years Resident</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Years Resident</Label>
 										<Input 
 											type="number"
 											value={editForm.yearsResident}
 											onChange={(e) => setEditForm({...editForm, yearsResident: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 										/>
 									</div>
 									)}
 
 									{hasField('orNumber') && (
 									<div className="space-y-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">OR #</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">OR #</Label>
 										<Input 
 											value={editForm.orNumber}
 											onChange={(e) => setEditForm({...editForm, orNumber: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 										/>
 									</div>
 									)}
 
 									{hasField('commTaxNo') && (
 									<div className="space-y-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Comm. Tax No.</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Comm. Tax No.</Label>
 										<Input 
 											value={editForm.commTaxNo}
 											onChange={(e) => setEditForm({...editForm, commTaxNo: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 										/>
 									</div>
 									)}
 
 									{hasField('witness') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Witness Name</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Witness Name</Label>
 										<Input 
 											value={editForm.witness}
 											onChange={(e) => setEditForm({...editForm, witness: e.target.value})}
-											className="bg-neutral-950 border-neutral-800 text-neutral-200 h-11"
+											className="bg-background border-border text-foreground h-11"
 										/>
 									</div>
 									)}
 
 									{hasField('dateIssued') && (
 									<div className="space-y-2 col-span-2 flex flex-col justify-end">
-										<Label className="text-neutral-400 text-xs font-bold tracking-wider">Date Issued</Label>
+										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Date Issued</Label>
 										<Popover>
 											<PopoverTrigger asChild>
 												<Button
 													variant="outline"
 													className={cn(
-														"bg-neutral-950 border-neutral-800 text-neutral-200 h-11 w-full justify-start text-left font-normal",
+														"bg-background border-border text-foreground h-11 w-full justify-start text-left font-normal",
 														!editForm.dateIssued && "text-muted-foreground"
 													)}
 												>
@@ -629,7 +629,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 													{editForm.dateIssued ? format(parseISO(editForm.dateIssued), "MMM d, yyyy") : <span>Pick a date</span>}
 												</Button>
 											</PopoverTrigger>
-											<PopoverContent className="w-auto p-0 bg-neutral-950 border-neutral-800" align="start">
+											<PopoverContent className="w-auto p-0 bg-background border-border" align="start">
 												<CalendarComponent
 													mode="single"
 													selected={editForm.dateIssued ? parseISO(editForm.dateIssued) : undefined}
@@ -650,7 +650,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 							<div className="space-y-3 mt-4">
 								<div className="flex gap-2">
 									<Button 
-										className="flex-1 h-11 text-base font-bold bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl transition-all border border-neutral-700"
+										className="flex-1 h-11 text-base font-bold bg-muted hover:bg-muted text-foreground rounded-xl transition-all border border-border"
 										onClick={handlePrintSingle}
 										disabled={isProcessing}
 									>
@@ -659,7 +659,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									</Button>
 									
 									<Button 
-										className="flex-1 h-11 text-base font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-lg shadow-blue-900/20"
+										className="flex-1 h-11 text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all shadow-lg shadow-primary/20"
 										onClick={handleDownloadImage}
 										disabled={isProcessing}
 									>
@@ -669,7 +669,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								</div>
 
 								<Button 
-									className="w-full h-11 text-base font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 rounded-xl relative overflow-hidden group disabled:opacity-50 disabled:shadow-none"
+									className="w-full h-11 text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 rounded-xl relative overflow-hidden group disabled:opacity-50 disabled:shadow-none"
 									onClick={handleMarkBatchReady}
 									disabled={isProcessing || !allPrinted}
 								>

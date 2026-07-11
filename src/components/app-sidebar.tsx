@@ -141,8 +141,8 @@ export function AppSidebar({
 							className="data-[slot=sidebar-menu-button]:p-1.5! w-auto group-data-[collapsible=icon]:justify-center"
 						>
 							<Link to="/">
-								<IconInnerShadowTop className="size-5! shrink-0 text-blue-500" />
-								<span className="text-base font-bold bg-gradient-to-r from-neutral-100 to-neutral-400 bg-clip-text text-transparent group-data-[collapsible=icon]:hidden">
+								<IconInnerShadowTop className="size-5! shrink-0 text-primary" />
+								<span className="text-base font-bold text-foreground group-data-[collapsible=icon]:hidden">
 									BHIMS
 								</span>
 							</Link>

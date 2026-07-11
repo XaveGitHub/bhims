@@ -8,9 +8,9 @@ export const Route = createFileRoute("/login")({
 
 function LoginScreen() {
 	return (
-		<div className="grid min-h-screen lg:grid-cols-2 bg-neutral-950 font-sans dark text-neutral-100 selection:bg-blue-500/30">
+		<div className="grid min-h-screen lg:grid-cols-2 bg-background font-sans text-foreground selection:bg-primary">
 			{/* Left side: Branding Panel */}
-			<div className="relative hidden lg:flex flex-col justify-end bg-neutral-900 border-r border-white/5 p-12 overflow-hidden">
+			<div className="relative hidden lg:flex flex-col justify-end bg-card border-r border-border p-12 overflow-hidden">
 				{/* Background Image */}
 				<img 
 					src="/community_bg.png" 
@@ -19,16 +19,15 @@ function LoginScreen() {
 				/>
 				
 				{/* Gradients to blend image and text */}
-				<div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-blue-950/30 pointer-events-none z-0" />
-				<div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-800/10 blur-[100px] rounded-full z-0" />
+				<div className="absolute inset-0 bg-background pointer-events-none z-0" />
 				
 				{/* Text positioned at the bottom left */}
 				<div className="relative z-10">
-					<h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-white mb-4 drop-shadow-xl">
+					<h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-foreground mb-4 drop-shadow-xl">
 						Empowering<br/>
-						<span className="text-blue-400">Barangay Handumanan</span>
+						<span className="text-primary">Barangay Handumanan</span>
 					</h2>
-					<p className="text-lg text-neutral-300 max-w-md leading-relaxed drop-shadow-md">
+					<p className="text-lg text-foreground/80 max-w-md leading-relaxed drop-shadow-md">
 						The central hub for resident records, household analytics, and streamlined community services.
 					</p>
 				</div>

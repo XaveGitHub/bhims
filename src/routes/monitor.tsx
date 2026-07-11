@@ -39,11 +39,9 @@ function MonitorDashboard() {
   };
 
   return (
-    <div className="relative min-h-screen bg-neutral-950 text-white font-sans selection:bg-blue-500/30 overflow-hidden flex flex-col z-0">
+    <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary overflow-hidden flex flex-col z-0">
       {/* Decorative Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-950/15 via-neutral-950/0 to-transparent pointer-events-none z-[-1]" />
-      <div className="absolute top-0 left-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
-      <div className="absolute bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-blue-950/8 blur-[120px] pointer-events-none z-[-1]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent pointer-events-none z-[-1]" />
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none z-[-1]"
         style={{
@@ -58,7 +56,7 @@ function MonitorDashboard() {
       />
 
       {/* Header */}
-      <header className="px-10 py-6 flex items-center justify-between border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-xl shrink-0">
+      <header className="px-10 py-6 flex items-center justify-between border-b border-border bg-card/50 backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-4">
           <img
             src="/barangay_logo.png"
@@ -69,7 +67,7 @@ function MonitorDashboard() {
             <h1 className="text-4xl font-black tracking-tight">
               Barangay Handumanan
             </h1>
-            <p className="text-lg text-blue-500 font-medium tracking-wider">
+            <p className="text-lg text-primary font-medium tracking-wider">
               Document Request Queue
             </p>
           </div>
@@ -81,7 +79,7 @@ function MonitorDashboard() {
               minute: "2-digit",
             })}
           </span>
-          <span className="text-lg text-neutral-400 font-medium">
+          <span className="text-lg text-muted-foreground font-medium">
             {new Date().toLocaleDateString([], {
               weekday: "long",
               month: "short",
@@ -94,12 +92,12 @@ function MonitorDashboard() {
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT COLUMN: PREPARING (Processing) */}
-        <div className="flex-1 border-r border-neutral-800 flex flex-col bg-transparent">
+        <div className="flex-1 border-r border-border flex flex-col bg-transparent">
           <div className="px-10 py-8 shrink-0">
-            <h2 className="text-5xl font-black tracking-tight text-neutral-300 uppercase">
+            <h2 className="text-5xl font-black tracking-tight text-foreground/80 uppercase">
               Preparing
             </h2>
-            <p className="text-2xl text-blue-400">
+            <p className="text-2xl text-primary">
               Please wait for your number
             </p>
           </div>
@@ -107,10 +105,10 @@ function MonitorDashboard() {
           <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar">
             {loading && queue.length === 0 ? (
               <div className="h-full flex items-center justify-center">
-                <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
+                <Loader2 className="h-16 w-16 animate-spin text-primary" />
               </div>
             ) : processing.length === 0 ? (
-              <div className="h-[400px] flex flex-col items-center justify-center text-neutral-600">
+              <div className="h-[400px] flex flex-col items-center justify-center text-muted-foreground">
                 {/* Empty State */}
               </div>
             ) : (
@@ -120,7 +118,7 @@ function MonitorDashboard() {
                     key={item.queueNumber}
                     className="flex items-center justify-center py-4"
                   >
-                    <span className={`${getTextSize(processing.length)} font-black tracking-tighter text-white drop-shadow-md`}>
+                    <span className={`${getTextSize(processing.length)} font-black tracking-tighter text-foreground drop-shadow-md`}>
                       {String(item.queueNumber).padStart(4, "0")}
                     </span>
                   </div>
@@ -133,7 +131,7 @@ function MonitorDashboard() {
         {/* RIGHT COLUMN: NOW SERVING (Ready to Claim) */}
         <div className="flex-1 flex flex-col bg-transparent">
           <div className="px-10 py-8 shrink-0">
-            <h2 className="text-5xl font-black tracking-tight text-white mb-2 uppercase">
+            <h2 className="text-5xl font-black tracking-tight text-foreground mb-2 uppercase">
               Ready to Claim
             </h2>
             <p className="text-2xl text-emerald-400">
@@ -144,10 +142,10 @@ function MonitorDashboard() {
           <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar">
             {loading && queue.length === 0 ? (
               <div className="h-full flex items-center justify-center">
-                <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
+                <Loader2 className="h-16 w-16 animate-spin text-primary" />
               </div>
             ) : readyToClaim.length === 0 ? (
-              <div className="h-[400px] flex flex-col items-center justify-center text-neutral-600">
+              <div className="h-[400px] flex flex-col items-center justify-center text-muted-foreground">
                 {/* Empty State */}
               </div>
             ) : (
@@ -157,7 +155,7 @@ function MonitorDashboard() {
                     key={item.queueNumber}
                     className="flex items-center justify-center py-4"
                   >
-                    <span className={`${getTextSize(readyToClaim.length)} font-black tracking-tighter text-white drop-shadow-md`}>
+                    <span className={`${getTextSize(readyToClaim.length)} font-black tracking-tighter text-foreground drop-shadow-md`}>
                       {String(item.queueNumber).padStart(4, "0")}
                     </span>
                   </div>

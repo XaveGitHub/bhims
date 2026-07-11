@@ -34,20 +34,20 @@ export function NavUser({ user }: { user: UserInfo }) {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="data-[state=open]:bg-neutral-900/50 data-[state=open]:text-neutral-200 text-neutral-300 hover:bg-neutral-900/50 hover:text-neutral-100 rounded-xl mb-2 transition-all p-2 h-auto"
+							className="data-[state=open]:bg-card data-[state=open]:text-foreground/90 text-muted-foreground hover:bg-card hover:text-foreground rounded-xl mb-2 transition-all p-2 h-auto"
 						>
-							<div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
+							<div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
 								<Shield className="size-4.5" />
 							</div>
 							<div className="grid flex-1 text-left text-sm leading-tight ml-1">
 								<span className="truncate font-bold text-[13px]">{user.name}</span>
-								<span className="truncate text-[11px] text-neutral-500">{user.email || "Local Server"}</span>
+								<span className="truncate text-[11px] text-foreground0">{user.email || "Local Server"}</span>
 							</div>
-							<ChevronsUpDown className="ml-auto size-4 text-neutral-600" />
+							<ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
-						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl bg-neutral-900 border border-white/10 text-neutral-200 p-2 shadow-xl"
+						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl bg-card border border-border text-foreground/90 p-2 shadow-xl"
 						side="bottom"
 						align="end"
 						sideOffset={8}

@@ -287,7 +287,7 @@ function HouseholdsView() {
 		return (
 			<div
 				onClick={() => setDrawerResident(member as Resident)}
-				className={`member-card-node w-56 h-[116px] p-4 rounded-xl border bg-neutral-950/50 shadow-sm transition-all hover:bg-neutral-900 flex flex-col justify-between border-neutral-800 shrink-0 relative z-10 overflow-hidden group cursor-pointer hover:border-neutral-600`}
+				className={`member-card-node w-56 h-[116px] p-4 rounded-xl border bg-background/50 shadow-sm transition-all hover:bg-card flex flex-col justify-between border-border shrink-0 relative z-10 overflow-hidden group cursor-pointer hover:border-neutral-600`}
 			>
 				<div className="flex items-start justify-between relative z-10 pl-1">
 					<span
@@ -297,19 +297,19 @@ function HouseholdsView() {
 							? "Head"
 							: member.relationshipToHead || "Member"}
 					</span>
-					<span className="text-xs text-neutral-400 font-medium">
+					<span className="text-xs text-muted-foreground font-medium">
 						{calculateAge(member.birthDate)} yrs
 					</span>
 				</div>
 
 				<div className="space-y-0.5 relative z-10 pl-1">
 					<h4
-						className="font-semibold text-sm text-neutral-200 truncate group-hover:text-blue-400 transition-colors"
+						className="font-semibold text-sm text-foreground truncate group-hover:text-primary dark:group-hover:text-primary transition-colors"
 						title={member.fullName}
 					>
 						{member.fullName}
 					</h4>
-					<p className="text-[11px] text-neutral-500">
+					<p className="text-[11px] text-muted-foreground">
 						{member.gender || "Unknown"}
 					</p>
 				</div>
@@ -317,27 +317,27 @@ function HouseholdsView() {
 				{/* Flag Badges */}
 				<div className="flex flex-wrap gap-1.5 pt-1">
 					{member.isPwd && (
-						<span className="inline-flex items-center rounded-full bg-purple-400/10 px-2 py-0.5 text-[10px] font-semibold text-purple-400 border border-purple-400/20">
+						<span className="inline-flex items-center rounded-full bg-purple-100 dark:bg-purple-400/10 px-2 py-0.5 text-[10px] font-semibold text-purple-700 dark:text-purple-400 border border-purple-400/20">
 							PWD
 						</span>
 					)}
 					{member.isSeniorCitizen && (
-						<span className="inline-flex items-center rounded-full bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400 border border-amber-400/20">
+						<span className="inline-flex items-center rounded-full bg-amber-100 dark:bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400 border border-amber-400/20">
 							Senior
 						</span>
 					)}
 					{member.isRegisteredVoter && (
-						<span className="inline-flex items-center rounded-full bg-blue-400/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400 border border-blue-400/20">
+						<span className="inline-flex items-center rounded-full bg-accent dark:bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary dark:text-primary border border-primary/20">
 							Voter
 						</span>
 					)}
 					{member.isSingleParent && (
-						<span className="inline-flex items-center rounded-full bg-pink-400/10 px-2 py-0.5 text-[10px] font-semibold text-pink-400 border border-pink-400/20">
+						<span className="inline-flex items-center rounded-full bg-pink-100 dark:bg-pink-400/10 px-2 py-0.5 text-[10px] font-semibold text-pink-700 dark:text-pink-400 border border-pink-400/20">
 							Solo
 						</span>
 					)}
 					{member.isDeceased && (
-						<span className="inline-flex items-center rounded-full bg-neutral-500/10 px-2 py-0.5 text-[10px] font-semibold text-neutral-400 border border-neutral-500/20">
+						<span className="inline-flex items-center rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground border border-neutral-500/20">
 							Deceased
 						</span>
 					)}
@@ -351,10 +351,10 @@ function HouseholdsView() {
 			{/* Page header */}
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 				<div>
-					<h2 className="text-2xl font-bold tracking-tight text-neutral-100">
+					<h2 className="text-2xl font-bold tracking-tight text-foreground">
 						Households
 					</h2>
-					<p className="text-sm text-neutral-500 mt-0.5">
+					<p className="text-sm text-muted-foreground mt-0.5">
 						Manage family units and relationships
 					</p>
 				</div>
@@ -362,29 +362,29 @@ function HouseholdsView() {
 
 			<div className="flex flex-col md:flex-row gap-6 h-[calc(100vh-16rem)] overflow-hidden">
 				{/* Left Column: Households list */}
-				<Card className="w-full md:w-80 bg-neutral-950/40 backdrop-blur-xl border-white/5 shadow-lg flex flex-col overflow-hidden shrink-0 h-1/2 md:h-full p-0 gap-0">
+				<Card className="w-full md:w-80 bg-background/60 backdrop-blur-xl border-border shadow-lg flex flex-col overflow-hidden shrink-0 h-1/2 md:h-full p-0 gap-0">
 					{/* List Header */}
-					<div className="p-4 border-b border-neutral-800/80 space-y-4 bg-neutral-900/20">
+					<div className="p-4 border-b border-border/80 space-y-4 bg-card/20">
 						<div className="space-y-1">
-							<h3 className="font-bold text-neutral-100 flex items-center gap-2">
-								<Home className="h-4 w-4 text-blue-500" />
+							<h3 className="font-bold text-foreground flex items-center gap-2">
+								<Home className="h-4 w-4 text-primary" />
 								<span className="tracking-tight">Households</span>
 							</h3>
-							<p className="text-[11px] text-neutral-500">
+							<p className="text-[11px] text-muted-foreground">
 								Select a family unit to view structure.
 							</p>
 						</div>
 
 						<div className="space-y-2">
 							<div className="relative">
-								<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+								<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
 									<Search className="h-3.5 w-3.5" />
 								</span>
 								<Input
 									placeholder="Search head of family..."
 									value={search}
 									onChange={(e) => setSearch(e.target.value)}
-									className="pl-8 py-2 bg-neutral-950/50 border-neutral-800/80 text-xs text-neutral-200 placeholder:text-neutral-600 focus-visible:ring-blue-500/30 focus-visible:border-blue-500/50 h-9 rounded-xl"
+									className="pl-8 py-2 bg-background/50 border-border/80 text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/50 focus-visible:border-primary/20 h-9 rounded-xl"
 								/>
 							</div>
 
@@ -394,10 +394,10 @@ function HouseholdsView() {
 									setSelectedPurok(val === "ALL" ? "" : val)
 								}
 							>
-								<SelectTrigger className="w-full bg-neutral-900 border-neutral-800 text-xs text-neutral-300 px-3 py-2 rounded-xl focus:border-blue-500 h-9">
+								<SelectTrigger className="w-full bg-card border-border text-xs text-foreground/80 px-3 py-2 rounded-xl focus:border-primary/20 h-9">
 									<SelectValue placeholder="All Puroks" />
 								</SelectTrigger>
-								<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+								<SelectContent className="bg-card border-border text-foreground rounded-xl">
 									<SelectItem value="ALL">All Puroks</SelectItem>
 									{purokOptions.map((p) => (
 										<SelectItem key={p} value={p}>
@@ -410,10 +410,10 @@ function HouseholdsView() {
 					</div>
 
 					{/* List scroll area */}
-					<div className="flex-1 overflow-y-auto divide-y divide-neutral-800/60 bg-neutral-950/20">
+					<div className="flex-1 overflow-y-auto divide-y divide-border/60 bg-background/20">
 						{loadingList ? (
 							<div className="flex h-40 items-center justify-center">
-								<div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+								<div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
 							</div>
 						) : filteredHouseholds.length > 0 ? (
 							filteredHouseholds.slice(0, 100).map((h) => (
@@ -424,22 +424,22 @@ function HouseholdsView() {
 									onMouseEnter={() => prefetchDetail(h.householdId)}
 									className={`w-full px-4 py-3 text-left transition-all flex items-center justify-between group ${
 										selectedId === h.householdId
-											? "bg-neutral-800/80 text-neutral-100"
-											: "text-neutral-400 hover:bg-neutral-800/40 hover:text-neutral-200"
+											? "bg-muted/80 text-foreground"
+											: "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
 									}`}
 								>
 									<div className="space-y-1 truncate pr-2">
 										<h4
-											className={`font-semibold text-sm truncate transition-colors ${selectedId === h.householdId ? "text-blue-400" : "text-neutral-200 group-hover:text-neutral-100"}`}
+											className={`font-semibold text-sm truncate transition-colors ${selectedId === h.householdId ? "text-amber-700 dark:text-amber-400" : "text-foreground group-hover:text-foreground"}`}
 										>
 											{h.headName}
 										</h4>
-										<div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-500 mt-1">
-											<span className="bg-neutral-900 border border-neutral-800/80 px-2 py-0.5 rounded-full truncate">
+										<div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground mt-1">
+											<span className="bg-card border border-border/80 px-2 py-0.5 rounded-full truncate">
 												{h.purok}
 											</span>
 											{(h.block || h.lot) && (
-												<span className="bg-neutral-900 border border-neutral-800/80 px-2 py-0.5 rounded-full truncate">
+												<span className="bg-card border border-border/80 px-2 py-0.5 rounded-full truncate">
 													{h.block ? `Blk ${h.block}` : ""} {h.lot ? `Lot ${h.lot}` : ""}
 												</span>
 											)}
@@ -450,14 +450,14 @@ function HouseholdsView() {
 										</div>
 									</div>
 									<ChevronRight
-										className={`h-4 w-4 shrink-0 transition-all ${selectedId === h.householdId ? "opacity-100 text-blue-500 translate-x-0.5" : "opacity-0 group-hover:opacity-50 -translate-x-1"}`}
+										className={`h-4 w-4 shrink-0 transition-all ${selectedId === h.householdId ? "opacity-100 text-primary translate-x-0.5" : "opacity-0 group-hover:opacity-50 -translate-x-1"}`}
 									/>
 								</button>
 							))
 						) : (
 							<div className="flex-1 flex flex-col items-center justify-center p-8 text-center opacity-50">
-								<AlertCircle className="h-6 w-6 text-neutral-600 mb-1" />
-								<p className="text-xs font-semibold text-neutral-500">
+								<AlertCircle className="h-6 w-6 text-muted-foreground mb-1" />
+								<p className="text-xs font-semibold text-muted-foreground">
 									No Households Found
 								</p>
 							</div>
@@ -466,7 +466,7 @@ function HouseholdsView() {
 				</Card>
 
 				{/* Right Column: Family Tree Detail panel */}
-				<Card className="flex-1 bg-neutral-950/40 backdrop-blur-xl border-white/5 shadow-lg flex flex-col overflow-hidden h-1/2 md:h-full relative p-0 gap-0">
+				<Card className="flex-1 bg-background/60 backdrop-blur-xl border-border shadow-lg flex flex-col overflow-hidden h-1/2 md:h-full relative p-0 gap-0">
 					{/* Subtle grid background */}
 					<div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
@@ -474,8 +474,8 @@ function HouseholdsView() {
 						{loadingDetail ? (
 							<div className="flex-1 flex items-center justify-center">
 								<div className="flex flex-col items-center gap-4">
-									<div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500/20 border-t-blue-500" />
-									<p className="text-sm text-neutral-400 animate-pulse">
+									<div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/20 border-t-blue-500" />
+									<p className="text-sm text-muted-foreground animate-pulse">
 										Rendering family tree...
 									</p>
 								</div>
@@ -483,37 +483,37 @@ function HouseholdsView() {
 						) : detail ? (
 							<div className="flex-1 flex flex-col overflow-hidden">
 								{/* Detail Header */}
-								<div className="p-6 border-b border-neutral-800 flex items-center justify-between shrink-0">
+								<div className="p-6 border-b border-border flex items-center justify-between shrink-0">
 									<div>
 										<div className="flex items-center gap-3">
-											<h3 className="font-extrabold text-xl text-neutral-100">
+											<h3 className="font-extrabold text-xl text-foreground">
 												Household Family Tree
 											</h3>
 											<button
 												type="button"
 												onClick={handleOpenEdit}
-												className="h-6 w-6 flex items-center justify-center rounded-md bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-blue-400 hover:border-blue-900/50 hover:bg-blue-950/30 transition-colors cursor-pointer"
+												className="h-6 w-6 flex items-center justify-center rounded-md bg-card border border-border text-muted-foreground hover:text-primary dark:hover:text-primary hover:bg-accent dark:hover:bg-primary/10 hover:border-primary/20 dark:hover:border-primary/20 transition-colors cursor-pointer"
 												title="Edit Household"
 											>
 												<Edit2 className="h-3.5 w-3.5" />
 											</button>
 										</div>
 										<div className="flex items-center gap-2 mt-2">
-											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-950/40 text-blue-500 border border-blue-900/30">
+											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-accent dark:bg-primary/10 text-primary border border-primary/20 dark:border-primary/20">
 												Purok: {detail.purok}
 											</span>
 											{(detail.block || detail.lot) && (
-												<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-neutral-900 text-neutral-400 border border-neutral-800">
+												<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-card text-muted-foreground border border-border">
 													{detail.block ? `Blk ${detail.block}` : ""} {detail.lot ? `Lot ${detail.lot}` : ""}
 												</span>
 											)}
-											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-neutral-900 text-neutral-400 border border-neutral-800">
+											<span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-card text-muted-foreground border border-border">
 												Code: {formatHouseholdId(detail.householdId)}
 											</span>
 										</div>
 									</div>
-									<div className="p-3 bg-neutral-950 border border-neutral-800 text-neutral-400 rounded-2xl flex items-center gap-2 text-xs font-semibold">
-										<Users className="h-4 w-4 text-blue-500" />
+									<div className="p-3 bg-background border border-border text-muted-foreground rounded-2xl flex items-center gap-2 text-xs font-semibold">
+										<Users className="h-4 w-4 text-primary" />
 										<span>
 											{(detail.head ? 1 : 0) +
 												(detail.spouse ? 1 : 0) +
@@ -527,10 +527,10 @@ function HouseholdsView() {
 								{/* Interactive Family Tree Canvas */}
 								<div className="flex-1 overflow-hidden relative bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/20 via-neutral-950 to-neutral-950">
 									{/* Zoom Controls */}
-									<div className="absolute bottom-6 right-6 z-50 flex flex-col gap-2 bg-neutral-900/80 backdrop-blur-md p-2 rounded-xl border border-neutral-800 shadow-xl pointer-events-auto">
-										<button type="button" onClick={() => setZoom(z => Math.min(z + 0.1, 2))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold">+</button>
-										<button type="button" onClick={() => setZoom(1)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold">1x</button>
-										<button type="button" onClick={() => setZoom(z => Math.max(z - 0.1, 0.3))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold">-</button>
+									<div className="absolute bottom-6 right-6 z-50 flex flex-col gap-2 bg-surface backdrop-blur-md p-2 rounded-xl border border-border shadow-xl pointer-events-auto">
+										<button type="button" onClick={() => setZoom(z => Math.min(z + 0.1, 2))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-muted hover:bg-muted text-foreground/80 font-bold">+</button>
+										<button type="button" onClick={() => setZoom(1)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-muted hover:bg-muted text-foreground/80 text-xs font-bold">1x</button>
+										<button type="button" onClick={() => setZoom(z => Math.max(z - 0.1, 0.3))} className="w-8 h-8 flex items-center justify-center rounded-lg bg-muted hover:bg-muted text-foreground/80 font-bold">-</button>
 									</div>
 
 									<Draggable nodeRef={canvasDragRef}>
@@ -561,18 +561,18 @@ function HouseholdsView() {
 																	<div className="flex justify-center gap-6 relative">
 																		{/* Horizontal crossbar at the bottom */}
 																		{ascendants.length > 1 && (
-																			<div className="absolute bottom-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																			<div className="absolute bottom-0 left-[7rem] right-[7rem] h-[2px] bg-muted" />
 																		)}
 																		{ascendants.map(m => (
 																			<div key={m.id} className="flex flex-col items-center h-full">
-																				<MemberCard member={m} roleColor="bg-amber-950/50 text-amber-400 border-amber-900/30" />
+																				<MemberCard member={m} roleColor="bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/30" />
 																				{/* Drop line stretches to bottom crossbar */}
-																				<div className="flex-1 min-h-[1.5rem] w-[2px] bg-neutral-800" />
+																				<div className="flex-1 min-h-[1.5rem] w-[2px] bg-muted" />
 																			</div>
 																		))}
 																	</div>
 																	{/* Trunk down to Core */}
-																	<div className="h-[1.5rem] w-[2px] bg-neutral-800" />
+																	<div className="h-[1.5rem] w-[2px] bg-muted" />
 																</div>
 															)}
 
@@ -584,14 +584,14 @@ function HouseholdsView() {
 																	{siblings.length > 0 && (
 																		<div className="absolute right-full top-1/2 -translate-y-1/2 flex items-center gap-6 mr-[4rem]">
 																			{/* Connection to head */}
-																			<div className="absolute top-1/2 -right-[4rem] h-[2px] w-[4rem] bg-neutral-800 -translate-y-1/2" />
+																			<div className="absolute top-1/2 -right-[4rem] h-[2px] w-[4rem] bg-muted -translate-y-1/2" />
 																			
 																			{siblings.map((m, index) => (
 																				<div key={m.id} className="relative flex items-center">
 																					{index < siblings.length - 1 && (
-																						<div className="absolute top-1/2 -right-[1.5rem] h-[2px] w-[1.5rem] bg-neutral-800 -translate-y-1/2" />
+																						<div className="absolute top-1/2 -right-[1.5rem] h-[2px] w-[1.5rem] bg-muted -translate-y-1/2" />
 																					)}
-																					<MemberCard member={m} roleColor="bg-blue-950/50 text-blue-400 border border-blue-900/30" />
+																					<MemberCard member={m} roleColor="bg-accent text-accent-foreground border border-accent" />
 																				</div>
 																			))}
 																		</div>
@@ -599,31 +599,31 @@ function HouseholdsView() {
 
 																	{/* Head */}
 																	{detail.head && (
-																		<MemberCard member={detail.head} roleColor="bg-blue-950/50 text-blue-400 border border-blue-900/30" />
+																		<MemberCard member={detail.head} roleColor="bg-accent text-accent-foreground border border-accent" />
 																	)}
 
 																	{/* Spouse */}
 																	{detail.spouse && (
 																		<>
-																			<div className="absolute left-[14rem] w-[4rem] h-[2px] bg-neutral-800 top-1/2 -translate-y-1/2" />
-																			<MemberCard member={detail.spouse} roleColor="bg-blue-950/50 text-blue-400 border border-blue-900/30" />
+																			<div className="absolute left-[14rem] w-[4rem] h-[2px] bg-muted top-1/2 -translate-y-1/2" />
+																			<MemberCard member={detail.spouse} roleColor="bg-accent text-accent-foreground border border-accent" />
 																		</>
 																	)}
 
 																	{/* Connection from Tier 1 trunk down to marriage line */}
 																	{ascendants.length > 0 && detail.spouse && (
-																		<div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-1/2 w-[2px] bg-neutral-800 z-0" />
+																		<div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-1/2 w-[2px] bg-muted z-0" />
 																	)}
 
 																	{/* Drop line from center of marriage to bottom of Core container */}
 																	{((detail.children.length > 0) || (descendants.length > 0)) && detail.spouse && (
-																		<div className="absolute left-1/2 -translate-x-1/2 top-1/2 bottom-0 w-[2px] bg-neutral-800 z-0" />
+																		<div className="absolute left-1/2 -translate-x-1/2 top-1/2 bottom-0 w-[2px] bg-muted z-0" />
 																	)}
 																</div>
 																
 																{/* Trunk down to Children */}
 																{((detail.children.length > 0) || (descendants.length > 0)) && (
-																	<div className="h-[1.5rem] w-[2px] bg-neutral-800" />
+																	<div className="h-[1.5rem] w-[2px] bg-muted" />
 																)}
 															</div>
 
@@ -633,27 +633,27 @@ function HouseholdsView() {
 																	<div className="flex justify-center gap-6 relative">
 																		{/* Top crossbar */}
 																		{detail.children.length > 1 && (
-																			<div className="absolute top-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																			<div className="absolute top-0 left-[7rem] right-[7rem] h-[2px] bg-muted" />
 																		)}
 																		
 																		{/* Bottom crossbar for descendants */}
 																		{descendants.length > 0 && detail.children.length > 1 && (
-																			<div className="absolute bottom-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																			<div className="absolute bottom-0 left-[7rem] right-[7rem] h-[2px] bg-muted" />
 																		)}
 
 																		{detail.children.map((child) => (
 																			<div key={child.id} className="flex flex-col items-center h-full">
-																				<div className="h-[1.5rem] shrink-0 w-[2px] bg-neutral-800" />
-																				<MemberCard member={child} roleColor="bg-pink-950/50 text-pink-400 border border-pink-900/30" />
+																				<div className="h-[1.5rem] shrink-0 w-[2px] bg-muted" />
+																				<MemberCard member={child} roleColor="bg-pink-100 dark:bg-pink-950/50 text-pink-700 dark:text-pink-400 border border-pink-200 dark:border-pink-900/30" />
 																				{descendants.length > 0 && (
-																					<div className="flex-1 min-h-[1.5rem] w-[2px] bg-neutral-800" />
+																					<div className="flex-1 min-h-[1.5rem] w-[2px] bg-muted" />
 																				)}
 																			</div>
 																		))}
 																	</div>
 																	{/* Trunk to descendants */}
 																	{descendants.length > 0 && (
-																		<div className="w-[2px] h-[1.5rem] bg-neutral-800" />
+																		<div className="w-[2px] h-[1.5rem] bg-muted" />
 																	)}
 																</div>
 															)}
@@ -664,12 +664,12 @@ function HouseholdsView() {
 																	<div className="flex justify-center gap-6 relative">
 																		{/* Top crossbar */}
 																		{descendants.length > 1 && (
-																			<div className="absolute top-0 left-[7rem] right-[7rem] h-[2px] bg-neutral-800" />
+																			<div className="absolute top-0 left-[7rem] right-[7rem] h-[2px] bg-muted" />
 																		)}
 																		{descendants.map((m) => (
 																			<div key={m.id} className="flex flex-col items-center">
-																				<div className="h-[1.5rem] w-[2px] bg-neutral-800" />
-																				<MemberCard member={m} roleColor="bg-purple-950/50 text-purple-400 border border-purple-900/30" />
+																				<div className="h-[1.5rem] w-[2px] bg-muted" />
+																				<MemberCard member={m} roleColor="bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-900/30" />
 																			</div>
 																		))}
 																	</div>
@@ -679,7 +679,7 @@ function HouseholdsView() {
 															{/* TIER 5: Others */}
 															{otherExtended.length > 0 && (
 																<div className="flex flex-col items-center w-full max-w-4xl mt-12">
-																	<div className="inline-flex items-center gap-2 rounded-full bg-neutral-900 border border-neutral-800 px-3 py-1 text-xs text-neutral-400 font-semibold z-10 relative">
+																	<div className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-3 py-1 text-xs text-muted-foreground font-semibold z-10 relative">
 																		Distant Relatives & Others
 																	</div>
 																	
@@ -695,7 +695,7 @@ function HouseholdsView() {
 																		{otherExtended.map((other) => (
 																			<div key={other.id} className="flex flex-col items-center">
 																				<div className="h-[1.5rem] w-[2px] border-l-[2px] border-dashed border-neutral-600/50" />
-																				<MemberCard member={other} roleColor="bg-neutral-850 text-neutral-400 border border-neutral-800" />
+																				<MemberCard member={other} roleColor="bg-muted/50 text-muted-foreground border border-border" />
 																			</div>
 																		))}
 																	</div>
@@ -711,11 +711,11 @@ function HouseholdsView() {
 							</div>
 						) : (
 							<div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
-								<Network className="h-14 w-14 text-neutral-700 mb-4" />
-								<h3 className="text-lg font-bold text-neutral-400">
+								<Network className="h-14 w-14 text-foreground mb-4" />
+								<h3 className="text-lg font-bold text-muted-foreground">
 									Select a Household
 								</h3>
-								<p className="text-xs text-neutral-500 max-w-sm mt-1">
+								<p className="text-xs text-muted-foreground max-w-sm mt-1">
 									Select a household from the left list to visualize its family
 									members, parent-child relationships, and flags.
 								</p>
@@ -733,7 +733,7 @@ function HouseholdsView() {
 					>
 						<div
 							ref={dragNodeRef}
-							className="fixed top-20 right-4 w-[450px] lg:w-[500px] shadow-2xl z-50 pointer-events-none [&>*]:pointer-events-auto"
+							className="fixed top-20 right-4 w-[450px] lg:w-[500px] z-50 pointer-events-none [&>*]:pointer-events-auto"
 						>
 							<ResidentProfilePane
 								resident={drawerResident}
@@ -753,43 +753,43 @@ function HouseholdsView() {
 
 			{/* Edit Household Modal */}
 			<Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-				<DialogContent className="sm:max-w-[425px] bg-neutral-950 border-neutral-800/60 shadow-2xl">
+				<DialogContent className="sm:max-w-[425px] bg-background border-border/60 shadow-2xl">
 					<form onSubmit={handleEditSubmit}>
 						<DialogHeader>
-							<DialogTitle className="text-xl text-neutral-100">
+							<DialogTitle className="text-xl text-foreground">
 								Edit Household
 							</DialogTitle>
 						</DialogHeader>
 						<div className="grid gap-4 py-6">
 							<div className="space-y-1.5">
-								<Label className="text-neutral-400 text-xs">Block</Label>
+								<Label className="text-muted-foreground text-xs">Block</Label>
 								<Input
 									value={editBlock}
 									onChange={(e) => setEditBlock(e.target.value)}
-									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200 rounded-xl"
+									className="bg-card border-border h-9 text-foreground rounded-xl"
 									placeholder="e.g. 5"
 								/>
 							</div>
 
 							<div className="space-y-1.5">
-								<Label className="text-neutral-400 text-xs">Lot</Label>
+								<Label className="text-muted-foreground text-xs">Lot</Label>
 								<Input
 									value={editLot}
 									onChange={(e) => setEditLot(e.target.value)}
-									className="bg-neutral-900 border-neutral-800 h-9 text-neutral-200 rounded-xl"
+									className="bg-card border-border h-9 text-foreground rounded-xl"
 									placeholder="e.g. 12"
 								/>
 							</div>
 
 							<div className="grid gap-2">
-								<Label htmlFor="purok" className="text-neutral-300">
+								<Label htmlFor="purok" className="text-foreground/80">
 									Purok
 								</Label>
 								<Select value={editPurok} onValueChange={setEditPurok} required>
-									<SelectTrigger className="bg-neutral-900 border-neutral-800 rounded-xl">
+									<SelectTrigger className="bg-card border-border rounded-xl">
 										<SelectValue placeholder="Select purok" />
 									</SelectTrigger>
-									<SelectContent className="bg-neutral-900 border-neutral-800">
+									<SelectContent className="bg-card border-border">
 										{purokOptions.map((p) => (
 											<SelectItem key={p} value={p}>
 												{p}
@@ -799,14 +799,14 @@ function HouseholdsView() {
 								</Select>
 							</div>
 							<div className="grid gap-2">
-								<Label htmlFor="head" className="text-neutral-300">
+								<Label htmlFor="head" className="text-foreground/80">
 									Head of Household
 								</Label>
 								<Select value={editHeadId} onValueChange={setEditHeadId}>
-									<SelectTrigger className="bg-neutral-900 border-neutral-800 rounded-xl">
+									<SelectTrigger className="bg-card border-border rounded-xl">
 										<SelectValue placeholder="Select head" />
 									</SelectTrigger>
-									<SelectContent className="bg-neutral-900 border-neutral-800">
+									<SelectContent className="bg-card border-border">
 										{detail &&
 											[
 												detail.head,
@@ -828,13 +828,13 @@ function HouseholdsView() {
 							<Button
 								type="button"
 								onClick={() => setIsEditModalOpen(false)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
-								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
+								className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5"
 							>
 								Save Changes
 							</Button>

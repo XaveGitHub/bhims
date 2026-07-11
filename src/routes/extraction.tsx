@@ -162,24 +162,24 @@ function ExtractionView() {
 			{/* Header */}
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between hide-on-print">
 				<div>
-					<h2 className="text-2xl font-bold tracking-tight text-neutral-100">
+					<h2 className="text-2xl font-bold tracking-tight text-foreground">
 						Data Extraction
 					</h2>
-					<p className="text-sm text-neutral-500 mt-0.5">
+					<p className="text-sm text-muted-foreground mt-0.5">
 						Generate targeted lists for distribution, programs, and reporting
 					</p>
 				</div>
 			</div>
 
 			{/* Filter Panel */}
-			<Card className="p-5 bg-neutral-900/40 border-neutral-800/60 hide-on-print shadow-sm">
+			<Card className="p-5 bg-card/40 border-border/60 hide-on-print shadow-sm">
 				<div className="flex flex-wrap items-center gap-4">
 					<div className="space-y-0">
 						<Select value={purok} onValueChange={setPurok}>
-							<SelectTrigger className="bg-neutral-900/50 border-neutral-800 text-neutral-200 h-11 rounded-xl w-[160px]">
+							<SelectTrigger className="bg-card/50 border-border text-foreground h-11 rounded-xl w-[160px]">
 								<SelectValue placeholder="All Puroks" />
 							</SelectTrigger>
-							<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+							<SelectContent className="bg-card border-border text-foreground rounded-xl">
 								<SelectItem value="ALL">All Puroks</SelectItem>
 								{puroks.map(p => (
 									<SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>
@@ -190,10 +190,10 @@ function ExtractionView() {
 
 					<div className="space-y-0">
 						<Select value={ageBracket} onValueChange={setAgeBracket}>
-							<SelectTrigger className="bg-neutral-900/50 border-neutral-800 text-neutral-200 h-11 rounded-xl w-[160px]">
+							<SelectTrigger className="bg-card/50 border-border text-foreground h-11 rounded-xl w-[160px]">
 								<SelectValue placeholder="All Ages" />
 							</SelectTrigger>
-							<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+							<SelectContent className="bg-card border-border text-foreground rounded-xl">
 								<SelectItem value="ALL">All Ages</SelectItem>
 								<SelectItem value="Children (0-5)">Children (0-5)</SelectItem>
 								<SelectItem value="Children (6-12)">Children (6-12)</SelectItem>
@@ -209,10 +209,10 @@ function ExtractionView() {
 
 					<div className="space-y-0">
 						<Select value={gender} onValueChange={setGender}>
-							<SelectTrigger className="bg-neutral-900/50 border-neutral-800 text-neutral-200 h-11 rounded-xl w-[140px]">
+							<SelectTrigger className="bg-card/50 border-border text-foreground h-11 rounded-xl w-[140px]">
 								<SelectValue placeholder="All Genders" />
 							</SelectTrigger>
-							<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+							<SelectContent className="bg-card border-border text-foreground rounded-xl">
 								<SelectItem value="ALL">All Genders</SelectItem>
 								<SelectItem value="Male">Male</SelectItem>
 								<SelectItem value="Female">Female</SelectItem>
@@ -225,8 +225,8 @@ function ExtractionView() {
 							onClick={() => setIsPwd(!isPwd)}
 							className={`h-11 px-4 rounded-xl border text-sm font-medium transition-all ${
 								isPwd 
-								? "bg-blue-500/20 border-blue-500/50 text-blue-400" 
-								: "bg-neutral-950/50 border-neutral-800 text-neutral-400 hover:bg-neutral-900"
+								? "bg-primary/10 border-primary/20 text-primary" 
+								: "bg-background/50 border-border text-muted-foreground hover:bg-card"
 							}`}
 						>
 							PWD
@@ -236,7 +236,7 @@ function ExtractionView() {
 							className={`h-11 px-4 rounded-xl border text-sm font-medium transition-all ${
 								isSoloParent 
 								? "bg-purple-500/20 border-purple-500/50 text-purple-400" 
-								: "bg-neutral-950/50 border-neutral-800 text-neutral-400 hover:bg-neutral-900"
+								: "bg-background/50 border-border text-muted-foreground hover:bg-card"
 							}`}
 						>
 							Solo Parent
@@ -247,11 +247,11 @@ function ExtractionView() {
 						<Button 
 							onClick={handleExtract} 
 							disabled={isLoading} 
-							className="bg-blue-600 hover:bg-blue-500 text-white min-w-[140px] h-11 shadow-md rounded-xl"
+							className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[140px] h-11 shadow-md rounded-xl"
 						>
 							{isLoading ? (
 								<>
-									<div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white mr-2" />
+									<div className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-white mr-2" />
 									Extracting
 								</>
 							) : (
@@ -264,15 +264,15 @@ function ExtractionView() {
 
 			{/* Results Table (Used for Web and Print) */}
 			{results.length > 0 ? (
-				<div className="bg-neutral-900/40 rounded-xl border border-neutral-800 overflow-hidden print-container">
-					<div className="p-5 bg-neutral-900 border-b border-neutral-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print-header-only">
+				<div className="bg-card/40 rounded-xl border border-border overflow-hidden print-container">
+					<div className="p-5 bg-card border-b border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print-header-only">
 						<div>
-							<h3 className="text-lg font-bold text-neutral-100">Extracted Results</h3>
+							<h3 className="text-lg font-bold text-foreground">Extracted Results</h3>
 							<div className="flex items-center gap-3 mt-1.5 text-sm">
-								<Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20 font-medium">
+								<Badge variant="outline" className="text-primary border-primary/20 font-medium">
 									{results.length} Residents Found
 								</Badge>
-								<span className="text-neutral-500 font-medium">{new Date().toLocaleDateString()}</span>
+								<span className="text-muted-foreground font-medium">{new Date().toLocaleDateString()}</span>
 							</div>
 						</div>
 						
@@ -280,7 +280,7 @@ function ExtractionView() {
 							<Button
 								onClick={exportToExcel}
 								variant="outline"
-								className="flex-1 sm:flex-none bg-neutral-950 border-neutral-800 text-blue-400 hover:bg-neutral-800 hover:text-blue-300 h-9 rounded-xl"
+								className="flex-1 sm:flex-none bg-background border-border text-primary hover:bg-muted hover:text-primary h-9 rounded-xl"
 							>
 								<Download className="h-4 w-4 mr-2" />
 								Export
@@ -288,7 +288,7 @@ function ExtractionView() {
 							<Button
 								onClick={printList}
 								variant="outline"
-								className="flex-1 sm:flex-none bg-neutral-950 border-neutral-800 text-neutral-300 hover:bg-neutral-800 hover:text-white h-9 rounded-xl"
+								className="flex-1 sm:flex-none bg-background border-border text-foreground/80 hover:bg-muted hover:text-foreground h-9 rounded-xl"
 							>
 								<Printer className="h-4 w-4 mr-2" />
 								Print
@@ -297,42 +297,42 @@ function ExtractionView() {
 					</div>
 					<div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] custom-scrollbar">
 						<Table>
-							<TableHeader className="sticky top-0 z-10 bg-neutral-900/80 backdrop-blur-md">
-								<TableRow className="border-neutral-800 hover:bg-transparent">
-									<TableHead className="w-16 text-neutral-400 font-medium h-10">No.</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10">Last Name</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10">First Name</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10">Middle Name</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10">Birth Date</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10 w-24 text-center">Age</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10 text-center">Purok</TableHead>
-									<TableHead className="text-neutral-400 font-medium h-10 text-center">Gender</TableHead>
+							<TableHeader className="sticky top-0 z-10 bg-surface backdrop-blur-md">
+								<TableRow className="border-border hover:bg-transparent">
+									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10">Last Name</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10">First Name</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10">Middle Name</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10">Birth Date</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 w-24 text-center">Age</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 text-center">Purok</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 text-center">Gender</TableHead>
 									{(appliedFilters.isPwd || appliedFilters.isSoloParent) && (
-										<TableHead className="px-5 py-3 text-xs font-semibold text-neutral-400 w-32 text-center">Tags</TableHead>
+										<TableHead className="px-5 py-3 text-xs font-semibold text-muted-foreground w-32 text-center">Tags</TableHead>
 									)}
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{paginatedResults.map((r, i) => (
-									<TableRow key={r.id} className="border-neutral-800/50 hover:bg-neutral-800/30 print-row">
-										<TableCell className="text-neutral-500 text-sm py-2">{(page - 1) * rowsPerPage + i + 1}</TableCell>
-										<TableCell className="font-medium text-neutral-200 py-2">
+									<TableRow key={r.id} className="border-border hover:bg-muted/30 print-row">
+										<TableCell className="text-muted-foreground text-sm py-2">{(page - 1) * rowsPerPage + i + 1}</TableCell>
+										<TableCell className="font-medium text-foreground py-2">
 											{r.lastName}
 										</TableCell>
-										<TableCell className="font-medium text-neutral-200 py-2">
+										<TableCell className="font-medium text-foreground py-2">
 											{r.firstName}
 										</TableCell>
-										<TableCell className="font-medium text-neutral-200 py-2">
+										<TableCell className="font-medium text-foreground py-2">
 											{r.middleName || ""}
 										</TableCell>
-										<TableCell className="text-neutral-400 text-sm py-2">{r.birthDate || "N/A"}</TableCell>
-										<TableCell className="text-neutral-400 text-sm py-2 text-center">{r.calculatedAge}</TableCell>
-										<TableCell className="text-neutral-400 text-sm py-2 text-center">{r.purok}</TableCell>
-										<TableCell className="text-neutral-400 text-sm py-2 text-center">{r.gender}</TableCell>
+										<TableCell className="text-muted-foreground text-sm py-2">{r.birthDate || "N/A"}</TableCell>
+										<TableCell className="text-muted-foreground text-sm py-2 text-center">{r.calculatedAge}</TableCell>
+										<TableCell className="text-muted-foreground text-sm py-2 text-center">{r.purok}</TableCell>
+										<TableCell className="text-muted-foreground text-sm py-2 text-center">{r.gender}</TableCell>
 										{(appliedFilters.isPwd || appliedFilters.isSoloParent) && (
 											<TableCell className="py-2 text-center">
 												<div className="flex gap-1 flex-wrap justify-center">
-													{r.isPwd && <Badge variant="outline" className="text-xs py-0 h-5 border-blue-500/30 text-blue-400 bg-blue-500/10">PWD</Badge>}
+													{r.isPwd && <Badge variant="outline" className="text-xs py-0 h-5 border-primary/20 text-primary">PWD</Badge>}
 													{r.isSingleParent && <Badge variant="outline" className="text-xs py-0 h-5 border-purple-500/30 text-purple-400 bg-purple-500/10">Solo Parent</Badge>}
 												</div>
 											</TableCell>
@@ -345,9 +345,9 @@ function ExtractionView() {
 					
 					{/* Pagination Controls */}
 					{results.length > 0 && (
-						<div className="p-4 border-t border-neutral-800 bg-neutral-900/50 flex flex-col sm:flex-row justify-between items-center gap-4 hide-on-print">
+						<div className="p-4 border-t border-border bg-card/50 flex flex-col sm:flex-row justify-between items-center gap-4 hide-on-print">
 							<div className="flex items-center gap-2">
-								<span className="text-sm text-neutral-400">Rows per page:</span>
+								<span className="text-sm text-muted-foreground">Rows per page:</span>
 								<Select 
 									value={rowsPerPage.toString()} 
 									onValueChange={(v) => {
@@ -355,10 +355,10 @@ function ExtractionView() {
 										setPage(1);
 									}}
 								>
-									<SelectTrigger className="w-24 h-8 bg-neutral-900 border-neutral-800 text-neutral-300 rounded-xl">
+									<SelectTrigger className="w-24 h-8 bg-card border-border text-foreground/80 rounded-xl">
 										<SelectValue />
 									</SelectTrigger>
-									<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200 rounded-xl">
+									<SelectContent className="bg-card border-border text-foreground rounded-xl">
 										<SelectItem value="50">50</SelectItem>
 										<SelectItem value="100">100</SelectItem>
 										<SelectItem value="500">500</SelectItem>
@@ -368,7 +368,7 @@ function ExtractionView() {
 							
 							{totalPages > 1 && (
 								<div className="flex items-center gap-4">
-									<div className="text-sm text-neutral-400">
+									<div className="text-sm text-muted-foreground">
 										Page {page} of {totalPages}
 									</div>
 									<div className="flex gap-2">
@@ -377,7 +377,7 @@ function ExtractionView() {
 											size="sm" 
 											onClick={() => setPage(p => Math.max(1, p - 1))}
 											disabled={page === 1}
-											className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800"
+											className="bg-background border-border text-foreground/80 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-muted"
 										>
 											Previous
 										</Button>
@@ -386,7 +386,7 @@ function ExtractionView() {
 											size="sm" 
 											onClick={() => setPage(p => Math.min(totalPages, p + 1))}
 											disabled={page === totalPages}
-											className="bg-neutral-950 border-neutral-800 text-neutral-300 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-neutral-800"
+											className="bg-background border-border text-foreground/80 h-8 rounded-xl disabled:opacity-50 disabled:pointer-events-none hover:bg-muted"
 										>
 											Next
 										</Button>
@@ -397,10 +397,10 @@ function ExtractionView() {
 					)}
 				</div>
 			) : (
-				<div className="py-20 text-center hide-on-print border border-dashed border-neutral-800 rounded-xl bg-neutral-900/20">
-					<UserCheck className="w-12 h-12 text-neutral-700 mx-auto mb-3" />
-					<h3 className="text-lg font-medium text-neutral-300">No data extracted yet</h3>
-					<p className="text-sm text-neutral-500 mt-1 max-w-sm mx-auto">
+				<div className="py-20 text-center hide-on-print border border-dashed border-border rounded-xl bg-card/20">
+					<UserCheck className="w-12 h-12 text-foreground mx-auto mb-3" />
+					<h3 className="text-lg font-medium text-foreground/80">No data extracted yet</h3>
+					<p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
 						Select your filters above and click "Extract Data" to generate a printable, exportable list of residents.
 					</p>
 				</div>

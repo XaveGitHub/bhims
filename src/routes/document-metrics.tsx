@@ -143,16 +143,16 @@ function DocumentMetricsView() {
 			{/* Header */}
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 				<div>
-					<h2 className="text-2xl font-bold tracking-tight text-neutral-100">
+					<h2 className="text-2xl font-bold tracking-tight text-foreground">
 						Document Metrics
 					</h2>
-					<p className="text-sm text-neutral-500 mt-0.5">
+					<p className="text-sm text-muted-foreground mt-0.5">
 						Analytics and insights for all document transactions
 					</p>
 				</div>
 				
 				{/* Timeframe Toggles */}
-				<div className="flex bg-neutral-900 border border-neutral-800 rounded-xl p-1 shrink-0">
+				<div className="flex bg-card border border-border rounded-xl p-1 shrink-0">
 					{(["Daily", "Weekly", "Monthly", "Total"] as const).map((t) => (
 						<button
 							key={t}
@@ -160,8 +160,8 @@ function DocumentMetricsView() {
 							onClick={() => setTimeframe(t)}
 							className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
 								timeframe === t 
-									? "bg-neutral-800 text-white shadow-sm" 
-									: "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/50"
+									? "bg-muted text-foreground shadow-sm" 
+									: "text-muted-foreground hover:text-foreground hover:bg-muted/50"
 							}`}
 						>
 							{t}
@@ -173,21 +173,21 @@ function DocumentMetricsView() {
 			{/* Top Cards */}
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 				{/* Prints Card */}
-				<Card className="relative h-full overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300">
-					<div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-neutral-300 mb-1.5 truncate">
+								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
 									{timeframe} Prints
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-neutral-100">
+									<span className="text-3xl font-black tracking-tighter text-foreground">
 										{metrics.timeframePrints.toLocaleString()}
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-blue-400 bg-blue-950/40 border-blue-800/40 shrink-0">
+							<div className="p-2.5 rounded-xl border text-primary dark:text-primary bg-accent dark:bg-primary/10 border-primary/20 dark:border-primary/20 shrink-0">
 								<FileText className="h-5 w-5" />
 							</div>
 						</div>
@@ -195,21 +195,21 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Revenue Card */}
-				<Card className="relative h-full overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300">
-					<div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-neutral-300 mb-1.5 truncate">
+								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
 									{timeframe} Revenue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-neutral-100">
+									<span className="text-3xl font-black tracking-tighter text-foreground">
 										₱{metrics.timeframeRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-cyan-400 bg-cyan-950/40 border-cyan-800/40 shrink-0">
+							<div className="p-2.5 rounded-xl border text-cyan-700 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-950/40 border-cyan-200 dark:border-cyan-800/30 shrink-0">
 								<DollarSign className="h-5 w-5" />
 							</div>
 						</div>
@@ -217,21 +217,21 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Pending Card */}
-				<Card className="relative h-full overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300">
-					<div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-neutral-300 mb-1.5 truncate">
+								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
 									Pending in Queue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-neutral-100">
+									<span className="text-3xl font-black tracking-tighter text-foreground">
 										{metrics.pendingQueue.toLocaleString()}
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-amber-400 bg-amber-950/40 border-amber-800/40 shrink-0">
+							<div className="p-2.5 rounded-xl border text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/30 shrink-0">
 								<Clock className="h-5 w-5" />
 							</div>
 						</div>
@@ -239,21 +239,21 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Total Revenue Card */}
-				<Card className="relative h-full overflow-hidden border-white/5 border-t-white/10 bg-neutral-950/40 backdrop-blur-xl shadow-lg group hover:border-white/10 transition-all duration-300">
-					<div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+				<Card className="relative h-full overflow-hidden border-border border-border bg-background/60 backdrop-blur-xl shadow-lg group hover:border-border transition-all duration-300">
+					<div className="absolute inset-0 bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-neutral-300 mb-1.5 truncate">
+								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
 									Total Lifetime Revenue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-black tracking-tighter text-neutral-100">
+									<span className="text-3xl font-black tracking-tighter text-foreground">
 										₱{metrics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-blue-400 bg-blue-950/40 border-blue-800/40 shrink-0">
+							<div className="p-2.5 rounded-xl border text-primary dark:text-primary bg-accent dark:bg-primary/10 border-primary/20 dark:border-primary/20 shrink-0">
 								<TrendingUp className="h-5 w-5" />
 							</div>
 						</div>
@@ -264,9 +264,9 @@ function DocumentMetricsView() {
 			{/* Charts Section */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				{/* Print Volume Trend */}
-				<Card className="border-white/5 border-t-white/8 bg-neutral-950/40 backdrop-blur-xl shadow-lg py-0 gap-0 flex flex-col">
+				<Card className="border-border border-border bg-background/60 backdrop-blur-xl shadow-lg py-0 gap-0 flex flex-col">
 					<CardHeader className="px-5 pt-5 pb-3">
-						<CardTitle className="text-base font-bold text-neutral-100">
+						<CardTitle className="text-base font-bold text-foreground">
 							Print Volume Trend
 						</CardTitle>
 					</CardHeader>
@@ -285,7 +285,7 @@ function DocumentMetricsView() {
 									<YAxis hide />
 									<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
 									<Bar dataKey="prints" fill="#10b981" radius={4} barSize={30}>
-										<LabelList position="top" offset={10} className="fill-neutral-400 text-xs font-semibold" />
+										<LabelList position="top" offset={10} className="fill-muted-foreground text-xs font-semibold" />
 									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
@@ -294,9 +294,9 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Sales Trend */}
-				<Card className="border-white/5 border-t-white/8 bg-neutral-950/40 backdrop-blur-xl shadow-lg py-0 gap-0 flex flex-col">
+				<Card className="border-border border-border bg-background/60 backdrop-blur-xl shadow-lg py-0 gap-0 flex flex-col">
 					<CardHeader className="px-5 pt-5 pb-3">
-						<CardTitle className="text-base font-bold text-neutral-100">
+						<CardTitle className="text-base font-bold text-foreground">
 							Sales / Revenue Trend
 						</CardTitle>
 					</CardHeader>
@@ -335,9 +335,9 @@ function DocumentMetricsView() {
 				</Card>
 
 				{/* Most Requested Templates */}
-				<Card className="border-white/5 border-t-white/8 bg-neutral-950/40 backdrop-blur-xl shadow-lg py-0 gap-0 lg:col-span-2">
+				<Card className="border-border border-border bg-background/60 backdrop-blur-xl shadow-lg py-0 gap-0 lg:col-span-2">
 					<CardHeader className="px-5 pt-5 pb-3">
-						<CardTitle className="text-base font-bold text-neutral-100">
+						<CardTitle className="text-base font-bold text-foreground">
 							Most Requested Documents
 						</CardTitle>
 					</CardHeader>

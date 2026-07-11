@@ -65,20 +65,20 @@ export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props)
 	};
 
 	return (
-		<div className="flex flex-col h-full bg-neutral-950 overflow-hidden rounded-xl">
-			<div className="flex items-center justify-between p-4 pr-14 border-b border-neutral-800 bg-neutral-900/50">
+		<div className="flex flex-col h-full bg-background overflow-hidden rounded-xl">
+			<div className="flex items-center justify-between p-4 pr-14 border-b border-border bg-card/50">
 				<div>
-					<h3 className="font-bold text-white">Drag & Drop Editor</h3>
-					<p className="text-xs text-neutral-400">Position the fields exactly where they should print on the certificate.</p>
+					<h3 className="font-bold text-foreground">Drag & Drop Editor</h3>
+					<p className="text-xs text-muted-foreground">Position the fields exactly where they should print on the certificate.</p>
 				</div>
 				<div className="flex gap-2">
 					<Popover>
 						<PopoverTrigger asChild>
-							<Button variant="outline" size="sm" className="bg-neutral-900 border-neutral-700">
+							<Button variant="outline" size="sm" className="bg-card border-border">
 								<Plus className="w-4 h-4 mr-2" /> Add Field
 							</Button>
 						</PopoverTrigger>
-						<PopoverContent align="end" className="w-48 p-2 bg-neutral-900 border-neutral-800">
+						<PopoverContent align="end" className="w-48 p-2 bg-card border-border">
 							<div className="space-y-1">
 								{DEFAULT_FIELDS.map(f => {
 									const isAdded = fields.some(field => field.id === f.id);
@@ -91,7 +91,7 @@ export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props)
 											disabled={isAdded}
 											onClick={() => addField(f.id, f.label)}
 										>
-											{isAdded ? <Check className="w-3 h-3 mr-2 text-blue-500" /> : <Plus className="w-3 h-3 mr-2" />}
+											{isAdded ? <Check className="w-3 h-3 mr-2 text-primary" /> : <Plus className="w-3 h-3 mr-2" />}
 											{f.label}
 										</Button>
 									);
@@ -99,17 +99,17 @@ export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props)
 							</div>
 						</PopoverContent>
 					</Popover>
-					<Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white" onClick={() => onSave(fields)}>
+					<Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => onSave(fields)}>
 						<Check className="w-4 h-4 mr-2" /> Done
 					</Button>
 				</div>
 			</div>
 
 			<div className="flex-1 flex overflow-hidden">
-				<div ref={containerRef} className="flex-1 overflow-auto bg-neutral-900/30 p-8 flex justify-center items-start">
+				<div ref={containerRef} className="flex-1 overflow-auto bg-card/30 p-8 flex justify-center items-start">
 					<div style={{ width: 794 * scale, height: 1123 * scale }} className="shrink-0 relative">
 						<div 
-							className="w-[794px] h-[1123px] bg-white text-black shadow-2xl relative border border-neutral-800"
+							className="w-[794px] h-[1123px] bg-white text-black shadow-2xl relative border border-border"
 							style={{
 								transform: `scale(${scale})`,
 								transformOrigin: 'top left',
@@ -206,7 +206,7 @@ function DraggableField({ field, scale, updateField, removeField }: {
 
 				<div 
 					ref={toolbarRef}
-					className={`absolute -top-10 left-0 transition-opacity bg-neutral-900 rounded-md p-1 flex gap-1 shadow-xl z-20 border border-neutral-700 ${showSettings ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+					className={`absolute -top-10 left-0 transition-opacity bg-card rounded-md p-1 flex gap-1 shadow-xl z-20 border border-border ${showSettings ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
 					style={{ 
 						transform: `scale(${1 / scale})`,
 						transformOrigin: 'bottom left' 
@@ -219,7 +219,7 @@ function DraggableField({ field, scale, updateField, removeField }: {
 						}} 
 						onPointerDown={(e) => e.stopPropagation()}
 						onMouseDown={(e) => e.stopPropagation()}
-						className={`p-1 rounded text-neutral-300 ${showSettings ? 'bg-blue-600/20 text-blue-400' : 'hover:bg-neutral-800'}`}
+						className={`p-1 rounded text-foreground/80 ${showSettings ? 'bg-primary/20 text-primary' : 'hover:bg-muted'}`}
 					>
 						<Settings2 className="w-4 h-4" />
 					</button>
@@ -229,7 +229,7 @@ function DraggableField({ field, scale, updateField, removeField }: {
 				{showSettings && (
 					<div 
 						ref={menuRef}
-						className="absolute top-full mt-2 left-0 w-64 p-4 bg-neutral-900 border border-neutral-800 rounded-md shadow-2xl flex flex-col gap-4 text-white z-50 cursor-default"
+						className="absolute top-full mt-2 left-0 w-64 p-4 bg-card border border-border rounded-md shadow-2xl flex flex-col gap-4 text-foreground z-50 cursor-default"
 						style={{ 
 							transform: `scale(${1 / scale})`,
 							transformOrigin: 'top left' 
@@ -237,8 +237,8 @@ function DraggableField({ field, scale, updateField, removeField }: {
 						onPointerDown={(e) => e.stopPropagation()}
 						onMouseDown={(e) => e.stopPropagation()}
 					>
-						<div className="border-b border-neutral-800 pb-2 mb-2">
-							<p className="font-bold text-sm text-blue-400">{field.label}</p>
+						<div className="border-b border-border pb-2 mb-2">
+							<p className="font-bold text-sm text-primary">{field.label}</p>
 						</div>
 						<div className="space-y-2">
 							<Label className="text-xs">Font Size ({field.fontSize}px)</Label>
@@ -254,7 +254,7 @@ function DraggableField({ field, scale, updateField, removeField }: {
 							<div className="space-y-2">
 								<Label className="text-xs">Weight</Label>
 								<select 
-									className="w-full bg-neutral-950 border border-neutral-800 rounded px-2 py-1 text-sm"
+									className="w-full bg-background border border-border rounded px-2 py-1 text-sm"
 									value={field.fontWeight}
 									onChange={e => updateField(field.id, { fontWeight: e.target.value as any })}
 								>
@@ -266,7 +266,7 @@ function DraggableField({ field, scale, updateField, removeField }: {
 							<div className="space-y-2">
 								<Label className="text-xs">Family</Label>
 								<select 
-									className="w-full bg-neutral-950 border border-neutral-800 rounded px-2 py-1 text-sm"
+									className="w-full bg-background border border-border rounded px-2 py-1 text-sm"
 									value={field.fontFamily}
 									onChange={e => updateField(field.id, { fontFamily: e.target.value as any })}
 								>

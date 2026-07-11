@@ -100,9 +100,9 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="max-w-md bg-neutral-950 border-neutral-800">
+			<DialogContent className="max-w-md bg-background border-border">
 				<DialogHeader>
-					<DialogTitle className="text-xl font-bold tracking-tight text-white">
+					<DialogTitle className="text-xl font-bold tracking-tight text-foreground">
 						Manage Puroks
 					</DialogTitle>
 				</DialogHeader>
@@ -113,30 +113,30 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 							value={newPurokName}
 							onChange={(e) => setNewPurokName(e.target.value)}
 							placeholder="Add new Purok..."
-							className="bg-neutral-900 border-neutral-800 text-neutral-200 focus-visible:ring-blue-500 rounded-xl"
+							className="bg-card border-border text-foreground focus-visible:ring-primary/50 rounded-xl"
 							disabled={isAdding}
 						/>
-						<Button type="submit" disabled={isAdding || !newPurokName.trim()} className="bg-blue-600 hover:bg-blue-500 text-white shrink-0 rounded-xl">
+						<Button type="submit" disabled={isAdding || !newPurokName.trim()} className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0 rounded-xl">
 							{isAdding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
 							Add
 						</Button>
 					</form>
 
-					<div className="border border-neutral-800 rounded-xl overflow-hidden bg-neutral-900/50 max-h-[400px] overflow-y-auto">
+					<div className="border border-border rounded-xl overflow-hidden bg-card/50 max-h-[400px] overflow-y-auto">
 						{isLoading ? (
 							<div className="p-8 flex justify-center">
-								<Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+								<Loader2 className="w-6 h-6 animate-spin text-primary" />
 							</div>
 						) : puroks.length === 0 ? (
-							<div className="p-8 text-center text-neutral-500 text-sm">
+							<div className="p-8 text-center text-muted-foreground text-sm">
 								No puroks found. Add one above.
 							</div>
 						) : (
 							<div className="divide-y divide-neutral-800">
 								{puroks.map((purok) => (
-									<div key={purok.id} className="flex items-center justify-between p-3 hover:bg-neutral-800/50 transition-colors group">
+									<div key={purok.id} className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors group">
 										<div className="flex items-center gap-3 flex-1 min-w-0">
-											<GripVertical className="w-4 h-4 text-neutral-600 cursor-grab opacity-50 hover:opacity-100" />
+											<GripVertical className="w-4 h-4 text-muted-foreground cursor-grab opacity-50 hover:opacity-100" />
 											{editingId === purok.id ? (
 												<Input
 													value={editingName}
@@ -145,29 +145,29 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 														if (e.key === 'Enter') handleSaveEdit(purok);
 														if (e.key === 'Escape') setEditingId(null);
 													}}
-													className="h-8 bg-neutral-950 border-blue-500 text-neutral-200"
+													className="h-8 bg-background border-primary/20 text-foreground"
 													autoFocus
 												/>
 											) : (
-												<span className="font-medium text-neutral-200 truncate">{purok.name}</span>
+												<span className="font-medium text-foreground truncate">{purok.name}</span>
 											)}
 										</div>
 										<div className="flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
 											{editingId === purok.id ? (
 												<>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-blue-400 hover:bg-blue-500/10" onClick={() => handleSaveEdit(purok)}>
+													<Button variant="ghost" size="icon" className="w-8 h-8 text-primary hover:bg-primary" onClick={() => handleSaveEdit(purok)}>
 														<Check className="w-4 h-4" />
 													</Button>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-neutral-400 hover:bg-neutral-800" onClick={() => setEditingId(null)}>
+													<Button variant="ghost" size="icon" className="w-8 h-8 text-muted-foreground hover:bg-muted" onClick={() => setEditingId(null)}>
 														<X className="w-4 h-4" />
 													</Button>
 												</>
 											) : (
 												<>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10" onClick={() => { setEditingId(purok.id); setEditingName(purok.name); }}>
+													<Button variant="ghost" size="icon" className="w-8 h-8 text-muted-foreground hover:text-primary hover:bg-primary" onClick={() => { setEditingId(purok.id); setEditingName(purok.name); }}>
 														<Pencil className="w-4 h-4" />
 													</Button>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-neutral-400 hover:text-red-400 hover:bg-red-500/10" onClick={() => handleDelete(purok.id)}>
+													<Button variant="ghost" size="icon" className="w-8 h-8 text-muted-foreground hover:text-red-400 hover:bg-red-500/10" onClick={() => handleDelete(purok.id)}>
 														<Trash2 className="w-4 h-4" />
 													</Button>
 												</>
@@ -178,7 +178,7 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 							</div>
 						)}
 					</div>
-					<p className="text-xs text-neutral-500 text-center">
+					<p className="text-xs text-muted-foreground text-center">
 						Renaming a Purok will automatically update all residents currently linked to it.
 					</p>
 				</div>

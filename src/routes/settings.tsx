@@ -225,7 +225,7 @@ function SettingsView() {
 	if (loading) {
 		return (
 			<div className="flex h-[60vh] items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
 			</div>
 		);
 	}
@@ -234,26 +234,26 @@ function SettingsView() {
 		<div className="space-y-8 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			{/* Header */}
 			<div>
-				<h2 className="text-2xl font-extrabold tracking-tight text-neutral-100">
+				<h2 className="text-2xl font-extrabold tracking-tight text-foreground">
 					System Settings
 				</h2>
-				<p className="text-sm text-neutral-400 mt-1">
+				<p className="text-sm text-muted-foreground mt-1">
 					Manage system configurations, user passwords, and database backups.
 				</p>
 			</div>
 
 			{/* Settings Form */}
-			<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-6 space-y-6">
+			<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-6 space-y-6">
 				<form onSubmit={handleSaveSettings} className="space-y-6">
-					<h3 className="text-lg font-bold text-neutral-100 flex items-center gap-2">
-						<Settings className="h-4.5 w-4.5 text-blue-500" />
+					<h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+						<Settings className="h-4.5 w-4.5 text-primary" />
 						<span>Barangay Customization</span>
 					</h3>
 
 					<div className="space-y-4">
 						{/* Barangay Name */}
 						<div className="space-y-2">
-							<Label htmlFor="barangay-name" className="text-neutral-200">
+							<Label htmlFor="barangay-name" className="text-foreground">
 								Barangay Name
 							</Label>
 							<Input
@@ -261,7 +261,7 @@ function SettingsView() {
 								value={brgyName}
 								onChange={(e) => setBrgyName(e.target.value)}
 								placeholder="e.g. Barangay Handumanan"
-								className="bg-neutral-950 border-neutral-800 text-white placeholder:text-neutral-500 focus:border-blue-500 rounded-xl"
+								className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary/20 rounded-xl"
 							/>
 						</div>
 					</div>
@@ -269,7 +269,7 @@ function SettingsView() {
 					<Button
 						type="submit"
 						disabled={saving}
-						className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all shadow-md shadow-blue-950/20"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all shadow-md shadow-primary/20"
 					>
 						{saving ? "Saving..." : "Save Settings"}
 					</Button>
@@ -277,13 +277,13 @@ function SettingsView() {
 			</Card>
 
 			{/* Database Backup & Restore */}
-			<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-6 space-y-6">
+			<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-6 space-y-6">
 				<div>
-					<h3 className="text-lg font-bold text-neutral-100 flex items-center gap-2">
-						<Download className="h-4.5 w-4.5 text-blue-500" />
+					<h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+						<Download className="h-4.5 w-4.5 text-primary" />
 						<span>Database Backup & Restore</span>
 					</h3>
-					<p className="text-xs text-neutral-400 mt-1">
+					<p className="text-xs text-muted-foreground mt-1">
 						Safeguard your data. Download database snapshots or restore records
 						from a backup file.
 					</p>
@@ -291,12 +291,12 @@ function SettingsView() {
 
 				<div className="grid gap-4 sm:grid-cols-2">
 					{/* Backup */}
-					<div className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-950/20 flex flex-col justify-between space-y-4">
+					<div className="p-4 rounded-xl border border-border/80 bg-background/20 flex flex-col justify-between space-y-4">
 						<div className="space-y-1">
-							<h4 className="font-bold text-sm text-neutral-200">
+							<h4 className="font-bold text-sm text-foreground">
 								Download Backup
 							</h4>
-							<p className="text-[10px] text-neutral-500 leading-normal">
+							<p className="text-[10px] text-muted-foreground leading-normal">
 								Generates a secure snapshot containing all residents,
 								households, and setup settings.
 							</p>
@@ -305,7 +305,7 @@ function SettingsView() {
 							type="button"
 							onClick={handleBackup}
 							disabled={backingUp}
-							className="bg-neutral-800 hover:bg-neutral-700 text-blue-400 border border-blue-900/30 rounded-xl px-5 text-xs font-semibold w-full sm:w-auto flex items-center justify-center gap-2"
+							className="bg-accent hover:bg-accent text-primary border border-primary/20 dark:bg-muted dark:hover:bg-muted dark:text-primary dark:border-primary/20 rounded-xl px-5 text-xs font-semibold w-full sm:w-auto flex items-center justify-center gap-2"
 						>
 							{backingUp ? (
 								<RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -317,12 +317,12 @@ function SettingsView() {
 					</div>
 
 					{/* Restore */}
-					<div className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-950/20 flex flex-col justify-between space-y-4">
+					<div className="p-4 rounded-xl border border-border/80 bg-background/20 flex flex-col justify-between space-y-4">
 						<div className="space-y-1">
-							<h4 className="font-bold text-sm text-neutral-200">
+							<h4 className="font-bold text-sm text-foreground">
 								Restore Backup
 							</h4>
-							<p className="text-[10px] text-neutral-500 leading-normal">
+							<p className="text-[10px] text-muted-foreground leading-normal">
 								Upload a previously saved `.db` file to overwrite the current
 								records in the database.
 							</p>
@@ -340,7 +340,7 @@ function SettingsView() {
 							type="button"
 							onClick={handleRestoreClick}
 							disabled={restoring}
-							className="bg-red-950/20 hover:bg-red-900/30 text-red-400 border border-red-900/30 rounded-xl py-2 px-4 text-xs font-semibold flex items-center justify-center gap-2"
+							className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 dark:bg-red-950/20 dark:hover:bg-red-900/30 dark:text-red-400 dark:border-red-500/20 rounded-xl py-2 px-4 text-xs font-semibold flex items-center justify-center gap-2"
 						>
 							{restoring ? (
 								<RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -353,7 +353,7 @@ function SettingsView() {
 				</div>
 
 				{/* Warnings */}
-				<div className="p-4 bg-amber-950/30 border border-amber-900/40 rounded-xl text-xs text-amber-500 flex items-start gap-3 leading-relaxed">
+				<div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 dark:bg-amber-950/30 dark:border-amber-900/40 dark:text-amber-500 flex items-start gap-3 leading-relaxed">
 					<AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
 					<div className="space-y-1">
 						<span className="font-bold">Important Notice:</span>
@@ -367,29 +367,29 @@ function SettingsView() {
 			</Card>
 
 			{/* Danger Zone */}
-			<Card className="rounded-2xl border-red-900/40 bg-red-950/10 backdrop-blur-xl shadow-lg p-6 space-y-5">
+			<Card className="rounded-2xl border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/10 backdrop-blur-xl shadow-lg p-6 space-y-5">
 				<div>
-					<h3 className="text-lg font-bold text-red-400 flex items-center gap-2">
+					<h3 className="text-lg font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
 						<ShieldAlert className="h-4.5 w-4.5" />
 						<span>Danger Zone</span>
 					</h3>
-					<p className="text-xs text-neutral-400 mt-1">
+					<p className="text-xs text-muted-foreground mt-1">
 						Destructive actions that cannot be undone. Proceed with extreme caution.
 					</p>
 				</div>
 
-				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-red-900/30 bg-neutral-950/30">
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-red-500/20 bg-background/30">
 					<div className="space-y-1">
-						<h4 className="font-bold text-sm text-neutral-200">Delete All Records</h4>
-						<p className="text-[10px] text-neutral-500 leading-normal max-w-sm">
-							Permanently removes <strong className="text-neutral-400">all residents and household records</strong> from the database.
+						<h4 className="font-bold text-sm text-foreground">Delete All Records</h4>
+						<p className="text-[10px] text-muted-foreground leading-normal max-w-sm">
+							Permanently removes <strong className="text-muted-foreground">all residents and household records</strong> from the database.
 							System settings (barangay name, PIN) are preserved. This action is irreversible.
 						</p>
 					</div>
 					<Button
 						type="button"
 						onClick={() => { setDeleteConfirmText(""); setIsDeleteAllOpen(true); }}
-						className="shrink-0 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-800/50 hover:border-red-700 rounded-xl px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all"
+						className="shrink-0 bg-red-100 hover:bg-red-200 text-red-600 border border-red-200 hover:border-red-300 dark:bg-red-600/20 dark:hover:bg-red-600/30 dark:text-red-400 dark:border-red-800/50 dark:hover:border-red-700 rounded-xl px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all"
 					>
 						<Trash2 className="h-3.5 w-3.5" />
 						Delete All Data
@@ -407,7 +407,7 @@ function SettingsView() {
 					}
 				}}
 			>
-				<DialogContent className="max-w-md bg-neutral-950 border-red-900/50 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-red-500/30 shadow-2xl text-foreground p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-red-400 flex items-center gap-2">
 							<Trash2 className="h-5 w-5" />
@@ -415,7 +415,7 @@ function SettingsView() {
 						</DialogTitle>
 					</DialogHeader>
 					<div className="mt-4 space-y-4">
-						<div className="p-3 rounded-xl bg-red-950/40 border border-red-900/50">
+						<div className="p-3 rounded-xl bg-red-950/40 border border-red-500/30">
 							<p className="text-sm text-red-300 leading-relaxed">
 								⚠️ This will <strong>permanently delete every resident and household record</strong> in the system.
 								This cannot be undone. Make sure you have a backup before proceeding.
@@ -423,7 +423,7 @@ function SettingsView() {
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="delete-confirm" className="text-sm text-neutral-300">
+							<Label htmlFor="delete-confirm" className="text-sm text-foreground/80">
 								Type <strong className="text-red-400 font-mono">DELETE ALL</strong> to confirm:
 							</Label>
 							<Input
@@ -431,18 +431,18 @@ function SettingsView() {
 								value={deleteConfirmText}
 								onChange={(e) => setDeleteConfirmText(e.target.value)}
 								placeholder="DELETE ALL"
-								className="bg-neutral-950 border-red-900/50 text-white placeholder:text-neutral-600 focus:border-red-500 rounded-xl font-mono tracking-widest"
+								className="bg-background border-red-500/30 text-foreground placeholder:text-muted-foreground focus:border-red-500 rounded-xl font-mono tracking-widest"
 								disabled={deleting}
 								autoComplete="off"
 							/>
 						</div>
 
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 pt-4 border-t border-border">
 							<Button
 								type="button"
 								onClick={() => { setIsDeleteAllOpen(false); setDeleteConfirmText(""); }}
 								disabled={deleting}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
@@ -450,7 +450,7 @@ function SettingsView() {
 								type="button"
 								onClick={handleDeleteAll}
 								disabled={deleteConfirmText !== "DELETE ALL" || deleting}
-								className="bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl px-5 flex items-center gap-2 transition-all"
+								className="bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-foreground rounded-xl px-5 flex items-center gap-2 transition-all"
 							>
 								{deleting ? (
 									<><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Deleting...</>
@@ -468,30 +468,30 @@ function SettingsView() {
 				open={isRestoreConfirmOpen}
 				onOpenChange={setIsRestoreConfirmOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-border/60 shadow-2xl text-foreground p-6 sm:rounded-2xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100 flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
 							<AlertTriangle className="h-5 w-5 text-amber-500" />
 							<span>Confirm Database Overwrite</span>
 						</DialogTitle>
 					</DialogHeader>
 					<div className="mt-4 space-y-4">
-						<p className="text-sm text-neutral-300">
+						<p className="text-sm text-foreground/80">
 							WARNING: Restoring a backup will completely overwrite your current
 							database records. This action cannot be undone. Do you wish to
 							proceed?
 						</p>
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-800">
+						<div className="flex items-center justify-end gap-2 pt-4 border-t border-border">
 							<Button
 								type="button"
 								onClick={() => setIsRestoreConfirmOpen(false)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-5"
 							>
 								Cancel
 							</Button>
 							<Button
 								onClick={confirmRestore}
-								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
+								className="bg-red-600 hover:bg-red-500 text-foreground rounded-xl px-5"
 							>
 								Overwrite & Restore
 							</Button>

@@ -189,7 +189,7 @@ function AccountsView() {
 	if (loading) {
 		return (
 			<div className="flex h-[60vh] items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary/20 border-t-transparent" />
 			</div>
 		);
 	}
@@ -199,42 +199,42 @@ function AccountsView() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h2 className="text-2xl font-extrabold tracking-tight text-neutral-100">
+					<h2 className="text-2xl font-extrabold tracking-tight text-foreground">
 						User Management
 					</h2>
-					<p className="text-sm text-neutral-400 mt-1">
+					<p className="text-sm text-muted-foreground mt-1">
 						Manage passwords and account details for the Admin and Staff accounts.
 					</p>
 				</div>
 				<Button
 					onClick={handleCreateAccountClick}
-					className="bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl px-4 py-2"
+					className="bg-primary hover: font-bold rounded-xl px-4 py-2"
 				>
 					Add Account
 				</Button>
 			</div>
 
-			<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-0 space-y-0 overflow-hidden">
+			<Card className="rounded-2xl border-border bg-card backdrop-blur-xl shadow-lg p-0 space-y-0 overflow-hidden">
 				<Table>
-					<TableHeader className="bg-neutral-950/50">
-						<TableRow className="border-neutral-800/60 hover:bg-transparent">
-							<TableHead className="text-neutral-400 font-bold h-14 px-6">Name</TableHead>
-							<TableHead className="text-neutral-400 font-bold h-14 px-6">Username</TableHead>
-							<TableHead className="text-neutral-400 font-bold h-14 px-6">Role</TableHead>
-							<TableHead className="text-neutral-400 font-bold h-14 px-6 text-right">Actions</TableHead>
+					<TableHeader className="bg-muted/50">
+						<TableRow className="border-border hover:bg-transparent">
+							<TableHead className="text-muted-foreground font-bold h-14 px-6">Name</TableHead>
+							<TableHead className="text-muted-foreground font-bold h-14 px-6">Username</TableHead>
+							<TableHead className="text-muted-foreground font-bold h-14 px-6">Role</TableHead>
+							<TableHead className="text-muted-foreground font-bold h-14 px-6 text-right">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{usersList.map((user) => (
-							<TableRow key={user.id} className="border-neutral-800/40 hover:bg-neutral-900/40 transition-colors">
-								<TableCell className="font-bold text-neutral-200 px-6 py-4">
+							<TableRow key={user.id} className="border-border/40 hover:bg-background/40 transition-colors">
+								<TableCell className="font-bold text-foreground px-6 py-4">
 									{user.name}
 								</TableCell>
-								<TableCell className="text-neutral-400 px-6 py-4">
+								<TableCell className="text-muted-foreground px-6 py-4">
 									@{user.username}
 								</TableCell>
 								<TableCell className="px-6 py-4">
-									<span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${user.role === 'admin' ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30' : 'bg-blue-950/40 text-blue-400 border border-blue-900/30'}`}>
+									<span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize border ${user.role === 'admin' ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/30' : 'bg-primary/10 text-primary border-primary/20'}`}>
 										{user.role}
 									</span>
 								</TableCell>
@@ -244,7 +244,7 @@ function AccountsView() {
 											type="button"
 											variant="outline"
 											onClick={() => handleEditAccountClick(user)}
-											className="bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border-neutral-800 rounded-xl px-4 text-xs font-semibold"
+											className="bg-background hover:bg-muted text-muted-foreground border-border rounded-xl px-4 text-xs font-semibold"
 										>
 											Edit
 										</Button>
@@ -253,7 +253,7 @@ function AccountsView() {
 											variant="ghost"
 											size="icon"
 											onClick={() => handleDeleteClick(user.id)}
-											className="h-8 w-8 text-red-400/80 hover:text-red-400 hover:bg-red-950/40 rounded-xl gap-1.5"
+											className="h-8 w-8 text-destructive/80 hover:text-destructive hover:bg-destructive/10 rounded-xl gap-1.5"
 											title="Delete Account"
 										>
 											<Trash2 className="h-4 w-4" />
@@ -271,9 +271,9 @@ function AccountsView() {
 				open={isAccountModalOpen}
 				onOpenChange={setIsAccountModalOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 text-neutral-100 p-6 sm:rounded-2xl shadow-2xl">
+				<DialogContent className="max-w-md bg-background border-border text-foreground p-6 sm:rounded-2xl shadow-2xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100">
+						<DialogTitle className="text-xl font-bold text-foreground">
 							Edit Account
 						</DialogTitle>
 					</DialogHeader>
@@ -285,7 +285,7 @@ function AccountsView() {
 								value={editUsername}
 								onChange={(e) => setEditUsername(e.target.value)}
 								placeholder="Login username"
-								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
+								className="bg-background border-border text-white focus:border-primary/20 rounded-xl"
 								required
 							/>
 						</div>
@@ -296,7 +296,7 @@ function AccountsView() {
 								value={editName}
 								onChange={(e) => setEditName(e.target.value)}
 								placeholder="Full name"
-								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
+								className="bg-background border-border text-white focus:border-primary/20 rounded-xl"
 								required
 							/>
 						</div>
@@ -308,21 +308,21 @@ function AccountsView() {
 								value={newPassword}
 								onChange={(e) => setNewPassword(e.target.value)}
 								placeholder="Leave blank to keep unchanged"
-								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
+								className="bg-background border-border text-white focus:border-primary/20 rounded-xl"
 							/>
 						</div>
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
 								onClick={() => setIsAccountModalOpen(false)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-muted text-muted-foreground rounded-xl px-5"
 							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
 								disabled={updatingAccount}
-								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
+								className="bg-primary hover: rounded-xl px-5"
 							>
 								{updatingAccount ? "Saving..." : "Save Changes"}
 							</Button>
@@ -336,9 +336,9 @@ function AccountsView() {
 				open={isCreateModalOpen}
 				onOpenChange={setIsCreateModalOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 text-neutral-100 p-6 sm:rounded-2xl shadow-2xl">
+				<DialogContent className="max-w-md bg-background border-border text-foreground p-6 sm:rounded-2xl shadow-2xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-neutral-100">
+						<DialogTitle className="text-xl font-bold text-foreground">
 							Add New Account
 						</DialogTitle>
 					</DialogHeader>
@@ -349,10 +349,10 @@ function AccountsView() {
 								value={createRole} 
 								onValueChange={(val: "admin" | "staff") => setCreateRole(val)}
 							>
-								<SelectTrigger className="bg-neutral-900 border-neutral-800 text-white rounded-xl h-10 focus:ring-blue-500/20">
+								<SelectTrigger className="bg-background border-border text-white rounded-xl h-10 focus:ring-primary/50">
 									<SelectValue placeholder="Select a role" />
 								</SelectTrigger>
-								<SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+								<SelectContent className="bg-background border-border text-foreground">
 									<SelectItem value="admin">Administrator</SelectItem>
 									<SelectItem value="staff">Staff</SelectItem>
 								</SelectContent>
@@ -365,7 +365,7 @@ function AccountsView() {
 								value={createUsername}
 								onChange={(e) => setCreateUsername(e.target.value)}
 								placeholder="Login username"
-								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
+								className="bg-background border-border text-white focus:border-primary/20 rounded-xl"
 								required
 							/>
 						</div>
@@ -376,7 +376,7 @@ function AccountsView() {
 								value={createName}
 								onChange={(e) => setCreateName(e.target.value)}
 								placeholder="Full name"
-								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
+								className="bg-background border-border text-white focus:border-primary/20 rounded-xl"
 								required
 							/>
 						</div>
@@ -388,7 +388,7 @@ function AccountsView() {
 								value={createPassword}
 								onChange={(e) => setCreatePassword(e.target.value)}
 								placeholder="Minimum 6 characters"
-								className="bg-neutral-900 border-neutral-800 text-white focus:border-blue-500 rounded-xl"
+								className="bg-background border-border text-white focus:border-primary/20 rounded-xl"
 								required
 								minLength={6}
 							/>
@@ -397,14 +397,14 @@ function AccountsView() {
 							<Button
 								type="button"
 								onClick={() => setIsCreateModalOpen(false)}
-								className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+								className="bg-muted hover:bg-muted text-muted-foreground rounded-xl px-5"
 							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
 								disabled={creatingAccount}
-								className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5"
+								className="bg-primary hover: rounded-xl px-5"
 							>
 								{creatingAccount ? "Adding..." : "Add Account"}
 							</Button>
@@ -418,21 +418,21 @@ function AccountsView() {
 				open={isDeleteModalOpen}
 				onOpenChange={setIsDeleteModalOpen}
 			>
-				<DialogContent className="max-w-md bg-neutral-950 border-neutral-800/60 shadow-2xl text-neutral-100 p-6 sm:rounded-2xl">
+				<DialogContent className="max-w-md bg-background border-border shadow-2xl text-foreground p-6 sm:rounded-2xl">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold text-red-500 flex items-center gap-2">
 							<Trash2 className="h-5 w-5" />
 							Delete Account
 						</DialogTitle>
 					</DialogHeader>
-					<div className="mt-4 text-neutral-300 text-sm">
+					<div className="mt-4 text-muted-foreground text-sm">
 						Are you sure you want to delete this account? This action cannot be undone.
 					</div>
 					<div className="flex items-center justify-end gap-2 mt-4">
 						<Button
 							type="button"
 							onClick={() => setIsDeleteModalOpen(false)}
-							className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5"
+							className="bg-muted hover:bg-muted text-muted-foreground rounded-xl px-5"
 						>
 							Cancel
 						</Button>

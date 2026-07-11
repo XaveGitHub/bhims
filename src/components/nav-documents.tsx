@@ -20,7 +20,7 @@ export function NavDocuments({ items }: { items: DocumentItem[] }) {
 
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel className="normal-case text-neutral-500 font-semibold text-xs mt-2">
+			<SidebarGroupLabel className="normal-case text-muted-foreground font-semibold text-xs mt-2">
 				Data Management
 			</SidebarGroupLabel>
 			<SidebarMenu>
@@ -31,11 +31,11 @@ export function NavDocuments({ items }: { items: DocumentItem[] }) {
 								to={item.url}
 								activeProps={{
 									className:
-										"bg-blue-950/40 text-blue-400 border border-blue-900/30 hover:bg-blue-900/40 hover:text-blue-300",
+										"bg-accent text-accent-foreground font-medium",
 								}}
 								inactiveProps={{
 									className:
-										"text-neutral-400 hover:bg-white/5 hover:text-neutral-100 border border-transparent",
+										"text-muted-foreground hover:bg-accent/50 hover:text-foreground",
 								}}
 								className="flex w-full items-center gap-3 transition-all group/link duration-200"
 							>

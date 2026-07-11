@@ -12,6 +12,8 @@ import { useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
+import { Badge } from "../components/ui/badge";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { getUniquePuroks } from "../lib/residents-service";
@@ -681,17 +683,17 @@ function ImportView() {
 		<div className="space-y-6 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			{/* Header */}
 			<div>
-				<h2 className="text-2xl font-extrabold tracking-tight text-neutral-100">
+				<h2 className="text-2xl font-extrabold tracking-tight text-foreground">
 					Data Import
 				</h2>
-				<p className="text-sm text-neutral-400 mt-1">
+				<p className="text-sm text-muted-foreground mt-1">
 					Upload your existing Excel spreadsheets to quickly bulk-import
 					residents into the system.
 				</p>
 			</div>
 
 			{error && (
-				<div className="p-4 bg-red-950/40 border border-red-900/50 rounded-2xl text-sm text-red-400 flex items-center gap-3">
+				<div className="p-4 bg-red-950/40 border border-red-500/30 rounded-2xl text-sm text-red-400 flex items-center gap-3">
 					<AlertCircle className="h-5 w-5 shrink-0" />
 					<span>{error}</span>
 				</div>
@@ -711,7 +713,7 @@ function ImportView() {
 							fileInputRef.current?.click();
 						}
 					}}
-					className="flex flex-col items-center justify-center border-2 border-dashed border-neutral-800 hover:border-blue-600/50 hover:bg-blue-950/5 bg-neutral-900/20 rounded-2xl p-16 text-center cursor-pointer transition-all duration-200 group h-80 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+					className="flex flex-col items-center justify-center border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/10 bg-card/20 rounded-2xl p-16 text-center cursor-pointer transition-all duration-200 group h-80 focus:outline-none focus:ring-2 focus:ring-primary/50"
 				>
 					<input
 						type="file"
@@ -721,25 +723,25 @@ function ImportView() {
 						className="hidden"
 					/>
 
-					<div className="p-4 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 group-hover:text-blue-400 group-hover:border-blue-900/30 transition-all duration-300 mb-4 shadow-lg shadow-neutral-950/50">
+					<div className="p-4 rounded-full bg-card border border-border text-muted-foreground group-hover:text-primary group-hover:border-primary/20 transition-all duration-300 mb-4 shadow-lg shadow-neutral-950/50">
 						{loading ? (
-							<RefreshCw className="h-8 w-8 animate-spin text-blue-400" />
+							<RefreshCw className="h-8 w-8 animate-spin text-primary" />
 						) : (
 							<Upload className="h-8 w-8" />
 						)}
 					</div>
 
-					<h3 className="font-bold text-neutral-200 text-lg">
+					<h3 className="font-bold text-foreground text-lg">
 						{loading ? "Reading Excel File..." : "Drag & Drop Excel File here"}
 					</h3>
-					<p className="text-xs text-neutral-500 max-w-xs mt-2 leading-relaxed">
+					<p className="text-xs text-muted-foreground max-w-xs mt-2 leading-relaxed">
 						Supports `.xlsx` and `.xls` files. Your file will be processed
 						locally and securely.
 					</p>
 
 					<Button
 						type="button"
-						className="mt-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all"
+						className="mt-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all"
 						disabled={loading}
 					>
 						Select File From PC
@@ -751,16 +753,16 @@ function ImportView() {
 			{step === 2 && (
 				<div className="space-y-6">
 					{/* File summary */}
-					<Card className="flex items-center justify-between p-4 bg-neutral-950/40 backdrop-blur-xl border-white/5 shadow-lg rounded-2xl">
+					<Card className="flex items-center justify-between p-4 bg-background/60 backdrop-blur-xl border-border shadow-lg rounded-2xl">
 						<div className="flex items-center gap-3">
-							<div className="p-2.5 rounded-xl bg-blue-950/30 border border-blue-900/20 text-blue-400">
+							<div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary">
 								<FileSpreadsheet className="h-5 w-5" />
 							</div>
 							<div>
-								<h4 className="font-bold text-sm text-neutral-200">
+								<h4 className="font-bold text-sm text-foreground">
 									{fileName}
 								</h4>
-								<p className="text-xs text-neutral-500">
+								<p className="text-xs text-muted-foreground">
 									{excelData.length.toLocaleString()} rows found in sheet
 								</p>
 							</div>
@@ -774,20 +776,20 @@ function ImportView() {
 								setMappings({});
 								setFileName("");
 							}}
-							className="text-xs text-neutral-400 hover:text-neutral-200 bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-xl border border-neutral-700 transition-colors"
+							className="text-xs text-muted-foreground hover:text-foreground bg-muted hover:bg-muted px-3 py-1.5 rounded-xl border border-border transition-colors"
 						>
 							Choose Another File
 						</button>
 					</Card>
 
 					{/* Mapping Table */}
-					<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg overflow-hidden p-8 space-y-8">
+					<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg overflow-hidden p-8 space-y-8">
 						<div>
-							<h3 className="font-bold text-lg text-neutral-100 flex items-center gap-2">
-								<Database className="h-4.5 w-4.5 text-blue-500" />
+							<h3 className="font-bold text-lg text-foreground flex items-center gap-2">
+								<Database className="h-4.5 w-4.5 text-primary" />
 								<span>Map Excel Columns to Database Fields</span>
 							</h3>
-							<p className="text-xs text-neutral-400 mt-1">
+							<p className="text-xs text-muted-foreground mt-1">
 								We tried to auto-detect columns. Adjust the mappings below to
 								ensure the data aligns correctly.
 							</p>
@@ -797,14 +799,14 @@ function ImportView() {
 							{DB_FIELDS.map((field) => (
 								<div
 									key={field.key}
-									className="flex flex-col space-y-2 p-3 rounded-xl border border-neutral-800/80 bg-neutral-950/25"
+									className="flex flex-col space-y-2 p-3 rounded-xl border border-border/80 bg-background/25"
 								>
 									<div className="flex items-start justify-between">
 										<div>
-											<Label className="text-sm font-bold text-neutral-200">
+											<Label className="text-sm font-bold text-foreground">
 												{field.label}
 											</Label>
-											<p className="text-[10px] text-neutral-500 leading-normal mt-0.5">
+											<p className="text-[10px] text-muted-foreground leading-normal mt-0.5">
 												{field.desc}
 											</p>
 										</div>
@@ -817,15 +819,15 @@ function ImportView() {
 										}
 									>
 										<SelectTrigger
-											className={`w-full bg-neutral-950 border text-xs px-3 py-2 rounded-lg focus:outline-none h-10 ${
+											className={`w-full bg-background border text-xs px-3 py-2 rounded-lg focus:outline-none h-10 ${
 												mappings[field.key]
-													? "border-blue-800/60 text-blue-400 font-semibold"
-													: "border-neutral-800 text-neutral-500"
+													? "border-primary/20 text-primary font-semibold"
+													: "border-border text-muted-foreground"
 											}`}
 										>
 											<SelectValue placeholder="-- Do Not Import (Skip) --" />
 										</SelectTrigger>
-										<SelectContent className="bg-neutral-950 border-neutral-800 text-neutral-200">
+										<SelectContent className="bg-background border-border text-foreground">
 											<SelectItem value="SKIP">
 												-- Do Not Import (Skip) --
 											</SelectItem>
@@ -859,160 +861,144 @@ function ImportView() {
 					</Card>
 
 					{/* Mapped Data Preview */}
-					<Card className="rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-8 space-y-5">
+					<Card className="rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-8 space-y-5">
 						<div>
-							<h4 className="font-bold text-sm text-neutral-200">
+							<h4 className="font-bold text-sm text-foreground">
 								Import Preview (First 3 Rows) 
 							</h4>
-							<p className="text-[10px] text-neutral-500 mt-0.5">
+							<p className="text-[10px] text-muted-foreground mt-0.5">
 								Review how your spreadsheet columns will translate into database
 								fields.
 							</p>
 						</div>
 
-						<div className="overflow-x-auto rounded-xl border border-neutral-800 bg-neutral-950">
-							<table className="w-full text-left text-xs text-neutral-300">
-								<thead className="bg-neutral-900 border-b border-neutral-800 text-neutral-400 font-semibold">
-									<tr>
-										<th className="px-4 py-3">Last Name</th>
-										<th className="px-4 py-3">First Name</th>
-										<th className="px-4 py-3">Middle Name</th>
-										<th className="px-4 py-3">Age / Gender</th>
-										<th className="px-4 py-3">Purok</th>
-										<th className="px-4 py-3">Blk / Lot</th>
-										<th className="px-4 py-3">Tags</th>
-									</tr>
-								</thead>
-								<tbody className="divide-y divide-neutral-900">
+						<div className="overflow-x-auto rounded-xl border border-border bg-background">
+							<Table>
+								<TableHeader className="bg-card">
+									<TableRow>
+										<TableHead className="px-4 py-3 font-semibold text-muted-foreground">Last Name</TableHead>
+										<TableHead className="px-4 py-3 font-semibold text-muted-foreground">First Name</TableHead>
+										<TableHead className="px-4 py-3 font-semibold text-muted-foreground">Middle Name</TableHead>
+										<TableHead className="px-4 py-3 font-semibold text-muted-foreground">Age / Gender</TableHead>
+										<TableHead className="px-4 py-3 font-semibold text-muted-foreground">Purok</TableHead>
+										<TableHead className="px-4 py-3 font-semibold text-muted-foreground">Blk / Lot</TableHead>
+										<TableHead className="px-4 py-3 font-semibold text-muted-foreground">Tags</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
 									{getPreviewRows().map((row, idx) => (
-										<tr
+										<TableRow
 											key={`preview-${idx}`}
-											className="hover:bg-neutral-900/20"
+											className="hover:bg-muted/50"
 										>
-											<td className="px-4 py-3">
+											<TableCell className="px-4 py-3">
 												<div className="flex flex-col min-w-0">
-													<span className="font-semibold text-neutral-100 text-sm leading-snug truncate">
+													<span className="font-semibold text-foreground text-sm leading-snug truncate">
 														{row.lastName || "—"} {row.suffix ? ` ${row.suffix}` : ""}
 													</span>
 													{row.contactNumber && (
-														<span className="text-[11px] text-neutral-500 leading-none mt-0.5 sm:hidden">
+														<span className="text-[11px] text-muted-foreground leading-none mt-0.5 sm:hidden">
 															{row.contactNumber}
 														</span>
 													)}
 												</div>
-											</td>
-											<td className="px-4 py-3">
-												<span className="text-neutral-100 text-sm">{row.firstName || "—"}</span>
-											</td>
-											<td className="px-4 py-3">
-												<span className="text-neutral-300 text-sm">{row.middleName || "—"}</span>
-											</td>
-											<td className="px-4 py-3">
+											</TableCell>
+											<TableCell className="px-4 py-3">
+												<span className="text-foreground text-sm">{row.firstName || "—"}</span>
+											</TableCell>
+											<TableCell className="px-4 py-3">
+												<span className="text-foreground/80 text-sm">{row.middleName || "—"}</span>
+											</TableCell>
+											<TableCell className="px-4 py-3">
 												<div className="flex flex-col">
-													<span className="text-sm text-neutral-200 leading-snug">
+													<span className="text-sm text-foreground leading-snug">
 														{calculateAge(row.birthDate)} yrs
 													</span>
-													<span className="text-[11px] text-neutral-500 leading-none mt-0.5">
+													<span className="text-[11px] text-muted-foreground leading-none mt-0.5">
 														{row.gender}
 													</span>
 												</div>
-											</td>
-											<td className="px-4 py-3">
+											</TableCell>
+											<TableCell className="px-4 py-3">
 												<div className="flex flex-col">
-													<span className="text-sm font-medium text-neutral-200 leading-snug">
+													<span className="text-sm font-medium text-foreground leading-snug">
 														{row.purok}
 													</span>
 												</div>
-											</td>
-											<td className="px-4 py-3">
+											</TableCell>
+											<TableCell className="px-4 py-3">
 												<div className="flex flex-col">
 													{row.block || row.lot ? (
-														<span className="text-sm font-medium text-neutral-200 leading-snug">
+														<span className="text-sm font-medium text-foreground leading-snug">
 															Blk {row.block || "-"} Lot {row.lot || "-"}
 														</span>
 													) : (
-														<span className="text-sm font-medium text-neutral-500 italic">
+														<span className="text-sm font-medium text-muted-foreground italic">
 															{row.lastName && row.purok !== "—" ? `Fam. ${row.lastName}` : "—"}
 														</span>
 													)}
 												</div>
-											</td>
-											<td className="px-4 py-3">
+											</TableCell>
+											<TableCell className="px-4 py-3">
 												<div className="flex flex-wrap gap-1">
 													{row.isPwd && (
-														<span
-															className="rounded-full bg-purple-950/40 border border-purple-800/30 px-2 py-0.5 text-[10px] font-semibold text-purple-400"
-															title="PWD"
-														>
-															PWD
-														</span>
+														<Badge variant="outline" size="sm">PWD
+														</Badge>
 													)}
 													{row.isSeniorCitizen && (
-														<span className="rounded-full bg-amber-950/40 border border-amber-800/30 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
-															Senior
-														</span>
+														<Badge variant="outline" size="sm">Senior
+														</Badge>
 													)}
 													{row.isRegisteredVoter && (
-														<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
-															Voter
-														</span>
+														<Badge variant="outline" size="sm">Voter
+														</Badge>
 													)}
 													{row.isSingleParent && (
-														<span className="rounded-full bg-pink-950/40 border border-pink-800/30 px-2 py-0.5 text-[10px] font-semibold text-pink-400">
-															Solo Parent
-														</span>
+														<Badge variant="outline" size="sm">Solo Parent
+														</Badge>
 													)}
 													{row.isBedBound && (
-														<span className="rounded-full bg-red-950/40 border border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-400">
-															Bed Bound
-														</span>
+														<Badge variant="outline" size="sm">Bed Bound
+														</Badge>
 													)}
 													{row.isWheelchairBound && (
-														<span className="rounded-full bg-blue-950/40 border border-blue-800/30 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
-															Wheelchair
-														</span>
+														<Badge variant="outline" size="sm">Wheelchair
+														</Badge>
 													)}
 													{row.isDialysisPatient && (
-														<span className="rounded-full bg-orange-950/40 border border-orange-800/30 px-2 py-0.5 text-[10px] font-semibold text-orange-400">
-															Dialysis
-														</span>
+														<Badge variant="outline" size="sm">Dialysis
+														</Badge>
 													)}
 													{row.isCancerPatient && (
-														<span className="rounded-full bg-rose-950/40 border border-rose-800/30 px-2 py-0.5 text-[10px] font-semibold text-rose-400">
-															Cancer
-														</span>
+														<Badge variant="outline" size="sm">Cancer
+														</Badge>
 													)}
 													{(row.isNationalPensioner || row.isLocalPensioner) && (
-														<span className="rounded-full bg-teal-950/40 border border-teal-800/30 px-2 py-0.5 text-[10px] font-semibold text-teal-400">
-															Pensioner
-														</span>
+														<Badge variant="outline" size="sm">Pensioner
+														</Badge>
 													)}
 													{row.isOfw && (
-														<span className="rounded-full bg-indigo-950/40 border border-indigo-800/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-400">
-															OFW
-														</span>
+														<Badge variant="outline" size="sm">OFW
+														</Badge>
 													)}
 													{row.isOsy && (
-														<span className="rounded-full bg-yellow-950/40 border border-yellow-800/30 px-2 py-0.5 text-[10px] font-semibold text-yellow-400">
-															OSY
-														</span>
+														<Badge variant="outline" size="sm">OSY
+														</Badge>
 													)}
 													{row.isIp && (
-														<span className="rounded-full bg-lime-950/40 border border-lime-800/30 px-2 py-0.5 text-[10px] font-semibold text-lime-400">
-															IP
-														</span>
+														<Badge variant="outline" size="sm">IP
+														</Badge>
 													)}
 													{row.isMigrant && (
-														<span className="rounded-full bg-cyan-950/40 border border-cyan-800/30 px-2 py-0.5 text-[10px] font-semibold text-cyan-400">
-															Migrant
-														</span>
+														<Badge variant="outline" size="sm">Migrant
+														</Badge>
 													)}
 												</div>
-											</td>
-										</tr>
+											</TableCell>
+										</TableRow>
 									))}
-								</tbody>
-							</table>
+								</TableBody>
+							</Table>
 						</div>
 					</Card>
 
@@ -1029,7 +1015,7 @@ function ImportView() {
 								setSkippedCount(0);
 								setSkippedNames([]);
 							}}
-							className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-6 py-2.5 text-sm font-semibold"
+							className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-6 py-2.5 text-sm font-semibold"
 						>
 							Cancel
 						</Button>
@@ -1037,7 +1023,7 @@ function ImportView() {
 						<Button
 							onClick={handleExecuteImport}
 							disabled={loading}
-							className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-6 py-2.5 text-sm font-semibold active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-blue-950/20"
+							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 py-2.5 text-sm font-semibold active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
 						>
 							{loading ? (
 								<>
@@ -1057,19 +1043,19 @@ function ImportView() {
 
 			{/* STEP 3: SUCCESS */}
 			{step === 3 && (
-				<Card className="flex flex-col items-center justify-center rounded-2xl border-white/5 bg-neutral-950/40 backdrop-blur-xl shadow-lg p-16 text-center space-y-6 h-80">
-					<div className="p-4 rounded-full bg-blue-950/20 border border-blue-900/30 text-blue-400 animate-bounce">
+				<Card className="flex flex-col items-center justify-center rounded-2xl border-border bg-background/60 backdrop-blur-xl shadow-lg p-16 text-center space-y-6 h-80">
+					<div className="p-4 rounded-full bg-primary/10 border border-primary/20 text-primary animate-bounce">
 						<CheckCircle className="h-10 w-10" />
 					</div>
 
 					<div className="space-y-4">
-						<h3 className="font-extrabold text-2xl text-neutral-100">
+						<h3 className="font-extrabold text-2xl text-foreground">
 							Import Completed Successfully!
 						</h3>
-						<p className="text-sm text-neutral-400 max-w-sm mx-auto leading-relaxed">
+						<p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
 							We parsed the columns, calculated senior citizen records, and
 							successfully inserted{" "}
-							<span className="font-bold text-blue-400">
+							<span className="font-bold text-primary">
 								{importedCount.toLocaleString()}
 							</span>{" "}
 							residents into the database.
@@ -1102,14 +1088,14 @@ function ImportView() {
 								setSkippedCount(0);
 								setSkippedNames([]);
 							}}
-							className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl px-5 text-xs font-semibold"
+							className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-5 text-xs font-semibold"
 						>
 							Import Another File
 						</Button>
 
 						<Button
 							onClick={() => navigate({ to: "/residents" })}
-							className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-5 text-xs font-semibold flex items-center gap-1.5"
+							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 text-xs font-semibold flex items-center gap-1.5"
 						>
 							<span>View Residents</span>
 							<ArrowRight className="h-3.5 w-3.5" />
