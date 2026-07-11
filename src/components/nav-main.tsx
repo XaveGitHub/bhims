@@ -35,7 +35,7 @@ export function NavMain({ items, label = "Core Operations" }: { items: NavItem[]
 									className:
 										"text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
 								}}
-								className="flex w-full items-center gap-3 transition-all group/link duration-200 !rounded-full"
+								className="flex w-full items-center gap-3 transition-all group/link duration-200 rounded-[var(--radius)]"
 							>
 								<item.icon className="h-4 w-4 shrink-0 transition-transform group-hover/link:scale-110" />
 								<span className="group-data-[collapsible=icon]:hidden">

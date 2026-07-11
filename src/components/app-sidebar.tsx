@@ -142,7 +142,7 @@ export function AppSidebar({
 						>
 							<Link to="/">
 								<IconInnerShadowTop className="size-5! shrink-0 text-primary" />
-								<span className="text-base font-bold text-foreground group-data-[collapsible=icon]:hidden">
+								<span className="text-base font-bold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
 									BHIMS
 								</span>
 							</Link>

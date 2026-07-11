@@ -132,7 +132,7 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 								No puroks found. Add one above.
 							</div>
 						) : (
-							<div className="divide-y divide-neutral-800">
+							<div className="divide-y divide-border">
 								{puroks.map((purok) => (
 									<div key={purok.id} className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors group">
 										<div className="flex items-center gap-3 flex-1 min-w-0">

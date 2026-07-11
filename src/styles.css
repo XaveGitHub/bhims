@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
@@ -219,7 +220,7 @@
   --sidebar-accent-foreground: oklch(0.3250 0 0);
   --sidebar-border: oklch(0.9401 0 0);
   --sidebar-ring: oklch(0.7731 0 0);
-  --font-sans: Outfit, sans-serif;
+  --font-sans: 'Outfit', sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: Geist Mono, ui-monospace, monospace;
   --radius: 1rem;
@@ -274,7 +275,7 @@
   --sidebar-accent-foreground: oklch(0.8074 0.0142 93.0137);
   --sidebar-border: oklch(0.9401 0 0);
   --sidebar-ring: oklch(0.7731 0 0);
-  --font-sans: Outfit, sans-serif;
+  --font-sans: 'Outfit', sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: Geist Mono, ui-monospace, monospace;
   --radius: 1rem;
@@ -320,13 +321,13 @@
   --chart-3: oklch(0.7729 0.1535 163.2231);
   --chart-4: oklch(0.8452 0.1299 164.9782);
   --chart-5: oklch(0.9049 0.0895 164.1501);
-  --sidebar: oklch(1.0000 0 0);
-  --sidebar-foreground: oklch(0.3703 0.0119 285.8054);
+  --sidebar: oklch(0.9750 0.0050 160.0000);
+  --sidebar-foreground: oklch(0.2800 0.0200 162.0000);
   --sidebar-primary: oklch(0.6959 0.1491 162.4796);
   --sidebar-primary-foreground: oklch(1.0000 0 0);
-  --sidebar-accent: oklch(0.9819 0.0181 155.8263);
-  --sidebar-accent-foreground: oklch(0.6959 0.1491 162.4796);
-  --sidebar-border: oklch(0.9674 0.0013 286.3752);
+  --sidebar-accent: oklch(0.9200 0.0380 155.8263);
+  --sidebar-accent-foreground: oklch(0.3800 0.1100 162.4796);
+  --sidebar-border: oklch(0.8800 0.0200 155.0000);
   --sidebar-ring: oklch(0.6959 0.1491 162.4796);
   --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Noto Serif, ui-serif, serif;
@@ -376,11 +377,11 @@
   --chart-4: oklch(0.8452 0.1299 164.9782);
   --chart-5: oklch(0.9049 0.0895 164.1501);
   --sidebar: oklch(0.1408 0.0044 285.8229);
-  --sidebar-foreground: oklch(0.7118 0.0129 286.0665);
+  --sidebar-foreground: oklch(0.8000 0.0150 286.0665);
   --sidebar-primary: oklch(0.6959 0.1491 162.4796);
   --sidebar-primary-foreground: oklch(1.0000 0 0);
-  --sidebar-accent: oklch(0.2178 0 0);
-  --sidebar-accent-foreground: oklch(0.6959 0.1491 162.4796);
+  --sidebar-accent: oklch(0.2200 0.0380 162.0000);
+  --sidebar-accent-foreground: oklch(0.7500 0.1000 162.4796);
   --sidebar-border: oklch(0.2739 0.0055 286.0326);
   --sidebar-ring: oklch(0.6959 0.1491 162.4796);
   --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;

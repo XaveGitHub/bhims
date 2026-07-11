@@ -844,10 +844,10 @@ function ResidentsView() {
 							type="button"
 							key={label}
 							onClick={fn}
-							className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${
+							className={`px-2.5 py-1 rounded-[calc(var(--radius)-2px)] text-xs font-semibold border transition-all ${
 								active
 									? color
-									: "bg-background text-muted-foreground border-border hover:border-border"
+									: "bg-card text-muted-foreground border-border hover:bg-accent hover:text-foreground"
 							}`}
 						>
 							{label}
@@ -876,7 +876,7 @@ function ResidentsView() {
 								setFilterUnemployed(undefined);
 								setSelectedGender("");
 							}}
-							className="px-2.5 py-1 rounded-full text-xs font-semibold bg-muted hover:bg-border dark:bg-muted text-muted-foreground border border-border"
+							className="px-2.5 py-1 rounded-[calc(var(--radius)-2px)] text-xs font-semibold bg-muted hover:bg-border text-muted-foreground border border-border"
 						>
 							Clear all
 						</button>

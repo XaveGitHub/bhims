@@ -223,28 +223,28 @@ export function ResidentProfilePane({
 	// ── VIEW MODE RENDERING ──
 	const renderViewMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-card border border-border shadow-sm px-2 py-[26px] rounded-[var(--radius)] mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					Personal
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					Health
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					Household
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
 				>
 					History
 				</TabsTrigger>
@@ -680,10 +680,10 @@ export function ResidentProfilePane({
 	// ── EDIT MODE RENDERING ──
 	const renderEditMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="flex w-[calc(100%-3rem)] bg-background/60 backdrop-blur-xl border border-border/60 shadow-inner px-2 py-[26px] rounded-full mx-6 mt-4 mb-0 shrink-0">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-card border border-border shadow-sm px-2 py-[26px] rounded-[var(--radius)] mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Personal
@@ -694,7 +694,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Health
@@ -705,7 +705,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Household
@@ -716,7 +716,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="!h-10 flex-1 rounded-full !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
+					className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:text-primary data-[state=active]:! data-[state=active]:! transition-all"
 				>
 					History
 				</TabsTrigger>
@@ -1311,7 +1311,7 @@ export function ResidentProfilePane({
 
 	return (
 		<>
-		<Card className="flex flex-col bg-background/80 backdrop-blur-2xl border-border shadow-2xl overflow-hidden rounded-2xl h-[calc(100vh-16rem)] lg:h-[calc(100vh-12rem)] p-0 gap-0 w-full transition-all duration-300 pointer-events-auto">
+		<Card className="flex flex-col bg-card border-border shadow-lg overflow-hidden rounded-xl h-[calc(100vh-16rem)] lg:h-[calc(100vh-12rem)] p-0 gap-0 w-full transition-all duration-300 pointer-events-auto">
 			{/* Header */}
 			<div
 				className={cn(

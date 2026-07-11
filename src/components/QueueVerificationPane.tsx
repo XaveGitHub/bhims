@@ -258,9 +258,9 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 				}
 			`}</style>
 			
-			<div className="flex flex-col h-full bg-background/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl overflow-hidden pointer-events-auto">
+			<div className="flex flex-col h-full bg-card border border-border rounded-xl shadow-lg overflow-hidden pointer-events-auto">
 				{/* Header (Draggable) */}
-				<div className="drag-handle bg-background/80 p-5 flex flex-col border-b border-border backdrop-blur-md shrink-0 cursor-grab active:cursor-grabbing rounded-t-2xl relative group">
+				<div className="drag-handle bg-card p-5 flex flex-col border-b border-border shrink-0 cursor-grab active:cursor-grabbing rounded-t-xl relative group">
 					<div className="absolute top-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
 						<GripHorizontal className="w-8 h-8 text-muted-foreground" />
 					</div>

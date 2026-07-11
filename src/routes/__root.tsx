@@ -191,7 +191,7 @@ function RootDocument({ children, appTheme }: { children: React.ReactNode, appTh
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			<body className="font-sans antialiased">
 				<ThemeProvider defaultTheme="dark" storageKey="bhims-theme" appTheme={appTheme}>
 					<TooltipProvider delayDuration={150}>
 						{children}

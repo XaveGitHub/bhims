@@ -180,7 +180,7 @@ const Sidebar = React.forwardRef<
 			return (
 				<div
 					className={cn(
-						"flex h-full w-[var(--sidebar-width)] flex-col bg-sidebar border-r border-border text-sidebar-foreground",
+						"flex h-full w-[var(--sidebar-width)] flex-col bg-sidebar border-r border-sidebar-border text-sidebar-foreground",
 						className,
 					)}
 					ref={ref}
@@ -202,7 +202,7 @@ const Sidebar = React.forwardRef<
 					<div
 						ref={ref}
 						className={cn(
-							"relative flex w-[var(--sidebar-width-mobile)] max-w-xs flex-col bg-sidebar border-r border-border h-full p-4 animate-in slide-in-from-left duration-250",
+							"relative flex w-[var(--sidebar-width-mobile)] max-w-xs flex-col bg-sidebar border-r border-sidebar-border h-full p-4 animate-in slide-in-from-left duration-250",
 							side === "right" &&
 								"ml-auto border-l border-r-0 slide-in-from-right",
 							className,
@@ -237,7 +237,7 @@ const Sidebar = React.forwardRef<
 				/>
 				<div
 					className={cn(
-						"duration-200 fixed inset-y-0 z-10 hidden h-screen w-[var(--sidebar-width)] flex-col bg-sidebar border-r border-border text-sidebar-foreground transition-all md:flex",
+						"duration-200 fixed inset-y-0 z-10 hidden h-screen w-[var(--sidebar-width)] flex-col bg-sidebar border-r border-sidebar-border text-sidebar-foreground transition-all md:flex",
 						side === "left" ? "left-0" : "right-0 border-l border-r-0",
 						// Collapsible offcanvas
 						"group-data-[collapsible=offcanvas]:translate-x-[-100%]",
@@ -273,7 +273,7 @@ const SidebarTrigger = React.forwardRef<
 			variant="ghost"
 			size="icon"
 			className={cn(
-				"h-7 w-7 text-muted-foreground hover:text-foreground",
+				"h-7 w-7 text-sidebar-foreground/70 hover:text-sidebar-foreground",
 				className,
 			)}
 			onClick={(event) => {
@@ -340,7 +340,7 @@ const SidebarHeader = React.forwardRef<
 			ref={ref}
 			data-slot="sidebar-header"
 			className={cn(
-				"flex flex-col justify-center h-16 px-4 border-b border-border",
+				"flex flex-col justify-center h-16 px-4 border-b border-sidebar-border",
 				className,
 			)}
 			{...props}
@@ -358,7 +358,7 @@ const SidebarFooter = React.forwardRef<
 			ref={ref}
 			data-slot="sidebar-footer"
 			className={cn(
-				"flex flex-col gap-2 p-4 border-t border-border",
+				"flex flex-col gap-2 p-4 border-t border-sidebar-border",
 				className,
 			)}
 			{...props}
