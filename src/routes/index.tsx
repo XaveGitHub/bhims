@@ -110,7 +110,7 @@ function DashboardView() {
 			icon: Users,
 			accent: "blue",
 			glow: "from-blue-500/10",
-			iconCls: "text-primary bg-accent border-primary/20 dark:text-primary dark:bg-primary/10 dark:border-primary/20",
+			iconCls: "text-primary bg-accent border-primary/20",
 			to: "/residents",
 			search: { purok },
 		},
@@ -121,7 +121,7 @@ function DashboardView() {
 			icon: Home,
 			accent: "teal",
 			glow: "from-teal-500/10",
-			iconCls: "text-teal-600 bg-teal-100 border-teal-200 dark:text-teal-400 dark:bg-teal-950/40 dark:border-teal-800/40",
+			iconCls: "text-teal-600 bg-teal-100 border-teal-200",
 			to: "/households",
 			search: { purok },
 		},
@@ -132,7 +132,7 @@ function DashboardView() {
 			icon: UserCheck,
 			accent: "cyan",
 			glow: "from-cyan-500/10",
-			iconCls: "text-cyan-600 bg-cyan-100 border-cyan-200 dark:text-cyan-400 dark:bg-cyan-950/40 dark:border-cyan-800/40",
+			iconCls: "text-cyan-600 bg-cyan-100 border-cyan-200",
 			to: "/residents",
 			search: { filterVoter: true, purok },
 		},
@@ -143,7 +143,7 @@ function DashboardView() {
 			icon: Activity,
 			accent: "amber",
 			glow: "from-amber-500/10",
-			iconCls: "text-amber-600 bg-amber-100 border-amber-200 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-800/40",
+			iconCls: "text-amber-600 bg-amber-100 border-amber-200",
 			to: "/residents",
 			search: { filterSenior: true, purok },
 		},
@@ -154,7 +154,7 @@ function DashboardView() {
 			icon: HeartPulse,
 			accent: "purple",
 			glow: "from-purple-500/10",
-			iconCls: "text-purple-600 bg-purple-100 border-purple-200 dark:text-purple-400 dark:bg-purple-950/40 dark:border-purple-800/40",
+			iconCls: "text-purple-600 bg-purple-100 border-purple-200",
 			to: "/residents",
 			search: { filterPwd: true, purok },
 		},
@@ -165,7 +165,7 @@ function DashboardView() {
 			icon: Baby,
 			accent: "pink",
 			glow: "from-pink-500/10",
-			iconCls: "text-pink-600 bg-pink-100 border-pink-200 dark:text-pink-400 dark:bg-pink-950/40 dark:border-pink-800/40",
+			iconCls: "text-pink-600 bg-pink-100 border-pink-200",
 			to: "/residents",
 			search: { filterSingleParent: true, purok },
 		},
@@ -179,7 +179,7 @@ function DashboardView() {
 			label: "Registered Voters",
 			value: stats?.totalVoters ?? 0,
 			pct: total > 0 ? ((stats?.totalVoters ?? 0) / total) * 100 : 0,
-			color: "text-cyan-600 dark:text-cyan-400",
+			color: "text-cyan-600",
 			stroke: "#22d3ee",
 			radius: 54,
 		},
@@ -188,7 +188,7 @@ function DashboardView() {
 			label: "Seniors (60+)",
 			value: stats?.totalSeniors ?? 0,
 			pct: total > 0 ? ((stats?.totalSeniors ?? 0) / total) * 100 : 0,
-			color: "text-amber-600 dark:text-amber-400",
+			color: "text-amber-600",
 			stroke: "#fbbf24",
 			radius: 44,
 		},
@@ -196,7 +196,7 @@ function DashboardView() {
 			label: "PWD Residents",
 			value: stats?.totalPwd ?? 0,
 			pct: total > 0 ? ((stats?.totalPwd ?? 0) / total) * 100 : 0,
-			color: "text-purple-600 dark:text-purple-400",
+			color: "text-purple-600",
 			stroke: "#c084fc",
 			radius: 34,
 		},
@@ -204,7 +204,7 @@ function DashboardView() {
 			label: "Single Parents",
 			value: stats?.totalSingleParents ?? 0,
 			pct: total > 0 ? ((stats?.totalSingleParents ?? 0) / total) * 100 : 0,
-			color: "text-pink-600 dark:text-pink-400",
+			color: "text-pink-600",
 			stroke: "#f472b6",
 			radius: 24,
 		},
@@ -444,7 +444,7 @@ function DashboardView() {
 												<span className="font-semibold text-foreground">
 													{(stats?.totalFemale ?? 0).toLocaleString()}
 												</span>
-												<Badge className="bg-pink-100 text-pink-700 border border-pink-200 dark:bg-pink-950/60 dark:text-pink-400 dark:border-pink-800/40 text-[10px] px-1.5 py-0 font-bold">
+												<Badge className="bg-pink-100 text-pink-700 border border-pink-200 text-[10px] px-1.5 py-0 font-bold">
 													{totalGenderCount > 0
 														? (
 																((stats?.totalFemale ?? 0) / totalGenderCount) *
@@ -693,7 +693,7 @@ function DashboardView() {
 									</p>
 								</div>
 								<Badge
-									className={`text-xs px-2 py-0.5 font-bold ${(stats?.dataCompletenessPct ?? 0) >= 90 ? "bg-accent text-accent-foreground dark:bg-primary/10 dark:text-primary dark:border-primary/20" : "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-800/40"} border`}
+									className={`text-xs px-2 py-0.5 font-bold ${(stats?.dataCompletenessPct ?? 0) >= 90 ? "bg-accent text-accent-foreground" : "bg-amber-100 text-amber-700 border-amber-200"} border`}
 								>
 									{(stats?.dataCompletenessPct ?? 0).toFixed(1)}%
 								</Badge>

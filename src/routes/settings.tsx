@@ -21,7 +21,6 @@ import {
 } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { useTheme } from "../components/theme-provider";
 import {
 	clearAllData,
 	downloadBackup,
@@ -34,7 +33,7 @@ export const Route = createFileRoute("/settings")({
 	component: SettingsView,
 });
 
-let cachedSettings: { barangayName: string; appTheme?: string } | null = null;
+let cachedSettings: { barangayName: string } | null = null;
 
 // Manual prefetcher for hover-optimizations
 export const prefetchSettingsData = async () => {
@@ -49,11 +48,8 @@ export const prefetchSettingsData = async () => {
 
 function SettingsView() {
 	const restoreInputRef = useRef<HTMLInputElement>(null);
-	const { setAppTheme: setGlobalAppTheme } = useTheme();
-
 	// Settings Form state
 	const [brgyName, setBrgyName] = useState(cachedSettings?.barangayName || "");
-	const [appTheme, setAppTheme] = useState(cachedSettings?.appTheme || "classic");
 
 	// Loading & statuses
 	const [loading, setLoading] = useState(!cachedSettings);
@@ -68,7 +64,6 @@ function SettingsView() {
 	const loadSettings = useCallback(async (force = false) => {
 		if (!force && cachedSettings) {
 			setBrgyName(cachedSettings.barangayName);
-			setAppTheme(cachedSettings.appTheme || "classic");
 			setLoading(false);
 			return;
 		}
@@ -77,7 +72,6 @@ function SettingsView() {
 		try {
 			const data = await getSettings();
 			setBrgyName(data.barangayName);
-			setAppTheme(data.appTheme || "classic");
 			cachedSettings = data;
 		} catch (err) {
 			console.error("Error fetching settings:", err);
@@ -101,7 +95,7 @@ function SettingsView() {
 
 		try {
 			const result = await updateSettings({
-				data: { barangayName: brgyName, appTheme },
+				data: { barangayName: brgyName },
 			});
 			if (result.success) {
 				toast.success("Settings updated successfully.");
@@ -269,46 +263,6 @@ function SettingsView() {
 								placeholder="e.g. Barangay Handumanan"
 								className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary/20 rounded-xl"
 							/>
-						</div>
-
-						{/* App Theme */}
-						<div className="space-y-3 pt-2">
-							<Label className="text-foreground flex items-center gap-2">
-								<Palette className="w-4 h-4 text-muted-foreground" />
-								Application Theme
-							</Label>
-							<div className="grid grid-cols-3 gap-3">
-								<button
-									type="button"
-									onClick={() => {
-										setAppTheme("classic");
-										setGlobalAppTheme("classic");
-									}}
-									className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${appTheme === "classic" ? "border-primary bg-primary/10 shadow-sm" : "border-border bg-background hover:bg-accent"}`}
-								>
-									<span className="font-semibold text-sm">Classic</span>
-								</button>
-								<button
-									type="button"
-									onClick={() => {
-										setAppTheme("modern");
-										setGlobalAppTheme("modern");
-									}}
-									className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${appTheme === "modern" ? "border-primary bg-primary/10 shadow-sm" : "border-border bg-background hover:bg-accent"}`}
-								>
-									<span className="font-semibold text-sm">Modern</span>
-								</button>
-								<button
-									type="button"
-									onClick={() => {
-										setAppTheme("ocean");
-										setGlobalAppTheme("ocean");
-									}}
-									className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${appTheme === "ocean" ? "border-primary bg-primary/10 shadow-sm" : "border-border bg-background hover:bg-accent"}`}
-								>
-									<span className="font-semibold text-sm">Ocean</span>
-								</button>
-							</div>
 						</div>
 					</div>
 

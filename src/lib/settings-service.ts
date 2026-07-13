@@ -8,7 +8,6 @@ import { requireAdmin, requireStaff } from "./security";
 
 export interface SettingsData {
 	barangayName: string;
-	appTheme?: string;
 }
 
 // Fetch current settings
@@ -20,10 +19,7 @@ export const getSettings = createServerFn({
 	const barangayName =
 		allSettings.find((s: { key: string }) => s.key === "barangay_name")
 			?.value || "Barangay Handumanan";
-	const appTheme =
-		allSettings.find((s: { key: string }) => s.key === "app_theme")
-			?.value || "classic";
-	return { barangayName, appTheme };
+	return { barangayName };
 });
 
 // Update settings
@@ -41,17 +37,6 @@ export const updateSettings = createServerFn({
 				set: { value: data.barangayName },
 			})
 			.run();
-
-		// Upsert App Theme
-		if (data.appTheme) {
-			db.insert(settings)
-				.values({ key: "app_theme", value: data.appTheme })
-				.onConflictDoUpdate({
-					target: settings.key,
-					set: { value: data.appTheme },
-				})
-				.run();
-		}
 
 		return { success: true };
 	});

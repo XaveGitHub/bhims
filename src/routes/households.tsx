@@ -287,7 +287,7 @@ function HouseholdsView() {
 		return (
 			<div
 				onClick={() => setDrawerResident(member as Resident)}
-				className={`member-card-node w-56 h-[116px] p-4 rounded-xl border bg-card shadow-sm transition-all hover:bg-card flex flex-col justify-between border-border shrink-0 relative z-10 overflow-hidden group cursor-pointer hover:border-neutral-600`}
+				className={`member-card-node w-56 h-[116px] p-4 rounded-xl border bg-card shadow-sm transition-all hover:bg-card flex flex-col justify-between border-border shrink-0 relative z-10 overflow-hidden group cursor-pointer hover:border-primary/40 hover:shadow-md`}
 			>
 				<div className="flex items-start justify-between relative z-10 pl-1">
 					<span
@@ -304,7 +304,7 @@ function HouseholdsView() {
 
 				<div className="space-y-0.5 relative z-10 pl-1">
 					<h4
-						className="font-semibold text-sm text-foreground truncate group-hover:text-primary dark:group-hover:text-primary transition-colors"
+						className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors"
 						title={member.fullName}
 					>
 						{member.fullName}
@@ -317,22 +317,22 @@ function HouseholdsView() {
 				{/* Flag Badges */}
 				<div className="flex flex-wrap gap-1.5 pt-1">
 					{member.isPwd && (
-						<span className="inline-flex items-center rounded-full bg-purple-100 dark:bg-purple-400/10 px-2 py-0.5 text-[10px] font-semibold text-purple-700 dark:text-purple-400 border border-purple-400/20">
+						<span className="inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-semibold text-purple-700 border border-purple-200">
 							PWD
 						</span>
 					)}
 					{member.isSeniorCitizen && (
-						<span className="inline-flex items-center rounded-full bg-amber-100 dark:bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400 border border-amber-400/20">
+						<span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 border border-amber-200">
 							Senior
 						</span>
 					)}
 					{member.isRegisteredVoter && (
-						<span className="inline-flex items-center rounded-full bg-accent dark:bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary dark:text-primary border border-primary/20">
+						<span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-primary border border-primary/20">
 							Voter
 						</span>
 					)}
 					{member.isSingleParent && (
-						<span className="inline-flex items-center rounded-full bg-pink-100 dark:bg-pink-400/10 px-2 py-0.5 text-[10px] font-semibold text-pink-700 dark:text-pink-400 border border-pink-400/20">
+						<span className="inline-flex items-center rounded-full bg-pink-100 px-2 py-0.5 text-[10px] font-semibold text-pink-700 border border-pink-200">
 							Solo
 						</span>
 					)}
@@ -430,7 +430,7 @@ function HouseholdsView() {
 								>
 									<div className="space-y-1 truncate pr-2">
 										<h4
-											className={`font-semibold text-sm truncate transition-colors ${selectedId === h.householdId ? "text-amber-700 dark:text-amber-400" : "text-foreground group-hover:text-foreground"}`}
+											className={`font-semibold text-sm truncate transition-colors ${selectedId === h.householdId ? "text-primary" : "text-foreground group-hover:text-foreground"}`}
 										>
 											{h.headName}
 										</h4>
@@ -565,7 +565,7 @@ function HouseholdsView() {
 																		)}
 																		{ascendants.map(m => (
 																			<div key={m.id} className="flex flex-col items-center h-full">
-																				<MemberCard member={m} roleColor="bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/30" />
+																				<MemberCard member={m} roleColor="bg-amber-100 text-amber-700 border-amber-200" />
 																				{/* Drop line stretches to bottom crossbar */}
 																				<div className="flex-1 min-h-[1.5rem] w-[2px] bg-muted" />
 																			</div>
@@ -644,7 +644,7 @@ function HouseholdsView() {
 																		{detail.children.map((child) => (
 																			<div key={child.id} className="flex flex-col items-center h-full">
 																				<div className="h-[1.5rem] shrink-0 w-[2px] bg-muted" />
-																				<MemberCard member={child} roleColor="bg-pink-100 dark:bg-pink-950/50 text-pink-700 dark:text-pink-400 border border-pink-200 dark:border-pink-900/30" />
+																				<MemberCard member={child} roleColor="bg-pink-100 text-pink-700 border border-pink-200" />
 																				{descendants.length > 0 && (
 																					<div className="flex-1 min-h-[1.5rem] w-[2px] bg-muted" />
 																				)}
@@ -669,7 +669,7 @@ function HouseholdsView() {
 																		{descendants.map((m) => (
 																			<div key={m.id} className="flex flex-col items-center">
 																				<div className="h-[1.5rem] w-[2px] bg-muted" />
-																				<MemberCard member={m} roleColor="bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-900/30" />
+																				<MemberCard member={m} roleColor="bg-purple-100 text-purple-700 border border-purple-200" />
 																			</div>
 																		))}
 																	</div>

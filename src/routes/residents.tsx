@@ -744,7 +744,7 @@ function ResidentsView() {
 				</div>
 			</div>
 			{/* Search + filter bar */}
-			<div className="rounded-xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
+			<div className="rounded-xl border border-border bg-card shadow-sm p-3 sm:p-4 space-y-3">
 				<div className="flex flex-col sm:flex-row gap-2">
 					{/* Search — debounced */}
 					<div className="relative flex-1">

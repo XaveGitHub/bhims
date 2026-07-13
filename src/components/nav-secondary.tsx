@@ -37,11 +37,11 @@ export function NavSecondary({
 									}}
 									activeProps={{
 										className:
-											"!bg-primary !text-primary-foreground font-medium shadow-sm hover:!bg-primary hover:brightness-105 dark:hover:brightness-95 hover:!text-primary-foreground",
+											"!bg-primary !text-primary-foreground font-semibold shadow-sm",
 									}}
 									inactiveProps={{
 										className:
-											"text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+											"text-sidebar-foreground hover:bg-primary/10 hover:text-primary",
 									}}
 									className="flex w-full items-center gap-3 transition-all group/link duration-200 rounded-[var(--radius)]"
 								>
