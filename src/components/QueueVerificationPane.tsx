@@ -296,7 +296,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									onClick={() => setSelectedIndex(idx)}
 									className={`w-full text-left px-3 py-2.5 rounded-[var(--radius)] transition-all border border-transparent group font-medium ${
 										selectedIndex === idx 
-											? 'bg-primary text-primary-foreground shadow-sm' 
+											? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm' 
 											: 'bg-transparent text-muted-foreground hover:bg-accent hover:text-primary'
 									}`}
 								>
@@ -650,22 +650,22 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 							<div className="space-y-3 mt-4">
 								<div className="flex gap-3">
 									<Button 
-										variant="secondary"
-										className="flex-1 rounded-xl text-sm font-semibold transition-all h-11"
-										onClick={handlePrintSingle}
-										disabled={isProcessing}
-									>
-										{isPrinting ? <Loader2 className="w-5 h-5 mr-2 shrink-0 animate-spin" /> : <Printer className="w-5 h-5 mr-2 shrink-0" />}
-										{isPrinting ? "Printing" : (printedItems[activeItem.id] || activeItem.status === "Ready to Claim" || activeItem.status === "Completed") ? "Reprint" : "Print"}
-									</Button>
-									
-									<Button 
-										className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-sm text-sm font-semibold transition-all h-11"
+										variant="ghost"
+										className="flex-1 bg-neutral-200 hover:!bg-neutral-100 hover:!text-neutral-900 text-neutral-800 rounded-xl text-sm font-semibold transition-all h-11"
 										onClick={handleDownloadImage}
 										disabled={isProcessing}
 									>
 										{isSaving ? <Loader2 className="w-5 h-5 mr-2 shrink-0 animate-spin" /> : <Download className="w-5 h-5 mr-2 shrink-0" />}
 										{isSaving ? "Saving" : "Save PNG"}
+									</Button>
+
+									<Button 
+										className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-sm text-sm font-semibold transition-all h-11"
+										onClick={handlePrintSingle}
+										disabled={isProcessing}
+									>
+										{isPrinting ? <Loader2 className="w-5 h-5 mr-2 shrink-0 animate-spin" /> : <Printer className="w-5 h-5 mr-2 shrink-0" />}
+										{isPrinting ? "Printing" : (printedItems[activeItem.id] || activeItem.status === "Ready to Claim" || activeItem.status === "Completed") ? "Reprint" : "Print"}
 									</Button>
 								</div>
 

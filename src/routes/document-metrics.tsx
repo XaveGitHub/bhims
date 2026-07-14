@@ -160,7 +160,7 @@ function DocumentMetricsView() {
 							onClick={() => setTimeframe(t)}
 							className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
 								timeframe === t 
-									? "bg-primary text-primary-foreground shadow-md" 
+									? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md" 
 									: "text-muted-foreground hover:bg-accent hover:text-primary"
 							}`}
 						>
