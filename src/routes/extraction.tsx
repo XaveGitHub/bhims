@@ -225,7 +225,7 @@ function ExtractionView() {
 							onClick={() => setIsPwd(!isPwd)}
 							className={`h-11 px-4 rounded-xl border text-sm font-medium transition-all ${
 								isPwd 
-								? "bg-primary/10 border-primary/20 text-primary" 
+								? "bg-purple-100 border-purple-200 text-purple-700" 
 								: "bg-card border-border text-muted-foreground hover:bg-card"
 							}`}
 						>
@@ -235,7 +235,7 @@ function ExtractionView() {
 							onClick={() => setIsSoloParent(!isSoloParent)}
 							className={`h-11 px-4 rounded-xl border text-sm font-medium transition-all ${
 								isSoloParent 
-								? "bg-purple-500/20 border-purple-500/50 text-purple-400" 
+								? "bg-pink-100 border-pink-200 text-pink-700" 
 								: "bg-card border-border text-muted-foreground hover:bg-card"
 							}`}
 						>
@@ -332,8 +332,8 @@ function ExtractionView() {
 										{(appliedFilters.isPwd || appliedFilters.isSoloParent) && (
 											<TableCell className="py-2 text-center">
 												<div className="flex gap-1 flex-wrap justify-center">
-													{r.isPwd && <Badge variant="outline" className="text-xs py-0 h-5 border-primary/20 text-primary">PWD</Badge>}
-													{r.isSingleParent && <Badge variant="outline" className="text-xs py-0 h-5 border-purple-500/30 text-purple-400 bg-purple-500/10">Solo Parent</Badge>}
+													{r.isPwd && <Badge variant="outline" className="text-xs py-0 h-5 bg-purple-100 text-purple-700 border-purple-200">PWD</Badge>}
+													{r.isSingleParent && <Badge variant="outline" className="text-xs py-0 h-5 bg-pink-100 text-pink-700 border-pink-200">Solo Parent</Badge>}
 												</div>
 											</TableCell>
 										)}

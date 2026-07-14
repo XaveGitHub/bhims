@@ -107,12 +107,14 @@ function TransactionsView() {
 				cell: ({ row }) => {
 					const status = row.original.status;
 					const statusConfig: Record<string, { style: string; icon: any }> = {
-						"Ready to Claim": { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle },
-						Completed: { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle2 },
-						Released: { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle2 },
-						Processing: { style: "bg-accent/50 text-primary border-primary/20", icon: Loader2 },
-						Pending: { style: "bg-amber-50 text-amber-600 border-amber-200/60", icon: Clock },
-						Cancelled: { style: "bg-red-50 text-red-600 border-red-200/60", icon: XCircle },
+						"Ready to Claim": { style: "bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-200", icon: CheckCircle },
+						Completed: { style: "bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-200", icon: CheckCircle2 },
+						Released: { style: "bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-200", icon: CheckCircle2 },
+						Claimed: { style: "bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-200", icon: CheckCircle2 },
+						Processing: { style: "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20", icon: Loader2 },
+						Pending: { style: "bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200", icon: Clock },
+						Cancelled: { style: "bg-red-100 text-red-700 border-red-200 hover:bg-red-200", icon: XCircle },
+						Unclaimed: { style: "bg-red-100 text-red-700 border-red-200 hover:bg-red-200", icon: AlertCircle },
 					};
 					const config = statusConfig[status] || { style: "bg-accent/15 text-muted-foreground", icon: AlertCircle };
 					

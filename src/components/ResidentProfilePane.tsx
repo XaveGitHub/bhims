@@ -1393,22 +1393,22 @@ export function ResidentProfilePane({
 										</Badge>
 									)}
 									{resident.isSeniorCitizen && (
-										<Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20 px-2 py-0 text-[10px] rounded-full">
+										<Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200 px-2 py-0 text-[10px] rounded-full">
 											Senior
 										</Badge>
 									)}
 									{resident.isPwd && (
-										<Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20 hover:bg-purple-500/20 px-2 py-0 text-[10px] rounded-full">
+										<Badge className="bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200 px-2 py-0 text-[10px] rounded-full">
 											PWD
 										</Badge>
 									)}
 									{resident.isSingleParent && (
-										<Badge className="bg-pink-500/10 text-pink-400 border-pink-500/20 hover:bg-pink-500/20 px-2 py-0 text-[10px] rounded-full">
+										<Badge className="bg-pink-100 text-pink-700 border-pink-200 hover:bg-pink-200 px-2 py-0 text-[10px] rounded-full">
 											Solo Parent
 										</Badge>
 									)}
 									{resident.isRegisteredVoter && (
-										<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-400/10 dark:text-emerald-400 dark:border-emerald-400/20">
+										<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200">
 											Voter
 										</Badge>
 									)}
@@ -1533,14 +1533,14 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 	}
 
 	const statusConfig: Record<string, { dot: string; badge: string; label: string }> = {
-		"Ready to Claim": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Ready" },
-		"Completed": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Completed" },
-		"Released": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Released" },
-		"Processing": { dot: "bg-primary shadow-primary/20", badge: "bg-primary text-primary border-primary/20", label: "Processing" },
-		"Pending": { dot: "bg-amber-500 shadow-amber-500/40", badge: "bg-amber-500/15 text-amber-400 border-amber-500/30", label: "Pending" },
-		"Cancelled": { dot: "bg-red-500 shadow-red-500/40", badge: "bg-red-500/15 text-red-400 border-red-500/30", label: "Cancelled" },
-		"Claimed": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", label: "Claimed" },
-		"Unclaimed": { dot: "bg-accent shadow-neutral-500/40", badge: "bg-accent/15 text-muted-foreground border-neutral-500/30", label: "Unclaimed" },
+		"Ready to Claim": { dot: "bg-emerald-500 shadow-emerald-500/20", badge: "bg-emerald-100 text-emerald-700 border-emerald-200", label: "Ready" },
+		"Completed": { dot: "bg-emerald-500 shadow-emerald-500/20", badge: "bg-emerald-100 text-emerald-700 border-emerald-200", label: "Completed" },
+		"Released": { dot: "bg-emerald-500 shadow-emerald-500/20", badge: "bg-emerald-100 text-emerald-700 border-emerald-200", label: "Released" },
+		"Processing": { dot: "bg-primary shadow-primary/20", badge: "bg-primary/10 text-primary border-primary/20", label: "Processing" },
+		"Pending": { dot: "bg-amber-500 shadow-amber-500/40", badge: "bg-amber-100 text-amber-700 border-amber-200", label: "Pending" },
+		"Cancelled": { dot: "bg-red-500 shadow-red-500/40", badge: "bg-red-100 text-red-700 border-red-200", label: "Cancelled" },
+		"Claimed": { dot: "bg-emerald-500 shadow-emerald-500/40", badge: "bg-emerald-100 text-emerald-700 border-emerald-200", label: "Claimed" },
+		"Unclaimed": { dot: "bg-red-500 shadow-red-500/40", badge: "bg-red-100 text-red-700 border-red-200", label: "Unclaimed" },
 	};
 
 	const getStatus = (status: string) =>

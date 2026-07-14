@@ -519,64 +519,64 @@ function ResidentsView() {
 					return (
 						<div className="flex flex-wrap justify-center gap-1">
 							{r.isDeceased && (
-								<Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-normal">Deceased</Badge>
+								<Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-normal bg-red-100 text-red-700 border-red-200 hover:bg-red-200">Deceased</Badge>
 							)}
 							{r.isPwd && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-400/10 dark:text-purple-400 dark:border-purple-400/20">PWD</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200">PWD</Badge>
 							)}
 							{r.isSeniorCitizen && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-400/10 dark:text-amber-400 dark:border-amber-400/20">Senior</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200">Senior</Badge>
 							)}
 							{r.isRegisteredVoter && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-400/10 dark:text-emerald-400 dark:border-emerald-400/20">Voter</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200">Voter</Badge>
 							)}
 							{r.isSingleParent && (
-								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-pink-100 text-pink-700 border-pink-200 dark:bg-pink-400/10 dark:text-pink-400 dark:border-pink-400/20">Solo Parent</Badge>
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-pink-100 text-pink-700 border-pink-200 hover:bg-pink-200">Solo Parent</Badge>
 							)}
 							{r.isBedBound && (
-								<span className="rounded-full bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-700 dark:text-red-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-red-100 text-red-700 border-red-200 hover:bg-red-200">
 									Bed Bound
-								</span>
+								</Badge>
 							)}
 							{r.isWheelchairBound && (
-								<span className="rounded-full bg-accent dark:bg-primary/10 border border-primary/20 dark:border-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary dark:text-primary">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200">
 									Wheelchair
-								</span>
+								</Badge>
 							)}
 							{r.isDialysisPatient && (
-								<span className="rounded-full bg-orange-100 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/30 px-2 py-0.5 text-[10px] font-semibold text-orange-700 dark:text-orange-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-200">
 									Dialysis
-								</span>
+								</Badge>
 							)}
 							{r.isCancerPatient && (
-								<span className="rounded-full bg-rose-100 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/30 px-2 py-0.5 text-[10px] font-semibold text-rose-700 dark:text-rose-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-rose-100 text-rose-700 border-rose-200 hover:bg-rose-200">
 									Cancer
-								</span>
+								</Badge>
 							)}
 							{(r.isNationalPensioner || r.isLocalPensioner) && (
-								<span className="rounded-full bg-teal-100 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800/30 px-2 py-0.5 text-[10px] font-semibold text-teal-700 dark:text-teal-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-teal-100 text-teal-700 border-teal-200 hover:bg-teal-200">
 									Pensioner
-								</span>
+								</Badge>
 							)}
 							{r.isOfw && (
-								<span className="rounded-full bg-indigo-100 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-indigo-100 text-indigo-700 border-indigo-200 hover:bg-indigo-200">
 									OFW
-								</span>
+								</Badge>
 							)}
 							{r.isOsy && (
-								<span className="rounded-full bg-yellow-100 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-800/30 px-2 py-0.5 text-[10px] font-semibold text-yellow-700 dark:text-yellow-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-yellow-100 text-yellow-700 border-yellow-200 hover:bg-yellow-200">
 									OSY
-								</span>
+								</Badge>
 							)}
 							{r.isIp && (
-								<span className="rounded-full bg-lime-100 dark:bg-lime-950/40 border border-lime-200 dark:border-lime-800/30 px-2 py-0.5 text-[10px] font-semibold text-lime-700 dark:text-lime-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-lime-100 text-lime-700 border-lime-200 hover:bg-lime-200">
 									IP
-								</span>
+								</Badge>
 							)}
 							{r.isMigrant && (
-								<span className="rounded-full bg-cyan-100 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/30 px-2 py-0.5 text-[10px] font-semibold text-cyan-700 dark:text-cyan-400">
+								<Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200">
 									Migrant
-								</span>
+								</Badge>
 							)}
 						</div>
 					);
@@ -817,7 +817,7 @@ function ResidentsView() {
 							{
 								label: "Voter",
 								active: filterVoter === true,
-								color: "bg-primary/10 border border-primary/20 text-primary",
+								color: "bg-cyan-100 border border-cyan-200 text-cyan-700",
 								fn: () => setFilterVoter(filterVoter === true ? undefined : true),
 							},
 							{
@@ -829,13 +829,13 @@ function ResidentsView() {
 							{
 								label: "Unemployed",
 								active: filterUnemployed === true,
-								color: "bg-red-100 border border-red-200 text-red-700",
+								color: "bg-muted/80 text-foreground/80 border-border",
 								fn: () => setFilterUnemployed(filterUnemployed === true ? undefined : true),
 							},
 							{
 								label: "Deceased",
 								active: filterDeceased === true,
-								color: "bg-muted/80 text-foreground/80 border-border",
+								color: "bg-red-100 border border-red-200 text-red-700",
 								fn: () => setFilterDeceased(filterDeceased === true ? undefined : true),
 							},
 						] as const

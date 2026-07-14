@@ -76,9 +76,9 @@ const ResidentRow = React.memo(({ r, i, isSelected, onToggle }: { r: any, i: num
 			<TableCell className="text-muted-foreground text-sm py-2 text-center">{r.purok}</TableCell>
 			<TableCell className="py-2 text-center">
 				<div className="flex gap-1 justify-center flex-wrap">
-					{r.isPwd && <Badge variant="outline" className="text-[10px] py-0 h-5 border-primary/20 text-primary">PWD</Badge>}
-					{r.isSingleParent && <Badge variant="outline" className="text-[10px] py-0 h-5 border-purple-500/30 text-purple-400 bg-purple-500/10">Solo Parent</Badge>}
-					{r.isSeniorCitizen && <Badge variant="outline" className="text-[10px] py-0 h-5 border-amber-500/30 text-amber-400 bg-amber-500/10">Senior</Badge>}
+					{r.isPwd && <Badge variant="outline" className="text-[10px] py-0 h-5 bg-purple-100 text-purple-700 border-purple-200">PWD</Badge>}
+					{r.isSingleParent && <Badge variant="outline" className="text-[10px] py-0 h-5 bg-pink-100 text-pink-700 border-pink-200">Solo Parent</Badge>}
+					{r.isSeniorCitizen && <Badge variant="outline" className="text-[10px] py-0 h-5 bg-amber-100 text-amber-700 border-amber-200">Senior</Badge>}
 				</div>
 			</TableCell>
 		</TableRow>
@@ -930,13 +930,13 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 										
 										<TableCell className="py-2 text-center w-[120px]">
 											{b.status === "Claimed" ? (
-												<Badge variant="outline" className="text-primary border-primary/20 gap-1.5 h-6">
-													<CheckCircle2 className="w-3.5 h-3.5" />
+												<Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-emerald-200 gap-1.5 h-6">
+													<CheckCircle2 className="w-3 h-3" />
 													Claimed
 												</Badge>
 											) : (
-												<Badge variant="outline" className="bg-card text-muted-foreground border-border gap-1.5 h-6 mx-auto">
-													<Clock className="w-3.5 h-3.5" />
+												<Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200 gap-1.5 h-6 mx-auto">
+													<Clock className="w-3 h-3" />
 													Pending
 												</Badge>
 											)}
