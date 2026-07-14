@@ -287,22 +287,22 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 				<div className="flex flex-1 overflow-hidden">
 					{/* Sidebar */}
 					<div className="w-64 bg-card/50 border-r border-border overflow-y-auto p-4 space-y-2 shrink-0">
-						<h3 className="text-xs font-bold text-muted-foreground tracking-widest mb-3 pl-2">Documents ({batch.items.length})</h3>
+						<h3 className="text-xs font-medium text-muted-foreground mb-3 pl-2">Documents ({batch.items.length})</h3>
 						{batch.items.map((item: any, idx: number) => {
 							const isPrinted = printedItems[item.id] || item.status === "Ready to Claim" || item.status === "Completed";
 							return (
 								<button
 									key={item.id}
 									onClick={() => setSelectedIndex(idx)}
-									className={`w-full text-left p-3 rounded-xl transition-all border ${
+									className={`w-full text-left px-3 py-2.5 rounded-[var(--radius)] transition-all border border-transparent group font-medium ${
 										selectedIndex === idx 
-											? 'bg-primary/10 border-primary/20 text-primary dark:text-primary' 
-											: 'bg-transparent border-transparent text-muted-foreground hover:bg-muted'
+											? 'bg-primary text-primary-foreground shadow-sm' 
+											: 'bg-transparent text-muted-foreground hover:bg-accent hover:text-primary'
 									}`}
 								>
 									<div className="flex justify-between items-center">
-										<span className="font-medium text-sm truncate pr-2 capitalize">{item.template?.name?.toLowerCase()}</span>
-										{isPrinted && <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />}
+										<span className="text-sm truncate pr-2 capitalize">{item.template?.name?.toLowerCase()}</span>
+										{isPrinted && <CheckCircle2 className={`w-4 h-4 shrink-0 transition-colors ${selectedIndex === idx ? 'text-primary-foreground' : 'text-primary group-hover:text-primary'}`} />}
 									</div>
 								</button>
 							);

@@ -29,7 +29,7 @@ export function NavMain({ items, label = "Core Operations" }: { items: NavItem[]
 								to={item.url}
 								activeProps={{
 									className:
-										"!bg-primary !text-primary-foreground font-semibold shadow-sm",
+										"!bg-primary !text-primary-foreground shadow-sm",
 								}}
 								inactiveProps={{
 									className:
