@@ -248,7 +248,7 @@ function QueueDashboard() {
 			<Dialog open={!!cancelBatch} onOpenChange={() => setCancelBatch(null)}>
 				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 							<Ban className="h-5 w-5 text-red-500" />
 							<span>Cancel Request</span>
 						</DialogTitle>

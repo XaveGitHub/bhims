@@ -214,7 +214,7 @@ export function AddResidentModal({
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className="max-w-3xl bg-background border-border/60 shadow-2xl text-foreground p-0 sm:rounded-2xl overflow-hidden h-[85vh] flex flex-col gap-0">
 				<DialogHeader className="px-6 py-5 shrink-0">
-					<DialogTitle className="text-xl font-bold text-foreground">
+					<DialogTitle className="text-xl font-bold tracking-tight text-foreground">
 						Add New Resident Profile
 					</DialogTitle>
 				</DialogHeader>

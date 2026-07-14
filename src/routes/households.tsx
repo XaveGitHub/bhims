@@ -756,7 +756,7 @@ function HouseholdsView() {
 				<DialogContent className="sm:max-w-[425px] bg-background border-border/60 shadow-md">
 					<form onSubmit={handleEditSubmit}>
 						<DialogHeader>
-							<DialogTitle className="text-xl text-foreground">
+							<DialogTitle className="text-xl font-bold tracking-tight text-foreground">
 								Edit Household
 							</DialogTitle>
 						</DialogHeader>

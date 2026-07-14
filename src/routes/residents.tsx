@@ -627,7 +627,7 @@ function ResidentsView() {
 									handleDeleteClick(r.id);
 								}}
 								disabled={hasSelection}
-								className="text-muted-foreground hover:!text-red-600 hover:!bg-red-100 rounded-full disabled:opacity-30"
+								className="text-red-500 hover:!text-red-600 hover:!bg-red-100 rounded-full disabled:opacity-30"
 							>
 								<Trash2 className="h-3.5 w-3.5" />
 							</Button>
@@ -1095,7 +1095,7 @@ function ResidentsView() {
 			<Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
 				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 							<Trash2 className="h-5 w-5 text-red-500" />
 							<span>Confirm Deletion</span>
 						</DialogTitle>
@@ -1119,7 +1119,7 @@ function ResidentsView() {
 							</Button>
 							<Button
 								onClick={confirmDelete}
-								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
+								className="bg-amber-500 hover:bg-amber-400 text-white rounded-xl px-5 font-semibold"
 							>
 								Delete Profile
 							</Button>
@@ -1190,7 +1190,7 @@ function ResidentsView() {
 			<Dialog open={isBulkDeleteModalOpen} onOpenChange={setIsBulkDeleteModalOpen}>
 				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 							<AlertTriangle className="h-5 w-5 text-red-500" />
 							<span>Confirm Bulk Deletion</span>
 						</DialogTitle>
@@ -1210,7 +1210,7 @@ function ResidentsView() {
 							</Button>
 							<Button
 								onClick={confirmBulkDelete}
-								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
+								className="bg-amber-500 hover:bg-amber-400 text-white rounded-xl px-5 font-semibold"
 							>
 								Delete {selectedIds.length} Profiles
 							</Button>
@@ -1223,7 +1223,7 @@ function ResidentsView() {
 			<Dialog open={!!bulkPurokToUpdate} onOpenChange={(open) => !open && setBulkPurokToUpdate(null)}>
 				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 							<Map className="h-5 w-5 text-primary" />
 							<span>Confirm Purok Update</span>
 						</DialogTitle>
@@ -1256,7 +1256,7 @@ function ResidentsView() {
 			<Dialog open={!!archiveModalIds} onOpenChange={(open) => !open && setArchiveModalIds(null)}>
 				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x text-amber-500"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>
 							<span>Confirm Archiving</span>
 						</DialogTitle>
@@ -1276,7 +1276,7 @@ function ResidentsView() {
 							</Button>
 							<Button
 								onClick={confirmArchive}
-								className="bg-amber-600 hover:bg-amber-500 text-foreground rounded-xl px-5"
+								className="bg-amber-500 hover:bg-amber-400 text-white rounded-xl px-5 font-semibold"
 							>
 								Archive {archiveModalIds?.length} Profile(s)
 							</Button>

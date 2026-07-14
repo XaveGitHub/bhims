@@ -346,7 +346,7 @@ function DistributionsPage() {
 											<Button
 												variant="ghost"
 												size="sm"
-												className="h-8 w-8 p-0 text-muted-foreground hover:!text-red-400 hover:!bg-red-500/10 rounded-full"
+												className="h-8 w-8 p-0 text-red-500 hover:!text-red-600 hover:!bg-red-500/10 rounded-full"
 												onClick={(e) => confirmDelete(prog.id, prog.name, e)}
 												disabled={isDeleting === prog.id}
 											>
@@ -373,7 +373,7 @@ function DistributionsPage() {
 				<DialogContent className="max-w-4xl bg-background border-border/60 p-0 shadow-md flex flex-col max-h-[85vh] overflow-hidden rounded-xl">
 					<div className="px-6 pt-6">
 						<DialogHeader>
-							<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+							<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 								Create Distribution Program
 							</DialogTitle>
 						</DialogHeader>
@@ -649,7 +649,7 @@ function DistributionsPage() {
 			<Dialog open={programToDelete !== null} onOpenChange={(open) => !open && setProgramToDelete(null)}>
 				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl z-[60]">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 							<Trash2 className="w-5 h-5 text-red-500" />
 							<span>Confirm Deletion</span>
 						</DialogTitle>

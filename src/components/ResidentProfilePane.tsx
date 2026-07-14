@@ -1458,7 +1458,7 @@ export function ResidentProfilePane({
 		<Dialog open={showPreview} onOpenChange={setShowPreview}>
 			<DialogContent className="max-w-6xl w-fit bg-background border-border p-0 overflow-hidden shadow-2xl">
 				<DialogHeader className="p-4 border-b border-border bg-card/50 flex flex-row items-center justify-between">
-					<DialogTitle className="text-2xl font-bold tracking-tight text-foreground/90 flex-1">
+					<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex-1">
 						ID Card Preview
 					</DialogTitle>
 					<div className="flex gap-2 mr-10 mt-0!">

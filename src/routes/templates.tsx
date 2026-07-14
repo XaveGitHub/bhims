@@ -156,7 +156,7 @@ function TemplatesPage() {
 						Manage certificates and clearances for the Resident Kiosk.
 					</p>
 				</div>
-				<Button onClick={openCreate} className="bg-primary hover: gap-2 rounded-xl px-4">
+				<Button onClick={openCreate} className="bg-primary hover:bg-primary/90 gap-2 rounded-xl px-4">
 					<Plus className="h-4 w-4" />
 					Add New Template
 				</Button>
@@ -169,10 +169,10 @@ function TemplatesPage() {
 						<div className="w-full h-48 relative flex items-center justify-center p-6">
 							{/* Hover Overlay with Actions */}
 							<div className="absolute inset-0 bg-card/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20 ">
-								<Button size="sm" variant="secondary" onClick={() => openEdit(tpl)} className="h-9 px-4 rounded-xl font-bold shadow-xl">
+								<Button size="sm" variant="ghost" onClick={() => openEdit(tpl)} className="h-9 px-4 rounded-xl font-bold shadow-xl bg-neutral-100 text-neutral-900 hover:bg-neutral-200 hover:!text-neutral-900 border border-transparent">
 									<Edit className="h-4 w-4 mr-2" /> Edit
 								</Button>
-								<Button size="sm" variant="ghost" onClick={() => handleDelete(tpl.id)} className="h-9 w-9 p-0 rounded-full bg-muted text-muted-foreground hover:!text-red-400 hover:!bg-red-500/10 shadow-xl">
+								<Button size="sm" variant="ghost" onClick={() => handleDelete(tpl.id)} className="h-9 w-9 p-0 rounded-full bg-muted text-red-500 hover:!text-red-600 hover:!bg-red-100 shadow-xl border border-transparent">
 									<Trash2 className="h-4 w-4" />
 								</Button>
 							</div>
@@ -223,7 +223,7 @@ function TemplatesPage() {
 			<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
 				<DialogContent className="sm:max-w-[425px] bg-card border-border/60 shadow-md text-foreground">
 					<DialogHeader>
-						<DialogTitle>{editingId ? "Edit Template" : "New Template"}</DialogTitle>
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground">{editingId ? "Edit Template" : "New Template"}</DialogTitle>
 					</DialogHeader>
 					<form onSubmit={handleSubmit} className="space-y-4 pt-4">
 						<div className="space-y-2">
@@ -299,7 +299,7 @@ function TemplatesPage() {
 			<Dialog open={isBuilderMode} onOpenChange={setIsBuilderMode}>
 				<DialogContent className="max-w-[850px] w-full max-h-[95vh] h-full bg-card border-border/60 shadow-md p-0 flex flex-col">
 					<DialogHeader className="p-4 border-b border-border hidden">
-						<DialogTitle>Template Builder</DialogTitle>
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground">Template Builder</DialogTitle>
 					</DialogHeader>
 					<div className="flex-1 overflow-hidden">
 						<TemplateBuilder 
@@ -318,7 +318,7 @@ function TemplatesPage() {
 			<Dialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
 				<DialogContent className="max-w-md bg-card border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
 							<Trash2 className="h-5 w-5 text-red-500" />
 							<span>Confirm Deletion</span>
 						</DialogTitle>

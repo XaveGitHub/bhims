@@ -352,7 +352,7 @@ function SettingsView() {
 				</div>
 
 				{/* Warnings */}
-				<div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 dark:bg-amber-950/30 dark:border-amber-900/40 dark:text-amber-500 flex items-start gap-3 leading-relaxed">
+				<div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 dark:bg-amber-950/30 dark:border-amber-900/40 dark:text-red-600 flex items-start gap-3 leading-relaxed">
 					<AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
 					<div className="space-y-1">
 						<span className="font-bold">Important Notice:</span>
@@ -408,8 +408,8 @@ function SettingsView() {
 			>
 				<DialogContent className="max-w-md bg-background border-red-500/30 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-red-400 flex items-center gap-2">
-							<Trash2 className="h-5 w-5" />
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+							<Trash2 className="h-5 w-5 text-red-600" />
 							<span>Delete All Records</span>
 						</DialogTitle>
 					</DialogHeader>
@@ -470,8 +470,8 @@ function SettingsView() {
 			>
 				<DialogContent className="max-w-md bg-background border-border/60 shadow-md text-foreground p-6 sm:rounded-xl">
 					<DialogHeader>
-						<DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
-							<AlertTriangle className="h-5 w-5 text-amber-500" />
+						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+							<AlertTriangle className="h-5 w-5 text-red-600" />
 							<span>Confirm Database Overwrite</span>
 						</DialogTitle>
 					</DialogHeader>
