@@ -216,29 +216,29 @@ function AccountsView() {
 
 			<Card className="rounded-xl border-border bg-card shadow-sm p-0 space-y-0 overflow-hidden">
 				<Table>
-					<TableHeader className="bg-muted/50">
-						<TableRow className="border-border hover:bg-transparent">
-							<TableHead className="text-muted-foreground font-bold h-14 px-6">Name</TableHead>
-							<TableHead className="text-muted-foreground font-bold h-14 px-6">Username</TableHead>
-							<TableHead className="text-muted-foreground font-bold h-14 px-6">Role</TableHead>
-							<TableHead className="text-muted-foreground font-bold h-14 px-6 text-right">Actions</TableHead>
+					<TableHeader className="bg-surface border-b border-border">
+						<TableRow className="border-border hover:bg-transparent border-0">
+							<TableHead className="text-muted-foreground font-medium h-10 px-5 bg-card">Name</TableHead>
+							<TableHead className="text-muted-foreground font-medium h-10 px-5 bg-card">Username</TableHead>
+							<TableHead className="text-muted-foreground font-medium h-10 px-5 bg-card">Role</TableHead>
+							<TableHead className="text-muted-foreground font-medium h-10 px-5 bg-card text-right">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{usersList.map((user) => (
 							<TableRow key={user.id} className="border-border/40 hover:bg-background/40 transition-colors">
-								<TableCell className="font-bold text-foreground px-6 py-4">
+								<TableCell className="text-foreground text-sm px-5 py-3">
 									{user.name}
 								</TableCell>
-								<TableCell className="text-muted-foreground px-6 py-4">
+								<TableCell className="text-muted-foreground text-sm px-5 py-3">
 									@{user.username}
 								</TableCell>
-								<TableCell className="px-6 py-4">
-									<span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize border ${user.role === 'admin' ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/30' : 'bg-primary/10 text-primary border-primary/20'}`}>
+								<TableCell className="px-5 py-3">
+									<span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize border ${user.role === 'admin' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-primary/10 text-primary border-primary/20'}`}>
 										{user.role}
 									</span>
 								</TableCell>
-								<TableCell className="text-right px-6 py-4">
+								<TableCell className="text-right px-5 py-3">
 									<div className="flex items-center justify-end gap-2">
 										<Button
 											type="button"
@@ -251,9 +251,9 @@ function AccountsView() {
 										<Button
 											type="button"
 											variant="ghost"
-											size="icon"
+											size="icon-sm"
 											onClick={() => handleDeleteClick(user.id)}
-											className="h-8 w-8 text-destructive/80 hover:text-destructive hover:bg-destructive/10 rounded-xl gap-1.5"
+											className="text-muted-foreground hover:!text-red-600 hover:!bg-red-100 rounded-full transition-all"
 											title="Delete Account"
 										>
 											<Trash2 className="h-4 w-4" />
@@ -314,8 +314,9 @@ function AccountsView() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setIsAccountModalOpen(false)}
-								className="bg-muted hover:bg-muted text-muted-foreground rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>
@@ -396,8 +397,9 @@ function AccountsView() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setIsCreateModalOpen(false)}
-								className="bg-muted hover:bg-muted text-muted-foreground rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>
@@ -431,8 +433,9 @@ function AccountsView() {
 					<div className="flex items-center justify-end gap-2 mt-4">
 						<Button
 							type="button"
+							variant="ghost"
 							onClick={() => setIsDeleteModalOpen(false)}
-							className="bg-muted hover:bg-muted text-muted-foreground rounded-xl px-5"
+							className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 						>
 							Cancel
 						</Button>

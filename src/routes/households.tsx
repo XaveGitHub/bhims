@@ -827,8 +827,9 @@ function HouseholdsView() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setIsEditModalOpen(false)}
-								className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>

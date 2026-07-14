@@ -264,7 +264,7 @@ function ExtractionView() {
 
 			{/* Results Table (Used for Web and Print) */}
 			{results.length > 0 ? (
-				<div className="bg-card/40 rounded-xl border border-border overflow-hidden print-container">
+				<div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden print-container">
 					<div className="p-5 bg-card border-b border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print-header-only">
 						<div>
 							<h3 className="text-lg font-bold text-foreground">Extracted Results</h3>
@@ -297,7 +297,7 @@ function ExtractionView() {
 					</div>
 					<div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] custom-scrollbar">
 						<Table>
-							<TableHeader className="sticky top-0 z-10 bg-surface ">
+							<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
 								<TableRow className="border-border hover:bg-transparent">
 									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Last Name</TableHead>
@@ -308,7 +308,7 @@ function ExtractionView() {
 									<TableHead className="text-muted-foreground font-medium h-10 text-center">Purok</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10 text-center">Gender</TableHead>
 									{(appliedFilters.isPwd || appliedFilters.isSoloParent) && (
-										<TableHead className="px-5 py-3 text-xs font-semibold text-muted-foreground w-32 text-center">Tags</TableHead>
+										<TableHead className="text-muted-foreground font-medium h-10 w-32 text-center">Tags</TableHead>
 									)}
 								</TableRow>
 							</TableHeader>
@@ -316,13 +316,13 @@ function ExtractionView() {
 								{paginatedResults.map((r, i) => (
 									<TableRow key={r.id} className="border-border hover:bg-muted/30 print-row">
 										<TableCell className="text-muted-foreground text-sm py-2">{(page - 1) * rowsPerPage + i + 1}</TableCell>
-										<TableCell className="font-medium text-foreground py-2">
+										<TableCell className="text-foreground text-sm py-2">
 											{r.lastName}
 										</TableCell>
-										<TableCell className="font-medium text-foreground py-2">
+										<TableCell className="text-foreground text-sm py-2">
 											{r.firstName}
 										</TableCell>
-										<TableCell className="font-medium text-foreground py-2">
+										<TableCell className="text-foreground text-sm py-2">
 											{r.middleName || ""}
 										</TableCell>
 										<TableCell className="text-muted-foreground text-sm py-2">{r.birthDate || "N/A"}</TableCell>

@@ -8,9 +8,8 @@ import {
 	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp, ArrowUpDown, AlertCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, ArrowUpDown, AlertCircle, CheckCircle2, Clock, Loader2, XCircle, CheckCircle, Search } from "lucide-react";
 import { format, isSameDay, isSameWeek, isSameMonth } from "date-fns";
-import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "../components/ui/input";
 import {
@@ -61,7 +60,7 @@ function TransactionsView() {
 				accessorKey: "id",
 				header: "Transaction ID",
 				cell: ({ row }) => (
-					<span className="font-mono font-medium text-foreground/80">
+					<span className="font-mono text-sm text-foreground">
 						TRX-{row.original.id?.toString().padStart(5, "0")}
 					</span>
 				),
@@ -74,11 +73,13 @@ function TransactionsView() {
 				accessorKey: "createdAt",
 				header: "Date & Time",
 				cell: ({ row }) => (
-					<span className="text-foreground/80">
-						{row.original.createdAt
-							? format(new Date(row.original.createdAt), "MMM d, yyyy - h:mm a")
-							: "—"}
-					</span>
+					<div className="text-center">
+						<span className="text-sm text-foreground">
+							{row.original.createdAt
+								? format(new Date(row.original.createdAt), "MMM d, yyyy - h:mm a")
+								: "—"}
+						</span>
+					</div>
 				),
 			},
 			{
@@ -86,7 +87,7 @@ function TransactionsView() {
 				id: "residentName",
 				header: "Resident Name",
 				cell: ({ row }) => (
-					<span className="font-medium text-foreground">
+					<span className="text-foreground text-sm">
 						{row.original.resident?.firstName} {row.original.resident?.lastName}
 					</span>
 				),
@@ -95,7 +96,7 @@ function TransactionsView() {
 				accessorKey: "template.name",
 				header: "Document Requested",
 				cell: ({ row }) => (
-					<span className="text-foreground/80 capitalize">
+					<span className="text-sm text-foreground capitalize">
 						{row.original.template?.name || "Unknown Document"}
 					</span>
 				),
@@ -105,18 +106,22 @@ function TransactionsView() {
 				header: "Status",
 				cell: ({ row }) => {
 					const status = row.original.status;
-					const styles: Record<string, string> = {
-						"Ready to Claim": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-						Completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30",
-						Released: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30",
-						Processing: "bg-accent text-primary dark:bg-primary dark:text-primary border-primary/20 dark:border-primary/20",
-						Pending: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400 border-amber-200 dark:border-amber-500/30",
-						Cancelled: "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400 border-red-200 dark:border-red-500/30",
+					const statusConfig: Record<string, { style: string; icon: any }> = {
+						"Ready to Claim": { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle },
+						Completed: { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle2 },
+						Released: { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle2 },
+						Processing: { style: "bg-accent/50 text-primary border-primary/20", icon: Loader2 },
+						Pending: { style: "bg-amber-50 text-amber-600 border-amber-200/60", icon: Clock },
+						Cancelled: { style: "bg-red-50 text-red-600 border-red-200/60", icon: XCircle },
 					};
+					const config = statusConfig[status] || { style: "bg-accent/15 text-muted-foreground", icon: AlertCircle };
+					
 					return (
-						<Badge variant="outline" className={`${styles[status] || "bg-accent/15 text-muted-foreground"} font-bold`}>
-							{status}
-						</Badge>
+						<div className="flex justify-center">
+							<Badge variant="outline" className={`font-medium shadow-none ${config.style}`} icon={config.icon}>
+								{status}
+							</Badge>
+						</div>
 					);
 				},
 			},
@@ -124,7 +129,7 @@ function TransactionsView() {
 				accessorKey: "totalPrice",
 				header: "Price",
 				cell: ({ row }) => (
-					<span className="text-foreground/80">
+					<span className="text-sm text-foreground">
 						{row.original.totalPrice > 0 ? `₱${row.original.totalPrice.toFixed(2)}` : "Free"}
 					</span>
 				),
@@ -203,7 +208,7 @@ function TransactionsView() {
 				</div>
 			</div>
 
-			<div className="rounded-xl border border-border bg-card/40 p-3 sm:p-4 space-y-3">
+			<div className="rounded-xl border border-border bg-card shadow-sm p-3 sm:p-4 space-y-3">
 				<div className="flex flex-col sm:flex-row gap-2">
 					<div className="relative flex-1">
 						<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground pointer-events-none">
@@ -261,13 +266,21 @@ function TransactionsView() {
 												return (
 													<TableHead
 														key={header.id}
-														className="text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-card text-left"
+														className={`text-muted-foreground font-medium h-10 px-5 whitespace-nowrap bg-card ${
+															["createdAt", "status"].includes(header.column.id) 
+															? "text-center" 
+															: "text-left"
+														}`}
 													>
 														{header.isPlaceholder ? null : canSort ? (
 															<button
 																type="button"
 																onClick={header.column.getToggleSortingHandler()}
-																className="flex items-center gap-1.5 hover:text-foreground transition-colors outline-none"
+																className={`flex items-center gap-1.5 hover:text-foreground transition-colors outline-none ${
+																	["createdAt", "status"].includes(header.column.id) 
+																	? "w-full justify-center" 
+																	: ""
+																}`}
 															>
 																{flexRender(
 																	header.column.columnDef.header,

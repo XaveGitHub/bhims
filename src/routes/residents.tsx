@@ -393,7 +393,7 @@ function ResidentsView() {
 					const r = row.original;
 					return (
 						<div className="flex flex-col min-w-0">
-							<span className="font-semibold text-foreground text-sm leading-snug truncate">
+							<span className="text-foreground text-sm leading-snug truncate">
 								{r.lastName} {r.suffix ? ` ${r.suffix}` : ""}
 							</span>
 							{r.contactNumber && (
@@ -424,7 +424,7 @@ function ResidentsView() {
 				enableHiding: false,
 				sortingFn: "alphanumeric",
 				cell: ({ row }) => (
-					<span className="text-foreground/80 text-sm">{row.original.middleName || "—"}</span>
+					<span className="text-foreground text-sm">{row.original.middleName || "—"}</span>
 				),
 			},
 			{
@@ -462,7 +462,7 @@ function ResidentsView() {
 					const r = row.original;
 					return (
 						<div className="flex flex-col items-center">
-							<span className="text-sm font-medium text-foreground leading-snug">
+							<span className="text-sm text-foreground leading-snug">
 								{r.purok}
 							</span>
 						</div>
@@ -479,11 +479,11 @@ function ResidentsView() {
 					return (
 						<div className="flex flex-col items-center">
 							{r.block || r.lot ? (
-								<span className="text-sm font-medium text-foreground leading-snug">
+								<span className="text-sm text-foreground leading-snug">
 									Blk {r.block || "-"} Lot {r.lot || "-"}
 								</span>
 							) : (
-								<span className="text-sm font-medium text-muted-foreground italic">
+								<span className="text-sm text-muted-foreground italic">
 									{r.householdId ? `Fam. ${r.lastName}` : "—"}
 								</span>
 							)}
@@ -594,40 +594,40 @@ function ResidentsView() {
 						<div className="flex items-center justify-end gap-1 group">
 							<Button
 								variant="ghost"
-								size="sm"
+								size="icon-sm"
 								onClick={(e) => {
 									e.stopPropagation();
 									setDrawerResident(r);
 								}}
 								disabled={hasSelection}
-								className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg disabled:opacity-30 transition-all"
+								className="text-muted-foreground hover:!text-primary hover:!bg-primary/15 rounded-full disabled:opacity-30 transition-all"
 							>
 								<Eye className="h-3.5 w-3.5" />
 							</Button>
 							{!r.isDeceased && (
 								<Button
 									variant="ghost"
-									size="sm"
+									size="icon-sm"
 									onClick={(e) => {
 										e.stopPropagation();
 										setArchiveModalIds([r.id]);
 									}}
 									disabled={hasSelection}
 									title="Mark as Deceased"
-									className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg disabled:opacity-30"
+									className="text-muted-foreground hover:!text-amber-600 hover:!bg-amber-100 rounded-full disabled:opacity-30"
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-archive-x"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="m9.5 17 5-5"/><path d="m9.5 12 5 5"/></svg>
 								</Button>
 							)}
 							<Button
 								variant="ghost"
-								size="sm"
+								size="icon-sm"
 								onClick={(e) => {
 									e.stopPropagation();
 									handleDeleteClick(r.id);
 								}}
 								disabled={hasSelection}
-								className="h-7 w-7 text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/40 rounded-lg gap-1.5 disabled:opacity-30"
+								className="text-muted-foreground hover:!text-red-600 hover:!bg-red-100 rounded-full disabled:opacity-30"
 							>
 								<Trash2 className="h-3.5 w-3.5" />
 							</Button>
@@ -805,31 +805,31 @@ function ResidentsView() {
 							{
 								label: "PWD",
 								active: filterPwd === true,
-								color: "bg-purple-100 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/30 px-2 py-0.5 text-[10px] font-semibold text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800/30",
+								color: "bg-purple-100 border border-purple-200 text-purple-700",
 								fn: () => setFilterPwd(filterPwd === true ? undefined : true),
 							},
 							{
 								label: "Senior",
 								active: filterSenior === true,
-								color: "bg-amber-100 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/30 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/30",
+								color: "bg-amber-100 border border-amber-200 text-amber-700",
 								fn: () => setFilterSenior(filterSenior === true ? undefined : true),
 							},
 							{
 								label: "Voter",
 								active: filterVoter === true,
-								color: "bg-accent dark:bg-primary/10 border border-primary/20 dark:border-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary dark:text-primary border-primary/20 dark:border-primary/20",
+								color: "bg-primary/10 border border-primary/20 text-primary",
 								fn: () => setFilterVoter(filterVoter === true ? undefined : true),
 							},
 							{
 								label: "Solo Parent",
 								active: filterSingleParent === true,
-								color: "bg-pink-100 dark:bg-pink-950/40 border border-pink-200 dark:border-pink-800/30 px-2 py-0.5 text-[10px] font-semibold text-pink-700 dark:text-pink-400 border-pink-200 dark:border-pink-800/30",
+								color: "bg-pink-100 border border-pink-200 text-pink-700",
 								fn: () => setFilterSingleParent(filterSingleParent === true ? undefined : true),
 							},
 							{
 								label: "Unemployed",
 								active: filterUnemployed === true,
-								color: "bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-800/30 px-2 py-0.5 text-[10px] font-semibold text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/30",
+								color: "bg-red-100 border border-red-200 text-red-700",
 								fn: () => setFilterUnemployed(filterUnemployed === true ? undefined : true),
 							},
 							{
@@ -1108,11 +1108,12 @@ function ResidentsView() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => {
 									setIsDeleteModalOpen(false);
 									setResidentToDelete(null);
 								}}
-								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>
@@ -1167,7 +1168,7 @@ function ResidentsView() {
 								size="sm"
 								variant="destructive"
 								onClick={() => setIsBulkDeleteModalOpen(true)}
-								className="h-8 text-xs bg-red-50 hover:bg-red-100 text-red-600 border-red-200 dark:bg-red-950/20 dark:hover:bg-red-900/30 dark:text-red-400 dark:border-red-500/20 border flex items-center gap-1.5"
+								className="h-8 text-xs bg-red-50 hover:bg-red-500/10 text-red-500 hover:text-red-400 border-red-200 border flex items-center gap-1.5"
 							>
 								<Trash2 className="w-3.5 h-3.5 mr-1.5" />
 								Delete
@@ -1201,8 +1202,9 @@ function ResidentsView() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setIsBulkDeleteModalOpen(false)}
-								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>
@@ -1233,8 +1235,9 @@ function ResidentsView() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setBulkPurokToUpdate(null)}
-								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>
@@ -1265,8 +1268,9 @@ function ResidentsView() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setArchiveModalIds(null)}
-								className="bg-muted hover:bg-border dark:bg-muted text-foreground/80 rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>

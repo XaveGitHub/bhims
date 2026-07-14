@@ -31,11 +31,11 @@ export function NavDocuments({ items }: { items: DocumentItem[] }) {
 								to={item.url}
 								activeProps={{
 									className:
-										"bg-primary text-primary-foreground font-medium shadow-sm",
+										"!bg-primary !text-primary-foreground font-semibold shadow-sm",
 								}}
 								inactiveProps={{
 									className:
-										"text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+										"text-sidebar-foreground hover:!text-primary",
 								}}
 								className="flex w-full items-center gap-3 transition-all group/link duration-200 !rounded-full"
 							>

@@ -227,8 +227,8 @@ export function AddResidentModal({
 						defaultValue="personal"
 						className="w-full flex-1 flex flex-col min-h-0 overflow-hidden"
 					>
-						<TabsList className="flex w-[calc(100%-3rem)] bg-card border border-border shadow-sm px-2 py-[26px] rounded-[var(--radius)] mx-6 mt-2 mb-0 shrink-0">
-							<TabsTrigger value="personal" className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all">
+						<TabsList className="flex w-[calc(100%-3rem)] bg-card border border-border px-2 py-[26px] rounded-xl mx-6 mt-2 mb-0 shrink-0">
+							<TabsTrigger value="personal" className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Personal
 									{hasPersonalErrors && (
@@ -236,7 +236,7 @@ export function AddResidentModal({
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger value="health" className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all">
+							<TabsTrigger value="health" className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Health & Status
 									{hasHealthErrors && (
@@ -244,7 +244,7 @@ export function AddResidentModal({
 									)}
 								</span>
 							</TabsTrigger>
-							<TabsTrigger value="economic" className="!h-10 flex-1 rounded-[calc(var(--radius)-2px)] !border-none !shadow-none text-[15px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all">
+							<TabsTrigger value="economic" className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground transition-all">
 								<span className="flex items-center justify-center gap-2">
 									Household & Economic
 									{hasEconomicErrors && (
@@ -857,7 +857,7 @@ export function AddResidentModal({
 								type="button"
 								variant="ghost"
 								onClick={onClose}
-								className="rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>

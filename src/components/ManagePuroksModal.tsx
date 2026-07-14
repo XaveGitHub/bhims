@@ -155,19 +155,19 @@ export function ManagePuroksModal({ open, onOpenChange, onPuroksChanged }: Manag
 										<div className="flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
 											{editingId === purok.id ? (
 												<>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-primary hover:bg-primary/10" onClick={() => handleSaveEdit(purok)}>
+													<Button variant="ghost" size="icon-sm" className="rounded-full text-primary hover:!bg-primary/15 transition-all" onClick={() => handleSaveEdit(purok)}>
 														<Check className="w-4 h-4" />
 													</Button>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-muted-foreground hover:bg-muted" onClick={() => setEditingId(null)}>
+													<Button variant="ghost" size="icon-sm" className="rounded-full text-muted-foreground hover:!bg-muted transition-all" onClick={() => setEditingId(null)}>
 														<X className="w-4 h-4" />
 													</Button>
 												</>
 											) : (
 												<>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => { setEditingId(purok.id); setEditingName(purok.name); }}>
+													<Button variant="ghost" size="icon-sm" className="rounded-full text-muted-foreground hover:!text-primary hover:!bg-primary/15 transition-all" onClick={() => { setEditingId(purok.id); setEditingName(purok.name); }}>
 														<Pencil className="w-4 h-4" />
 													</Button>
-													<Button variant="ghost" size="icon" className="w-8 h-8 text-muted-foreground hover:text-red-400 hover:bg-red-500/10" onClick={() => handleDelete(purok.id)}>
+													<Button variant="ghost" size="icon-sm" className="rounded-full text-muted-foreground hover:!text-red-600 hover:!bg-red-100 transition-all" onClick={() => handleDelete(purok.id)}>
 														<Trash2 className="w-4 h-4" />
 													</Button>
 												</>

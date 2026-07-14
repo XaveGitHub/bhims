@@ -71,8 +71,8 @@ const ResidentRow = React.memo(({ r, i, isSelected, onToggle }: { r: any, i: num
 			</TableCell>
 			<TableCell className="text-muted-foreground text-sm py-2">{i + 1}</TableCell>
 			<TableCell className="text-muted-foreground text-xs font-mono py-2">{r.residentId || "—"}</TableCell>
-			<TableCell className="font-medium text-foreground py-2">{r.lastName || "—"}</TableCell>
-			<TableCell className="text-foreground/80 py-2">{r.firstName || "—"}</TableCell>
+			<TableCell className="text-foreground text-sm py-2">{r.lastName || "-"}</TableCell>
+			<TableCell className="text-foreground text-sm py-2">{r.firstName || "-"}</TableCell>
 			<TableCell className="text-muted-foreground text-sm py-2 text-center">{r.purok}</TableCell>
 			<TableCell className="py-2 text-center">
 				<div className="flex gap-1 justify-center flex-wrap">
@@ -312,7 +312,7 @@ function DistributionsPage() {
 				<div className="border border-border/60 rounded-xl bg-card/40 shadow-sm flex-1 flex flex-col overflow-hidden">
 					<div className="flex-1 overflow-auto">
 						<Table>
-							<TableHeader className="sticky top-0 z-10 bg-surface ">
+							<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
 								<TableRow className="border-border hover:bg-transparent">
 									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Program Name</TableHead>
@@ -330,7 +330,7 @@ function DistributionsPage() {
 										onClick={() => setSelectedProgram({ id: prog.id, name: prog.name, date: prog.date })}
 									>
 										<TableCell className="text-muted-foreground text-sm py-2">{i + 1}</TableCell>
-										<TableCell className="font-medium text-foreground py-2">
+										<TableCell className="text-foreground text-sm py-2">
 											{prog.name}
 										</TableCell>
 										<TableCell className="text-muted-foreground text-sm py-2 max-w-[200px] truncate" title={prog.description || ""}>
@@ -346,7 +346,7 @@ function DistributionsPage() {
 											<Button
 												variant="ghost"
 												size="sm"
-												className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400 hover:bg-red-500/10 rounded-lg"
+												className="h-8 w-8 p-0 text-muted-foreground hover:!text-red-400 hover:!bg-red-500/10 rounded-full"
 												onClick={(e) => confirmDelete(prog.id, prog.name, e)}
 												disabled={isDeleting === prog.id}
 											>
@@ -512,7 +512,7 @@ function DistributionsPage() {
 						<div className="flex flex-col flex-1 border border-border/60 rounded-xl bg-muted/20 overflow-hidden min-h-0">
 							<div className="flex-1 overflow-auto custom-scrollbar">
 								<Table>
-									<TableHeader className="sticky top-0 z-10 bg-card/95 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
+									<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
 								<TableRow className="border-border hover:bg-transparent">
 										<TableHead className="w-12 text-center h-10">
 											<Checkbox 
@@ -627,7 +627,7 @@ function DistributionsPage() {
 							<span className="text-primary">{selectedResidentIds.size}</span> residents selected
 						</div>
 						<div className="flex gap-3">
-							<Button type="button" variant="ghost" onClick={() => setIsCreating(false)} className="rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted px-5">
+							<Button type="button" variant="ghost" onClick={() => setIsCreating(false)} className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5">
 							Cancel
 						</Button>
 						<Button onClick={handleCreate} disabled={isLoading || selectedResidentIds.size === 0} className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 shadow-sm">
@@ -661,8 +661,9 @@ function DistributionsPage() {
 						<div className="flex items-center justify-end gap-2 mt-6">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setProgramToDelete(null)}
-								className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>
@@ -897,7 +898,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 					</div>
 					<div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] custom-scrollbar">
 						<Table>
-							<TableHeader className="sticky top-0 z-10 bg-surface ">
+							<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
 								<TableRow className="border-border hover:bg-transparent">
 									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">ID</TableHead>
@@ -919,11 +920,11 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 									<TableRow key={b.id} className="border-border hover:bg-muted/30 transition-colors print-row">
 										<TableCell className="text-muted-foreground text-sm py-2">{(page - 1) * rowsPerPage + i + 1}</TableCell>
 										<TableCell className="text-muted-foreground text-xs font-mono py-2">{b.residentCode || "—"}</TableCell>
-										<TableCell className="font-medium text-foreground py-2">{b.lastName || "—"}</TableCell>
-										<TableCell className="text-foreground/80 py-2">{b.firstName || "—"}</TableCell>
+										<TableCell className="text-foreground text-sm py-2">{b.lastName || "-"}</TableCell>
+										<TableCell className="text-foreground text-sm py-2">{b.firstName || "-"}</TableCell>
 										<TableCell className="text-muted-foreground py-2">{b.middleName || "—"}</TableCell>
 										<TableCell className="text-muted-foreground text-sm py-2">{b.birthDate || "—"}</TableCell>
-										<TableCell className="text-foreground/80 text-center py-2">{age !== null ? age : "—"}</TableCell>
+										<TableCell className="text-foreground text-center py-2">{age !== null ? age : "—"}</TableCell>
 										<TableCell className="text-muted-foreground text-sm py-2 text-center">{b.purok}</TableCell>
 										<TableCell className="text-muted-foreground text-sm py-2 text-center">{b.gender || "—"}</TableCell>
 										

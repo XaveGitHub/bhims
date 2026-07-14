@@ -172,7 +172,7 @@ function TemplatesPage() {
 								<Button size="sm" variant="secondary" onClick={() => openEdit(tpl)} className="h-9 px-4 rounded-xl font-bold shadow-xl">
 									<Edit className="h-4 w-4 mr-2" /> Edit
 								</Button>
-								<Button size="sm" variant="ghost" onClick={() => handleDelete(tpl.id)} className="h-9 w-9 p-0 rounded-xl bg-muted text-muted-foreground hover:text-red-400 hover:bg-red-950/40 shadow-xl">
+								<Button size="sm" variant="ghost" onClick={() => handleDelete(tpl.id)} className="h-9 w-9 p-0 rounded-full bg-muted text-muted-foreground hover:!text-red-400 hover:!bg-red-500/10 shadow-xl">
 									<Trash2 className="h-4 w-4" />
 								</Button>
 							</div>
@@ -283,7 +283,7 @@ function TemplatesPage() {
 								</Button>
 							)}
 							<div className="flex gap-3 justify-end mt-2">
-								<Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)} className="rounded-xl">
+								<Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)} className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5">
 									Cancel
 								</Button>
 								<Button type="submit" className="rounded-xl">
@@ -330,8 +330,9 @@ function TemplatesPage() {
 						<div className="flex items-center justify-end gap-2 pt-4">
 							<Button
 								type="button"
+								variant="ghost"
 								onClick={() => setDeleteId(null)}
-								className="bg-muted hover:bg-muted text-muted-foreground rounded-xl px-5"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
 							>
 								Cancel
 							</Button>

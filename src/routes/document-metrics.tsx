@@ -158,10 +158,10 @@ function DocumentMetricsView() {
 							key={t}
 							type="button"
 							onClick={() => setTimeframe(t)}
-							className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+							className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
 								timeframe === t 
-									? "bg-muted text-foreground shadow-sm" 
-									: "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+									? "bg-primary text-primary-foreground shadow-md" 
+									: "text-muted-foreground hover:bg-accent hover:text-primary"
 							}`}
 						>
 							{t}
@@ -187,7 +187,7 @@ function DocumentMetricsView() {
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-primary dark:text-primary bg-accent dark:bg-primary/10 border-primary/20 dark:border-primary/20 shrink-0">
+							<div className="p-2.5 rounded-xl border text-primary bg-primary/10 border-primary/20 shrink-0">
 								<FileText className="h-5 w-5" />
 							</div>
 						</div>
@@ -209,7 +209,7 @@ function DocumentMetricsView() {
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-cyan-700 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-950/40 border-cyan-200 dark:border-cyan-800/30 shrink-0">
+							<div className="p-2.5 rounded-xl border text-cyan-700 bg-cyan-100 border-cyan-200 shrink-0">
 								<DollarSign className="h-5 w-5" />
 							</div>
 						</div>
@@ -231,7 +231,7 @@ function DocumentMetricsView() {
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/30 shrink-0">
+							<div className="p-2.5 rounded-xl border text-amber-700 bg-amber-100 border-amber-200 shrink-0">
 								<Clock className="h-5 w-5" />
 							</div>
 						</div>
@@ -253,7 +253,7 @@ function DocumentMetricsView() {
 									</span>
 								</div>
 							</div>
-							<div className="p-2.5 rounded-xl border text-primary dark:text-primary bg-accent dark:bg-primary/10 border-primary/20 dark:border-primary/20 shrink-0">
+							<div className="p-2.5 rounded-xl border text-primary bg-primary/10 border-primary/20 shrink-0">
 								<TrendingUp className="h-5 w-5" />
 							</div>
 						</div>

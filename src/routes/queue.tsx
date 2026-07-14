@@ -4,7 +4,7 @@ import { getActiveQueue, updateTransactionStatus } from "../lib/queue-service";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
-import { User, FileText, CheckCircle2, Clock, Loader2, RefreshCw, Ban } from "lucide-react";
+import { User, FileText, CheckCircle2, Clock, Loader2, RefreshCw, Ban, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import Draggable from "react-draggable";
 import { useRef } from "react";
@@ -107,34 +107,40 @@ function QueueDashboard() {
 					{queue.map((item) => (
 						<Card 
 							key={item.queueNumber} 
-							className={`bg-background rounded-xl border-2 transition-all ${
-								item.status === 'Pending' ? 'border-border hover:border-border' :
-								item.status === 'Processing' ? 'border-primary/20 dark:border-primary/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]' :
-								'border-emerald-200 dark:border-emerald-900/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
-							}`}
+							className="flex flex-col h-full transition-all"
 						>
 							<CardHeader className="pb-0 pt-6 px-6">
 								<div className="flex flex-col items-center justify-center">
-									<p className="text-xs font-bold tracking-widest text-muted-foreground">Queue Number</p>
-									<CardTitle className="text-5xl font-semibold tabular-nums tracking-tighter mt-1 text-foreground">
+									<p className="text-sm font-medium text-muted-foreground">Queue Number</p>
+									<CardTitle className="text-6xl font-semibold tracking-tighter mt-1 text-foreground">
 										{item.queueNumber.toString().padStart(4, '0')}
 									</CardTitle>
-									<Badge variant="outline" className={`mt-3
-										${item.status === 'Pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400 border-amber-200 dark:border-amber-500/30' : ''}
-										${item.status === 'Processing' ? 'bg-accent text-primary dark:bg-primary dark:text-primary border-primary/20 dark:border-primary/20' : ''}
-										${item.status === 'Ready to Claim' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30' : ''}
-									`}>
-										{item.status}
-									</Badge>
+									{(() => {
+										const statusConfig: Record<string, { style: string; icon: any }> = {
+											"Ready to Claim": { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle },
+											Completed: { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle2 },
+											Released: { style: "bg-emerald-50 text-emerald-600 border-emerald-200/60", icon: CheckCircle2 },
+											Processing: { style: "bg-accent/50 text-primary border-primary/20", icon: Loader2 },
+											Pending: { style: "bg-amber-50 text-amber-600 border-amber-200/60", icon: Clock },
+											Cancelled: { style: "bg-red-50 text-red-600 border-red-200/60", icon: XCircle },
+										};
+										const config = statusConfig[item.status] || { style: "bg-accent/15 text-muted-foreground", icon: AlertCircle };
+										
+										return (
+											<Badge variant="outline" className={`mt-3 font-medium shadow-none ${config.style}`} icon={config.icon}>
+												{item.status}
+											</Badge>
+										);
+									})()}
 								</div>
 							</CardHeader>
-							<CardContent className="pt-0 px-6 space-y-4">
-								<div className="space-y-3">
+							<CardContent className="pt-0 px-6 flex-1 flex flex-col">
+								<div className="space-y-4">
 									<div className="flex items-start gap-3">
 										<User className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
 										<div>
 											<p className="text-sm text-muted-foreground">Resident</p>
-											<p className="font-semibold text-foreground">
+											<p className="text-sm text-foreground">
 												{item.resident?.firstName} {item.resident?.lastName}
 											</p>
 										</div>
@@ -143,13 +149,13 @@ function QueueDashboard() {
 										<FileText className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
 										<div>
 											<p className="text-sm text-muted-foreground">Document Requested</p>
-											<p className="font-medium text-foreground">
+											<p className="text-sm text-foreground">
 												{item.items.length === 1 
 													? item.items[0].template?.name 
 													: `${item.items.length} Documents`}
 											</p>
-											{item.items.length > 1 && (
-												<p className="text-xs text-muted-foreground mt-0.5">
+											{item.items.length > 1 && item.items.length <= 3 && (
+												<p className="text-xs text-muted-foreground mt-0.5 leading-tight">
 													{item.items.map((i: any) => i.template?.name).join(", ")}
 												</p>
 											)}
@@ -166,10 +172,10 @@ function QueueDashboard() {
 									</div>
 								</div>
 
-								<div className="mt-4 flex gap-2 w-full">
+								<div className="mt-auto pt-6 flex gap-2 w-full">
 									<Button 
-										variant="outline" 
-										className="border-border text-muted-foreground hover:bg-red-100-red-700 dark:text-red-400 hover:border-red-500/30 shrink-0 px-3 rounded-xl"
+										variant="ghost" 
+										className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-4 shrink-0"
 										onClick={() => setCancelBatch(item)}
 									>
 										Cancel
@@ -177,7 +183,7 @@ function QueueDashboard() {
 
 									{item.status === 'Pending' && (
 										<Button 
-											className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
+											className= "flex-1  bg-amber-500 hover:bg-amber-500/90 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]"
 											onClick={async () => {
 												await handleStatusChange(item.items.map((i: any) => i.id), 'Processing');
 												setSelectedBatch(item);
@@ -198,7 +204,7 @@ function QueueDashboard() {
 									
 									{item.status === 'Ready to Claim' && (
 										<Button 
-											className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-foreground font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)] rounded-xl"
+											className="flex-1 bg-emerald-600 hover:bg-emerald-600/90 text-white font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)] rounded-xl"
 											onClick={() => handleStatusChange(item.items.map((i: any) => i.id), 'Completed')}
 										>
 											<CheckCircle2 className="w-4 h-4 mr-2" />
@@ -254,7 +260,8 @@ function QueueDashboard() {
 						<div className="flex items-center justify-end gap-2 mt-4">
 							<Button 
 								type="button" 
-								className="bg-muted hover:bg-accent dark:hover:bg-muted text-foreground/80 rounded-xl px-5" 
+								variant="ghost"
+								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5" 
 								onClick={() => setCancelBatch(null)}
 							>
 								No, keep it

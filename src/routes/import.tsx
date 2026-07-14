@@ -1006,6 +1006,7 @@ function ImportView() {
 					<div className="flex items-center justify-end gap-2">
 						<Button
 							type="button"
+							variant="ghost"
 							onClick={() => {
 								setStep(1);
 								setExcelData([]);
@@ -1015,7 +1016,7 @@ function ImportView() {
 								setSkippedCount(0);
 								setSkippedNames([]);
 							}}
-							className="bg-muted hover:bg-muted text-foreground/80 rounded-xl px-6 py-2.5 text-sm font-semibold"
+							className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-6 py-2.5 text-sm font-semibold"
 						>
 							Cancel
 						</Button>

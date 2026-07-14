@@ -41,7 +41,7 @@ export function NavSecondary({
 									}}
 									inactiveProps={{
 										className:
-											"text-sidebar-foreground hover:bg-primary/10 hover:text-primary",
+											"text-sidebar-foreground hover:!text-primary",
 									}}
 									className="flex w-full items-center gap-3 transition-all group/link duration-200 rounded-[var(--radius)]"
 								>

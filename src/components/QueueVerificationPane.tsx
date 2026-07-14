@@ -278,7 +278,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								</p>
 							</div>
 						</div>
-						<Button variant="ghost" size="icon" onClick={onClose} className="rounded-lg hover:bg-muted shrink-0 h-9 w-9 text-muted-foreground transition-all hover:text-red-400">
+						<Button variant="ghost" size="icon-sm" onClick={onClose} className="rounded-full shrink-0 text-muted-foreground transition-all hover:!bg-red-100 hover:!text-red-600">
 							<X className="w-4 h-4" />
 						</Button>
 					</div>
@@ -459,7 +459,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									{(hasField('fullName') || hasField('firstName')) && (
 										<>
 											<div className="space-y-2">
-												<Label className="text-muted-foreground text-xs font-bold tracking-wider">First Name</Label>
+												<Label className="text-sm font-medium text-foreground/80 mb-1">First Name</Label>
 												<Input 
 													value={editForm.firstName}
 													onChange={(e) => setEditForm({...editForm, firstName: e.target.value})}
@@ -467,7 +467,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 												/>
 											</div>
 											<div className="space-y-2">
-												<Label className="text-muted-foreground text-xs font-bold tracking-wider">Last Name</Label>
+												<Label className="text-sm font-medium text-foreground/80 mb-1">Last Name</Label>
 												<Input 
 													value={editForm.lastName}
 													onChange={(e) => setEditForm({...editForm, lastName: e.target.value})}
@@ -479,7 +479,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									
 									{hasField('purok') && (
 										<div className="space-y-2">
-											<Label className="text-muted-foreground text-xs font-bold tracking-wider">Purok</Label>
+											<Label className="text-sm font-medium text-foreground/80 mb-1">Purok</Label>
 											<Input 
 												value={editForm.purok}
 												onChange={(e) => setEditForm({...editForm, purok: e.target.value})}
@@ -490,7 +490,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									
 									{(hasField('age') || hasField('birthDate')) && (
 										<div className="space-y-2 flex flex-col justify-end">
-											<Label className="text-muted-foreground text-xs font-bold tracking-wider">Birthdate</Label>
+											<Label className="text-sm font-medium text-foreground/80 mb-1">Birthdate</Label>
 										<Popover>
 											<PopoverTrigger asChild>
 												<Button
@@ -522,7 +522,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('purpose') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Purpose</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Purpose</Label>
 										<Input 
 											value={editForm.purpose}
 											onChange={(e) => setEditForm({...editForm, purpose: e.target.value})}
@@ -533,7 +533,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('occupation') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Occupation</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Occupation</Label>
 										<Input 
 											value={editForm.occupation}
 											onChange={(e) => setEditForm({...editForm, occupation: e.target.value})}
@@ -545,7 +545,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('monthlyIncome') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Monthly Income (₱)</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Monthly Income (₱)</Label>
 										<Input 
 											type="number"
 											value={editForm.monthlyIncome}
@@ -558,7 +558,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('civilStatus') && (
 									<div className="space-y-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Civil Status</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Civil Status</Label>
 										<Input 
 											value={editForm.civilStatus}
 											onChange={(e) => setEditForm({...editForm, civilStatus: e.target.value})}
@@ -570,7 +570,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('yearsResident') && (
 									<div className="space-y-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Years Resident</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Years Resident</Label>
 										<Input 
 											type="number"
 											value={editForm.yearsResident}
@@ -582,7 +582,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('orNumber') && (
 									<div className="space-y-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">OR #</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">OR #</Label>
 										<Input 
 											value={editForm.orNumber}
 											onChange={(e) => setEditForm({...editForm, orNumber: e.target.value})}
@@ -593,7 +593,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('commTaxNo') && (
 									<div className="space-y-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Comm. Tax No.</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Comm. Tax No.</Label>
 										<Input 
 											value={editForm.commTaxNo}
 											onChange={(e) => setEditForm({...editForm, commTaxNo: e.target.value})}
@@ -604,7 +604,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('witness') && (
 									<div className="space-y-2 col-span-2">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Witness Name</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Witness Name</Label>
 										<Input 
 											value={editForm.witness}
 											onChange={(e) => setEditForm({...editForm, witness: e.target.value})}
@@ -615,7 +615,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 									{hasField('dateIssued') && (
 									<div className="space-y-2 col-span-2 flex flex-col justify-end">
-										<Label className="text-muted-foreground text-xs font-bold tracking-wider">Date Issued</Label>
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Date Issued</Label>
 										<Popover>
 											<PopoverTrigger asChild>
 												<Button
@@ -648,9 +648,10 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 							</div>
 
 							<div className="space-y-3 mt-4">
-								<div className="flex gap-2">
+								<div className="flex gap-3">
 									<Button 
-										className="flex-1 h-11 text-base font-bold bg-muted hover:bg-muted text-foreground rounded-xl transition-all border border-border"
+										variant="secondary"
+										className="flex-1 rounded-xl text-sm font-semibold transition-all h-11"
 										onClick={handlePrintSingle}
 										disabled={isProcessing}
 									>
@@ -659,7 +660,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 									</Button>
 									
 									<Button 
-										className="flex-1 h-11 text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all shadow-lg shadow-primary/20"
+										className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-sm text-sm font-semibold transition-all h-11"
 										onClick={handleDownloadImage}
 										disabled={isProcessing}
 									>
@@ -669,7 +670,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								</div>
 
 								<Button 
-									className="w-full h-11 text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 rounded-xl relative overflow-hidden group disabled:opacity-50 disabled:shadow-none"
+									className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-sm text-sm font-semibold transition-all group disabled:opacity-50 h-11"
 									onClick={handleMarkBatchReady}
 									disabled={isProcessing || !allPrinted}
 								>
