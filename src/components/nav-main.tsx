@@ -18,7 +18,7 @@ interface NavItem {
 export function NavMain({ items, label = "Core Operations" }: { items: NavItem[], label?: string }) {
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel className="normal-case text-sidebar-foreground/70 font-semibold text-xs mt-2">
+			<SidebarGroupLabel className="normal-case text-sidebar-foreground/70 font-semibold text-xs">
 				{label}
 			</SidebarGroupLabel>
 			<SidebarMenu>

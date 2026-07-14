@@ -133,24 +133,15 @@ export function AppSidebar({
 
 	return (
 		<Sidebar collapsible="icon" {...props}>
-			<SidebarHeader>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							asChild
-							className="data-[slot=sidebar-menu-button]:p-1.5! w-auto group-data-[collapsible=icon]:justify-center"
-						>
-							<Link to="/">
-								<IconInnerShadowTop className="size-5! shrink-0 text-primary" />
-								<span className="text-base font-bold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
-									BHIMS
-								</span>
-							</Link>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
+			<SidebarHeader className="group-data-[collapsible=icon]:p-0">
+				<Link to="/" className="flex items-center gap-2 px-2 py-2">
+					<img src="/barangay_logo.png" alt="BHIMS Logo" className="w-11 h-11 shrink-0 object-contain" />
+					<span className="text-lg font-semibold tracking-tight text-sidebar-foreground whitespace-nowrap break-normal group-data-[collapsible=icon]:hidden">
+						Brgy Handumanan
+					</span>
+				</Link>
 			</SidebarHeader>
-			<SidebarContent>
+			<SidebarContent className="-mt-3">
 				{data.overview.length > 0 && <NavMain items={data.overview} label="Overview" />}
 				{data.documentServices.length > 0 && <NavMain items={data.documentServices} label="Document Services" />}
 				{data.dataTools.length > 0 && <NavMain items={data.dataTools} label="Data Tools" />}

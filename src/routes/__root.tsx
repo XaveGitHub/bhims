@@ -142,7 +142,7 @@ function RootLayout() {
 						<div className="flex items-center gap-3">
 							<SidebarTrigger className="text-muted-foreground hover:text-foreground/90" />
 							<h1 className="text-lg font-bold tracking-tight text-foreground hidden sm:block">
-								{brgyName} BHIMS
+								{brgyName} Information Management System (BHIMS)
 							</h1>
 						</div>
 
