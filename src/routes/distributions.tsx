@@ -471,7 +471,7 @@ function DistributionsPage() {
 								onClick={() => setIsPwd(!isPwd)}
 								className={`h-10 px-4 rounded-xl border text-sm font-medium transition-all ${
 									isPwd 
-									? "bg-primary/10 border-primary/20 text-primary" 
+									? "bg-purple-100 border-purple-200 text-purple-700" 
 									: "bg-card border-border text-muted-foreground hover:bg-card"
 								}`}
 							>
@@ -481,7 +481,7 @@ function DistributionsPage() {
 								onClick={() => setIsSoloParent(!isSoloParent)}
 								className={`h-10 px-4 rounded-xl border text-sm font-medium transition-all ${
 									isSoloParent 
-									? "bg-purple-100 border-purple-300 text-purple-700 dark:bg-purple-500/20 dark:border-purple-500/50 dark:text-purple-400" 
+									? "bg-pink-100 border-pink-200 text-pink-700" 
 									: "bg-card border-border text-muted-foreground hover:bg-card"
 								}`}
 							>
