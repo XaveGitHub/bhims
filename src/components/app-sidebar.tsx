@@ -2,7 +2,6 @@ import {
 	IconDashboard,
 	IconDatabase,
 	IconFileCertificate,
-	IconInnerShadowTop,
 	IconSettings,
 	IconUsers,
 	IconUserShield,
@@ -23,9 +22,6 @@ import {
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
 } from "#/components/ui/sidebar.tsx";
 
 export function AppSidebar({

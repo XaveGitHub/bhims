@@ -482,7 +482,7 @@ export const deleteResident = createServerFn({
 export const getUniquePuroks = createServerFn({
 	method: "GET",
 }).handler(async () => {
-	await requireStaff();
+	// Intentionally public so the Kiosk can load the dropdown without being logged in
 	const results = db.select({ name: puroks.name }).from(puroks).orderBy(puroks.orderIndex, puroks.name).all();
 	return results.map((r) => r.name);
 });

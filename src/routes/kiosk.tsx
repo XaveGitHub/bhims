@@ -42,7 +42,8 @@ function KioskPage() {
 	// Registration State
 	const [regFirstName, setRegFirstName] = useState("");
 	const [regLastName, setRegLastName] = useState("");
-	const [regBirthDate, setRegBirthDate] = useState("");
+	const [regMiddleName, setRegMiddleName] = useState("");
+	const [regBirthDate, setRegBirthDate] = useState<string>("");
 	const [regGender, setRegGender] = useState("");
 	const [regPurok, setRegPurok] = useState("");
 	const [regContactNumber, setRegContactNumber] = useState("");
@@ -136,13 +137,13 @@ function KioskPage() {
 			const payload = {
 				firstName: regFirstName,
 				lastName: regLastName,
-				middleName: null,
+				middleName: regMiddleName || null,
 				suffix: null,
 				birthDate: regBirthDate,
 				gender: regGender || null,
 				purok: regPurok,
 				contactNumber: regContactNumber || null,
-				fullName: `${regFirstName} ${regLastName}`.trim(),
+				fullName: `${regFirstName} ${regMiddleName ? regMiddleName + ' ' : ''}${regLastName}`.trim(),
 				
 				// Required booleans
 				isHeadOfHousehold: false,
@@ -242,20 +243,16 @@ function KioskPage() {
 	};
 
 	return (
-		<div className="min-h-[100dvh] w-full bg-background text-foreground flex flex-col relative overflow-x-hidden select-none">
+		<div className="min-h-[100dvh] w-full bg-zinc-50 dark:bg-background text-zinc-800 dark:text-zinc-200 flex flex-col relative overflow-x-hidden">
 			{/* Decorative Background */}
-			<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/5 via-background to-background pointer-events-none z-0" />
+			<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/10 via-zinc-50 to-zinc-50 dark:via-background dark:to-background pointer-events-none z-0" />
 			{/* Grid Lines Background */}
 			<div
-				className="absolute inset-0 opacity-[0.025] pointer-events-none z-0"
+				className="absolute inset-0 opacity-[0.08] pointer-events-none z-0"
 				style={{
 					backgroundImage:
 						"linear-gradient(to right, #808080 1px, transparent 1px), linear-gradient(to bottom, #808080 1px, transparent 1px)",
-					backgroundSize: "24px 24px",
-					maskImage:
-						"radial-gradient(circle at center, black 40%, transparent 80%)",
-					WebkitMaskImage:
-						"radial-gradient(circle at center, black 40%, transparent 80%)",
+					backgroundSize: "24px 24px"
 				}}
 			/>
 
@@ -263,7 +260,7 @@ function KioskPage() {
 			{(step === "WELCOME" || step === "SUCCESS") && (
 				<div className="relative z-10 w-full bg-transparent flex flex-col items-center justify-center pt-4 lg:pt-6 pb-2 px-8 animate-in fade-in slide-in-from-top-8 duration-500">
 					<div className="flex flex-col items-center text-center gap-2 md:gap-3">
-						<img src="/barangay_logo.png" alt="Logo" className="w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-[0_0_25px_rgba(59,130,246,0.7)]" />
+						<img src="/barangay_logo.png" alt="Logo" className="w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-md" />
 						<div>
 							<h1 className="font-semibold text-2xl md:text-3xl lg:text-4xl tracking-tight text-foreground leading-tight">Barangay Handumanan</h1>
 							<p className="text-sm md:text-base lg:text-lg text-primary font-medium tracking-wide mt-0 md:mt-1">Self-Service Kiosk</p>
@@ -286,22 +283,22 @@ function KioskPage() {
 							<div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-10 w-full px-2 md:px-4">
 								<button 
 									onClick={() => setStep("IDENTIFY_SCAN")}
-									className="group relative flex flex-col items-center justify-center bg-background rounded-xl md:rounded-xl lg:rounded-xl p-4 sm:p-6 md:p-8 lg:p-16 shadow-md shadow-primary/20 transition-all hover:scale-105 active:scale-95 border-2 border-primary/20 overflow-hidden"
+									className="group relative flex flex-col items-center justify-center bg-background rounded-xl md:rounded-xl lg:rounded-xl p-4 sm:p-6 md:p-8 lg:p-16 shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/20 hover:border-primary/50 active:scale-95 border-2 border-border overflow-hidden"
 								>
-									<div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity" />
-									<ScanBarcode className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground mb-2 md:mb-4 lg:mb-8 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+									<div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-5 transition-opacity" />
+									<ScanBarcode className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground group-hover:text-primary mb-2 md:mb-4 lg:mb-8 drop-shadow-md transition-all duration-500 group-hover:scale-110" />
 									<h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-semibold text-foreground drop-shadow-md whitespace-nowrap">Existing Resident</h2>
-									<p className="text-primary mt-1 md:mt-2 text-[10px] sm:text-xs md:text-sm lg:text-lg font-bold tracking-wide">I already have a record</p>
+									<p className="text-muted-foreground group-hover:text-primary mt-1 md:mt-2 text-[10px] sm:text-xs md:text-sm lg:text-lg font-bold tracking-wide transition-colors">I already have a record</p>
 								</button>
 
 								<button 
 									onClick={() => setStep("REGISTER_NEW_RESIDENT")}
-									className="group relative flex flex-col items-center justify-center bg-background hover:bg-accent rounded-xl md:rounded-xl lg:rounded-xl p-4 sm:p-6 md:p-8 lg:p-16 shadow-md transition-all hover:scale-105 active:scale-95 border-2 border-border overflow-hidden"
+									className="group relative flex flex-col items-center justify-center bg-background rounded-xl md:rounded-xl lg:rounded-xl p-4 sm:p-6 md:p-8 lg:p-16 shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/20 hover:border-primary/50 active:scale-95 border-2 border-border overflow-hidden"
 								>
-									<div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity" />
-									<UserPlus className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground mb-2 md:mb-4 lg:mb-8 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+									<div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-5 transition-opacity" />
+									<UserPlus className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 text-foreground group-hover:text-primary mb-2 md:mb-4 lg:mb-8 drop-shadow-md transition-all duration-500 group-hover:scale-110" />
 									<h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-semibold text-foreground drop-shadow-md whitespace-nowrap">New Resident</h2>
-									<p className="text-foreground/80 mt-1 md:mt-2 text-[10px] sm:text-xs md:text-sm lg:text-lg font-bold tracking-wide">I need to register</p>
+									<p className="text-muted-foreground group-hover:text-primary mt-1 md:mt-2 text-[10px] sm:text-xs md:text-sm lg:text-lg font-bold tracking-wide transition-colors">I need to register</p>
 								</button>
 							</div>
 						</div>
@@ -322,7 +319,7 @@ function KioskPage() {
 										autoFocus
 										aria-invalid={!!error}
 										placeholder="Or type code..." 
-										className="h-14 bg-card text-center text-lg tracking-[0.3em] font-mono rounded-xl transition-all shadow-inner placeholder:normal-case placeholder:tracking-normal border-border focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50"
+										className="h-14 bg-white text-black text-center text-lg md:text-lg tracking-[0.3em] font-mono rounded-xl transition-all shadow-inner placeholder:normal-case placeholder:tracking-normal border-slate-300 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50"
 										value={barcode}
 										onChange={(e) => { setBarcode(e.target.value.toUpperCase()); setError(null); }}
 									/>
@@ -376,8 +373,7 @@ function KioskPage() {
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
 												autoFocus
-												aria-invalid={!!error}
-												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={firstName}
 												onChange={(e) => { setFirstName(e.target.value); setError(null); }}
 											/>
@@ -388,8 +384,7 @@ function KioskPage() {
 										<div className="relative">
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
-												aria-invalid={!!error}
-												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={lastName}
 												onChange={(e) => { setLastName(e.target.value); setError(null); }}
 											/>
@@ -404,9 +399,9 @@ function KioskPage() {
 												type="button"
 												variant="outline"
 												className={cn(
-													"justify-start text-left font-normal bg-card h-14 text-lg rounded-xl transition-all border",
-													error ? 'border-red-500 bg-red-500/10 text-red-100 hover:bg-red-500/20' : 'border-border hover:bg-card',
-													!birthDate && "text-muted-foreground"
+													"justify-start text-left font-normal bg-white text-black h-14 text-lg rounded-xl transition-all border-slate-300 hover:bg-slate-50",
+													error && 'border-red-500 bg-red-50',
+													!birthDate && "text-slate-400"
 												)}
 											>
 												<CalendarIcon className="mr-3 h-5 w-5 opacity-50" />
@@ -417,7 +412,7 @@ function KioskPage() {
 												)}
 											</Button>
 										</PopoverTrigger>
-										<PopoverContent className="w-auto p-0 bg-card border-border text-foreground" align="start">
+										<PopoverContent className="w-auto p-0 bg-white border-slate-300 text-black z-[9999]" align="start">
 											<CalendarComponent
 												mode="single"
 												selected={birthDate ? parseISO(birthDate) : undefined}
@@ -489,7 +484,7 @@ function KioskPage() {
 											<Input 
 												autoFocus
 												aria-invalid={!!error && !regFirstName}
-												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={regFirstName}
 												onChange={(e) => { setRegFirstName(e.target.value); setError(null); }}
 												placeholder="e.g. Juan"
@@ -502,16 +497,25 @@ function KioskPage() {
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
 												aria-invalid={!!error && !regLastName}
-												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={regLastName}
 												onChange={(e) => { setRegLastName(e.target.value); setError(null); }}
 												placeholder="e.g. Dela Cruz"
 											/>
 										</div>
 									</div>
-								</div>
-								
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+									<div className="space-y-2">
+										<Label className="text-muted-foreground">Middle Name <span className="text-muted-foreground/60 text-sm font-normal">(Optional)</span></Label>
+										<div className="relative">
+											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+											<Input 
+												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50" 
+												value={regMiddleName}
+												onChange={(e) => { setRegMiddleName(e.target.value); setError(null); }}
+												placeholder="e.g. Santos"
+											/>
+										</div>
+									</div>
 									<div className="space-y-2 flex flex-col">
 										<Label className="text-muted-foreground">Date of Birth <span className="text-red-500">*</span></Label>
 										<Popover open={isDatePopoverOpen} onOpenChange={setIsDatePopoverOpen}>
@@ -522,20 +526,20 @@ function KioskPage() {
 														type="button"
 														variant="outline"
 														className={cn(
-															"w-full justify-start text-left font-normal bg-card h-14 text-lg rounded-xl transition-all border pl-12",
-															(error && !regBirthDate) ? 'border-red-500 bg-red-500/10' : 'border-border hover:bg-card',
-															!regBirthDate && "text-muted-foreground"
+															"w-full justify-start text-left font-normal bg-white text-black h-14 text-lg rounded-xl transition-all border-slate-300 pl-12 hover:bg-slate-50",
+															(error && !regBirthDate) && 'border-red-500 bg-red-50',
+															!regBirthDate && "text-slate-400"
 														)}
 													>
 														{regBirthDate ? (
-															format(parseISO(regBirthDate), "MMMM d, yyyy")
+															format(parseISO(regBirthDate), "MMM d, yyyy")
 														) : (
 															<span>Pick a date</span>
 														)}
 													</Button>
 												</div>
 											</PopoverTrigger>
-											<PopoverContent className="w-auto p-0 bg-card border-border text-foreground" align="start">
+											<PopoverContent className="w-auto p-0 bg-white border-slate-300 text-black z-[9999]" align="start">
 												<CalendarComponent
 													mode="single"
 													selected={regBirthDate ? parseISO(regBirthDate) : undefined}
@@ -559,28 +563,25 @@ function KioskPage() {
 										<div className="relative">
 											<Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Select value={regGender} onValueChange={(v) => { setRegGender(v); setError(null); }}>
-												<SelectTrigger className={cn("w-full h-14 bg-card text-lg rounded-xl border-border pl-12 focus:ring-primary/50", (error && !regGender) && "border-red-500")}>
+												<SelectTrigger className={cn("w-full h-14 bg-white text-black text-lg rounded-xl border-slate-300 pl-12 focus:ring-primary/50", (error && !regGender) && "border-red-500")}>
 													<SelectValue placeholder="Select gender" />
 												</SelectTrigger>
-												<SelectContent className="bg-card border-border text-foreground">
+												<SelectContent className="bg-white border-slate-300 text-black z-[9999]">
 													<SelectItem value="Male">Male</SelectItem>
 													<SelectItem value="Female">Female</SelectItem>
 												</SelectContent>
 											</Select>
 										</div>
 									</div>
-								</div>
-
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									<div className="space-y-2">
 										<Label className="text-muted-foreground">Purok <span className="text-red-500">*</span></Label>
 										<div className="relative">
 											<MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Select value={regPurok} onValueChange={(v) => { setRegPurok(v); setError(null); }}>
-												<SelectTrigger className={cn("w-full h-14 bg-card text-lg rounded-xl border-border pl-12 focus:ring-primary/50", (error && !regPurok) && "border-red-500")}>
+												<SelectTrigger className={cn("w-full h-14 bg-white text-black text-lg rounded-xl border-slate-300 pl-12 focus:ring-primary/50", (error && !regPurok) && "border-red-500")}>
 													<SelectValue placeholder="Select Purok" />
 												</SelectTrigger>
-												<SelectContent className="bg-card border-border text-foreground max-h-[250px]">
+												<SelectContent className="bg-white border-slate-300 text-black max-h-[250px] z-[9999]">
 													{purokOptions.map((p) => (
 														<SelectItem key={p} value={p}>{p}</SelectItem>
 													))}
@@ -594,7 +595,7 @@ function KioskPage() {
 											<Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Input 
 												type="tel"
-												className="h-14 bg-card text-lg rounded-xl border-border pl-12 focus-visible:border-primary/20 focus-visible:ring-primary/50" 
+												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50" 
 												value={regContactNumber}
 												onChange={(e) => setRegContactNumber(e.target.value)}
 												placeholder="Optional"

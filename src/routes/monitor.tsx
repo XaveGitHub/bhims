@@ -94,7 +94,7 @@ function MonitorDashboard() {
         {/* LEFT COLUMN: PREPARING (Processing) */}
         <div className="flex-1 border-r border-border flex flex-col bg-transparent">
           <div className="px-10 py-8 shrink-0">
-            <h2 className="text-5xl font-semibold tracking-tight text-foreground/80 uppercase">
+            <h2 className="text-5xl font-semibold tracking-tight text-foreground mb-2 uppercase">
               Preparing
             </h2>
             <p className="text-2xl text-primary">
