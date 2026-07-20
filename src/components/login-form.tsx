@@ -77,8 +77,8 @@ export function LoginForm({
         <div className="flex flex-col items-center text-center -mb-2">
           <div className="relative">
             {/* Green glowing background behind the logo */}
-            <div className="absolute inset-0 bg-primary blur-xl rounded-full scale-150 z-0 animate-pulse" />
-            <img src="/barangay_logo.png" alt="Barangay Logo" className="relative z-10 w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" />
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-125 z-0" />
+            <img src="/barangay_logo.png" alt="Barangay Logo" className="relative z-10 w-24 h-24 object-contain drop-shadow-md" />
           </div>
           <h1 className="text-3xl font-bold tracking-[0.15em] text-foreground drop-shadow-sm leading-none pt-2">BHIMS</h1>
         </div>
@@ -98,10 +98,11 @@ export function LoginForm({
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
-              if (usernameError) setUsernameError(false);
-              if (generalError) setGeneralError("");
+              setUsernameError(false);
+              setPasswordError(false);
+              setGeneralError("");
             }}
-            className={cn((usernameError || generalError) && "border-red-500 text-red-500 focus-visible:ring-red-500")}
+            className={cn((usernameError || generalError) && "border-destructive text-destructive focus-visible:ring-0 focus-visible:border-destructive")}
             autoFocus
           />
         </Field>
@@ -115,10 +116,11 @@ export function LoginForm({
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              if (passwordError) setPasswordError(false);
-              if (generalError) setGeneralError("");
+              setUsernameError(false);
+              setPasswordError(false);
+              setGeneralError("");
             }}
-            className={cn((passwordError || generalError) && "border-red-500 text-red-500 focus-visible:ring-red-500")}
+            className={cn((passwordError || generalError) && "border-destructive text-destructive focus-visible:ring-0 focus-visible:border-destructive")}
           />
         </Field>
         

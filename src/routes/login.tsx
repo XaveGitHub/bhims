@@ -15,11 +15,11 @@ function LoginScreen() {
 				<img 
 					src="/community_bg.png" 
 					alt="Community Background" 
-					className="absolute inset-0 h-full w-full object-cover filter brightness-[0.4] saturate-[0.8]"
+					className="absolute inset-0 h-full w-full object-cover filter brightness-[0.7]"
 				/>
 				
 				{/* Gradients to blend image and text */}
-				<div className="absolute inset-0 bg-background pointer-events-none z-0" />
+				<div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background pointer-events-none z-0" />
 				
 				{/* Text positioned at the bottom left */}
 				<div className="relative z-10">
@@ -37,15 +37,11 @@ function LoginScreen() {
 			<div className="relative flex flex-col p-6 md:p-10 justify-center">
 				{/* Background Grid for Right Side */}
 				<div
-					className="absolute inset-0 opacity-[0.025] pointer-events-none z-0"
+					className="absolute inset-0 opacity-[0.05] pointer-events-none z-0"
 					style={{
 						backgroundImage:
 							"linear-gradient(to right, #808080 1px, transparent 1px), linear-gradient(to bottom, #808080 1px, transparent 1px)",
-						backgroundSize: "24px 24px",
-						maskImage:
-							"radial-gradient(circle at center, black 40%, transparent 80%)",
-						WebkitMaskImage:
-							"radial-gradient(circle at center, black 40%, transparent 80%)",
+						backgroundSize: "24px 24px"
 					}}
 				/>
 
