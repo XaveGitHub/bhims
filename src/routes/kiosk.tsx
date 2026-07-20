@@ -319,7 +319,7 @@ function KioskPage() {
 										autoFocus
 										aria-invalid={!!error}
 										placeholder="Or type code..." 
-										className="h-14 bg-white text-black text-center text-lg md:text-lg tracking-[0.3em] font-mono rounded-xl transition-all shadow-inner placeholder:normal-case placeholder:tracking-normal border-slate-300 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50"
+										className="h-14 bg-white text-foreground text-center text-lg md:text-lg tracking-[0.3em] font-mono rounded-xl transition-all shadow-inner placeholder:normal-case placeholder:tracking-normal border-slate-300 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50"
 										value={barcode}
 										onChange={(e) => { setBarcode(e.target.value.toUpperCase()); setError(null); }}
 									/>
@@ -373,7 +373,7 @@ function KioskPage() {
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
 												autoFocus
-												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-foreground text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={firstName}
 												onChange={(e) => { setFirstName(e.target.value); setError(null); }}
 											/>
@@ -384,7 +384,7 @@ function KioskPage() {
 										<div className="relative">
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
-												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-foreground text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={lastName}
 												onChange={(e) => { setLastName(e.target.value); setError(null); }}
 											/>
@@ -399,7 +399,7 @@ function KioskPage() {
 												type="button"
 												variant="outline"
 												className={cn(
-													"justify-start text-left font-normal bg-white text-black h-14 text-lg rounded-xl transition-all border-slate-300 hover:bg-slate-50",
+													"justify-start text-left font-normal bg-white text-foreground h-14 text-lg rounded-xl transition-all border-slate-300 hover:bg-slate-50",
 													error && 'border-red-500 bg-red-50',
 													!birthDate && "text-slate-400"
 												)}
@@ -412,7 +412,7 @@ function KioskPage() {
 												)}
 											</Button>
 										</PopoverTrigger>
-										<PopoverContent className="w-auto p-0 bg-white border-slate-300 text-black z-[9999]" align="start">
+										<PopoverContent className="w-auto p-0 bg-white border-slate-300 text-foreground z-[9999]" align="start">
 											<CalendarComponent
 												mode="single"
 												selected={birthDate ? parseISO(birthDate) : undefined}
@@ -484,7 +484,7 @@ function KioskPage() {
 											<Input 
 												autoFocus
 												aria-invalid={!!error && !regFirstName}
-												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-foreground text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={regFirstName}
 												onChange={(e) => { setRegFirstName(e.target.value); setError(null); }}
 												placeholder="e.g. Juan"
@@ -497,7 +497,7 @@ function KioskPage() {
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
 												aria-invalid={!!error && !regLastName}
-												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
+												className="h-14 bg-white text-foreground text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50 aria-invalid:border-red-500 aria-invalid:ring-red-500/50" 
 												value={regLastName}
 												onChange={(e) => { setRegLastName(e.target.value); setError(null); }}
 												placeholder="e.g. Dela Cruz"
@@ -509,7 +509,7 @@ function KioskPage() {
 										<div className="relative">
 											<User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 											<Input 
-												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50" 
+												className="h-14 bg-white text-foreground text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50" 
 												value={regMiddleName}
 												onChange={(e) => { setRegMiddleName(e.target.value); setError(null); }}
 												placeholder="e.g. Santos"
@@ -526,7 +526,7 @@ function KioskPage() {
 														type="button"
 														variant="outline"
 														className={cn(
-															"w-full justify-start text-left font-normal bg-white text-black h-14 text-lg rounded-xl transition-all border-slate-300 pl-12 hover:bg-slate-50",
+															"w-full justify-start text-left font-normal bg-white text-foreground h-14 text-lg rounded-xl transition-all border-slate-300 pl-12 hover:bg-slate-50",
 															(error && !regBirthDate) && 'border-red-500 bg-red-50',
 															!regBirthDate && "text-slate-400"
 														)}
@@ -539,7 +539,7 @@ function KioskPage() {
 													</Button>
 												</div>
 											</PopoverTrigger>
-											<PopoverContent className="w-auto p-0 bg-white border-slate-300 text-black z-[9999]" align="start">
+											<PopoverContent className="w-auto p-0 bg-white border-slate-300 text-foreground z-[9999]" align="start">
 												<CalendarComponent
 													mode="single"
 													selected={regBirthDate ? parseISO(regBirthDate) : undefined}
@@ -563,10 +563,10 @@ function KioskPage() {
 										<div className="relative">
 											<Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Select value={regGender} onValueChange={(v) => { setRegGender(v); setError(null); }}>
-												<SelectTrigger className={cn("w-full h-14 bg-white text-black text-lg rounded-xl border-slate-300 pl-12 focus:ring-primary/50", (error && !regGender) && "border-red-500")}>
+												<SelectTrigger className={cn("w-full h-14 bg-white text-foreground text-lg rounded-xl border-slate-300 pl-12 focus:ring-primary/50", (error && !regGender) && "border-red-500")}>
 													<SelectValue placeholder="Select gender" />
 												</SelectTrigger>
-												<SelectContent className="bg-white border-slate-300 text-black z-[9999]">
+												<SelectContent className="bg-white border-slate-300 text-foreground z-[9999]">
 													<SelectItem value="Male">Male</SelectItem>
 													<SelectItem value="Female">Female</SelectItem>
 												</SelectContent>
@@ -578,10 +578,10 @@ function KioskPage() {
 										<div className="relative">
 											<MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Select value={regPurok} onValueChange={(v) => { setRegPurok(v); setError(null); }}>
-												<SelectTrigger className={cn("w-full h-14 bg-white text-black text-lg rounded-xl border-slate-300 pl-12 focus:ring-primary/50", (error && !regPurok) && "border-red-500")}>
+												<SelectTrigger className={cn("w-full h-14 bg-white text-foreground text-lg rounded-xl border-slate-300 pl-12 focus:ring-primary/50", (error && !regPurok) && "border-red-500")}>
 													<SelectValue placeholder="Select Purok" />
 												</SelectTrigger>
-												<SelectContent className="bg-white border-slate-300 text-black max-h-[250px] z-[9999]">
+												<SelectContent className="bg-white border-slate-300 text-foreground max-h-[250px] z-[9999]">
 													{purokOptions.map((p) => (
 														<SelectItem key={p} value={p}>{p}</SelectItem>
 													))}
@@ -595,7 +595,7 @@ function KioskPage() {
 											<Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10 pointer-events-none" />
 											<Input 
 												type="tel"
-												className="h-14 bg-white text-black text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50" 
+												className="h-14 bg-white text-foreground text-lg md:text-lg rounded-xl border-slate-300 pl-12 focus-visible:border-primary/50 focus-visible:ring-primary/50" 
 												value={regContactNumber}
 												onChange={(e) => setRegContactNumber(e.target.value)}
 												placeholder="Optional"
@@ -677,9 +677,11 @@ function KioskPage() {
 												</div>
 
 												{/* Content Area */}
-												<div className="flex flex-col flex-1 justify-end text-center">
-													<div className="font-bold text-base text-foreground leading-tight mb-1">{tpl.name}</div>
-													<div className="text-primary font-semibold">₱{tpl.price?.toFixed(2) || "0.00"}</div>
+												<div className="flex flex-col flex-1 justify-end items-center text-center">
+													<div className="font-bold text-base text-foreground leading-tight">{tpl.name}</div>
+													<div className="text-foreground font-semibold text-base mt-1">
+														₱{tpl.price?.toFixed(2) || "0.00"}
+													</div>
 												</div>
 											</div>
 										);
@@ -698,16 +700,16 @@ function KioskPage() {
 
 				{/* Floating Bottom Action Bar (Truly fixed to viewport) */}
 				{step === "SELECT_DOCUMENTS" && activeResident && (
-					<div className={`fixed bottom-10 left-1/2 -translate-x-1/2 pointer-events-none z-[100] flex justify-center w-full max-w-sm px-4 transition-all duration-500 ${cart.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+					<div className={`fixed bottom-10 left-1/2 -translate-x-1/2 pointer-events-none z-[100] flex justify-center w-full max-w-md px-4 transition-all duration-500 ${cart.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
 						<div className="pointer-events-auto w-full">
 							<Button 
 								onClick={() => setStep("CHECKOUT")} 
-								className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground text-xl font-bold rounded-xl shadow-[0_10px_50px_-10px_rgba(59,130,246,0.7)] border border-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-between px-8"
+								className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground text-xl font-bold rounded-full shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-between px-8"
 							>
 								<span>Review Request</span>
 								<div className="flex items-center gap-3">
-									<span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-										{cart.length} item{cart.length !== 1 && 's'}
+									<span className="bg-white text-primary px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+										{cart.length} Document{cart.length !== 1 && 's'}
 									</span>
 									<span>₱{cart.reduce((total, item) => total + (item.price || 0), 0).toFixed(2)}</span>
 								</div>
@@ -738,7 +740,7 @@ function KioskPage() {
 								)}
 								<div className="flex-1 min-w-0">
 									<div className="font-bold text-foreground text-lg truncate">{activeResident.firstName} {activeResident.lastName}</div>
-									<div className="text-primary text-sm font-medium truncate">{activeResident.purok}</div>
+									<div className="text-foreground text-sm font-medium truncate">{activeResident.purok}</div>
 								</div>
 							</div>
 
@@ -772,7 +774,7 @@ function KioskPage() {
 													)}
 													<div className="flex-1 min-w-0 pr-10">
 														<div className="font-bold text-foreground text-lg leading-tight truncate">{item.name}</div>
-														<div className="font-semibold text-primary text-base mt-0.5">₱{item.price?.toFixed(2) || "0.00"}</div>
+														<div className="font-semibold text-foreground text-base mt-0.5">₱{item.price?.toFixed(2) || "0.00"}</div>
 													</div>
 													<button 
 														type="button"
@@ -810,7 +812,7 @@ function KioskPage() {
 								<Button 
 									onClick={handleSubmitRequest} 
 									disabled={cart.length === 0 || !purpose || loading}
-									className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold rounded-xl shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+									className="w-full h-16 bg-primary hover:bg-primary/90 text-primary-foreground text-xl font-bold rounded-full shadow-[0_10px_40px_-10px_rgba(59,130,246,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
 								>
 									{loading ? <Loader2 size={32} className="animate-spin" /> : "Confirm Request"}
 								</Button>
@@ -824,10 +826,10 @@ function KioskPage() {
 					<div className="w-full max-w-xl flex flex-col items-center justify-center animate-in zoom-in-95 duration-700 h-full pb-24 mx-auto pt-0 -mt-2 md:-mt-4">
 						
 						{/* The Main "Receipt" Card with Speech Bubble Pointer */}
-						<div className="bg-[#111111] border border-border rounded-xl p-8 md:p-10 pb-8 text-center shadow-md w-full relative flex flex-col items-center mt-4">
+						<div className="bg-card border border-border rounded-xl p-8 md:p-10 pb-8 text-center shadow-md w-full relative flex flex-col items-center mt-4">
 							
 							{/* Speech Bubble Pointer (The little triangle pointing up) */}
-							<div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#111111] rotate-45 border-t border-l border-border rounded-tl-sm" />
+							<div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-card rotate-45 border-t border-l border-border rounded-tl-sm" />
 							
 							<h2 className="text-4xl md:text-5xl font-bold text-primary mb-6 mt-2 tracking-tight relative z-10">
 								Request Submitted!
@@ -848,7 +850,7 @@ function KioskPage() {
 								</div>
 							</div>
 							
-							<div className="text-foreground/80 text-lg md:text-xl font-medium leading-relaxed max-w-sm mb-8">
+							<div className="text-muted-foreground text-lg md:text-xl font-medium leading-relaxed max-w-sm mb-8">
 								Please take a seat and wait for your queue number to be called.
 							</div>
 							

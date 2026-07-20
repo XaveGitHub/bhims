@@ -103,11 +103,7 @@ function MonitorDashboard() {
           </div>
 
           <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar">
-            {loading && queue.length === 0 ? (
-              <div className="h-full flex items-center justify-center">
-                <Loader2 className="h-16 w-16 animate-spin text-primary" />
-              </div>
-            ) : processing.length === 0 ? (
+            {processing.length === 0 ? (
               <div className="h-[400px] flex flex-col items-center justify-center text-muted-foreground">
                 {/* Empty State */}
               </div>
@@ -140,11 +136,7 @@ function MonitorDashboard() {
           </div>
 
           <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar">
-            {loading && queue.length === 0 ? (
-              <div className="h-full flex items-center justify-center">
-                <Loader2 className="h-16 w-16 animate-spin text-primary" />
-              </div>
-            ) : readyToClaim.length === 0 ? (
+            {readyToClaim.length === 0 ? (
               <div className="h-[400px] flex flex-col items-center justify-center text-muted-foreground">
                 {/* Empty State */}
               </div>
