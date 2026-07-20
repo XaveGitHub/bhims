@@ -178,11 +178,11 @@ function DocumentMetricsView() {
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
+								<h3 className="text-sm font-medium text-muted-foreground mb-1.5 truncate">
 									{timeframe} Prints
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-semibold tracking-tighter text-foreground">
+									<span className="text-2xl font-bold tracking-tight text-foreground">
 										{metrics.timeframePrints.toLocaleString()}
 									</span>
 								</div>
@@ -200,11 +200,11 @@ function DocumentMetricsView() {
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
+								<h3 className="text-sm font-medium text-muted-foreground mb-1.5 truncate">
 									{timeframe} Revenue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-semibold tracking-tighter text-foreground">
+									<span className="text-2xl font-bold tracking-tight text-foreground">
 										₱{metrics.timeframeRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 									</span>
 								</div>
@@ -222,11 +222,11 @@ function DocumentMetricsView() {
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
+								<h3 className="text-sm font-medium text-muted-foreground mb-1.5 truncate">
 									Pending in Queue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-semibold tracking-tighter text-foreground">
+									<span className="text-2xl font-bold tracking-tight text-foreground">
 										{metrics.pendingQueue.toLocaleString()}
 									</span>
 								</div>
@@ -244,11 +244,11 @@ function DocumentMetricsView() {
 					<CardContent className="p-4 relative z-10">
 						<div className="flex items-start justify-between gap-3">
 							<div className="min-w-0 flex-1">
-								<h3 className="text-sm font-bold text-foreground/80 mb-1.5 truncate">
+								<h3 className="text-sm font-medium text-muted-foreground mb-1.5 truncate">
 									Total Lifetime Revenue
 								</h3>
 								<div className="flex items-baseline gap-2 truncate">
-									<span className="text-3xl font-semibold tracking-tighter text-foreground">
+									<span className="text-2xl font-bold tracking-tight text-foreground">
 										₱{metrics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 									</span>
 								</div>
@@ -274,18 +274,18 @@ function DocumentMetricsView() {
 						<ChartContainer config={chartConfig} className="h-64 w-full">
 							<ResponsiveContainer width="100%" height="100%">
 								<BarChart data={metrics.periods}>
-									<CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#333" />
+									<CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#e4e4e7" />
 									<XAxis
 										dataKey="label"
 										tickLine={false}
 										tickMargin={10}
 										axisLine={false}
-										stroke="#888"
+										stroke="#71717a"
 									/>
 									<YAxis hide />
 									<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
 									<Bar dataKey="prints" fill="#10b981" radius={4} barSize={30}>
-										<LabelList position="top" offset={10} className="fill-muted-foreground text-xs font-semibold" />
+										<LabelList position="top" offset={10} className="fill-foreground/70 text-xs font-semibold" />
 									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
@@ -310,13 +310,13 @@ function DocumentMetricsView() {
 											<stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
 										</linearGradient>
 									</defs>
-									<CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#333" />
+									<CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#e4e4e7" />
 									<XAxis
 										dataKey="label"
 										tickLine={false}
 										tickMargin={10}
 										axisLine={false}
-										stroke="#888"
+										stroke="#71717a"
 									/>
 									<YAxis hide />
 									<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
@@ -345,21 +345,21 @@ function DocumentMetricsView() {
 						<ChartContainer config={chartConfig} className="h-[300px] w-full">
 							<ResponsiveContainer width="100%" height="100%">
 								<BarChart data={metrics.topTemplates} layout="vertical" margin={{ top: 10, right: 40, left: 20, bottom: 0 }}>
-									<CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="#333" />
+									<CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="#e4e4e7" />
 									<XAxis type="number" hide />
 									<YAxis
 										dataKey="name"
 										type="category"
 										tickLine={false}
 										axisLine={false}
-										stroke="#ccc"
+										stroke="#71717a"
 										width={160}
 										fontSize={13}
-										tick={{ fill: "#d4d4d8" }}
+										tick={{ fill: "#52525b" }}
 									/>
-									<ChartTooltip cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }} content={<ChartTooltipContent indicator="dashed" />} />
+									<ChartTooltip cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }} content={<ChartTooltipContent indicator="dashed" />} />
 									<Bar dataKey="count" fill="#a855f7" radius={4} barSize={25}>
-										<LabelList dataKey="count" position="right" offset={10} className="fill-purple-300 font-bold" />
+										<LabelList dataKey="count" position="right" offset={10} className="fill-purple-700 font-bold" />
 									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
