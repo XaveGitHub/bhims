@@ -47,16 +47,16 @@ export function NavUser({ user }: { user: UserInfo }) {
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
-						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl bg-card border border-border text-foreground/90 p-2 shadow-xl"
+						className="w-40 rounded-xl bg-card border border-border text-foreground/90 p-1.5 shadow-xl"
 						side="bottom"
 						align="end"
 						sideOffset={8}
 					>
 						<DropdownMenuItem
 							onClick={handleLogout}
-							className="cursor-pointer text-red-400 hover:text-red-300 focus:text-red-300 focus:bg-red-500/10 rounded-lg font-semibold text-[13px] py-2.5 px-3 flex items-center"
+							className="cursor-pointer text-sidebar-foreground focus:text-red-600 focus:bg-red-50 rounded-lg font-semibold text-[13px] py-2 px-3 flex items-center transition-colors group"
 						>
-							<LogOut className="mr-3 h-4 w-4" />
+							<LogOut className="mr-2.5 h-4 w-4 text-current" />
 							Log out
 						</DropdownMenuItem>
 					</DropdownMenuContent>
