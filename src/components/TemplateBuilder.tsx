@@ -206,7 +206,7 @@ function DraggableField({ field, scale, updateField, removeField }: {
 
 				<div 
 					ref={toolbarRef}
-					className={`absolute -top-10 left-0 transition-opacity bg-card rounded-md p-1 flex gap-1 shadow-xl z-20 border border-border ${showSettings ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+					className={`absolute -top-14 left-0 transition-all duration-200 bg-background/80 backdrop-blur-md rounded-full p-1.5 flex gap-1 shadow-[0_4px_20px_rgb(0,0,0,0.1)] z-20 border border-border/50 after:absolute after:w-full after:h-10 after:-bottom-10 after:left-0 ${showSettings ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto'}`}
 					style={{ 
 						transform: `scale(${1 / scale})`,
 						transformOrigin: 'bottom left' 
@@ -219,17 +219,27 @@ function DraggableField({ field, scale, updateField, removeField }: {
 						}} 
 						onPointerDown={(e) => e.stopPropagation()}
 						onMouseDown={(e) => e.stopPropagation()}
-						className={`p-1 rounded text-foreground/80 ${showSettings ? 'bg-primary/20 text-primary' : 'hover:bg-muted'}`}
+						className={`p-2 rounded-full transition-all ${showSettings ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-primary/15 hover:text-primary'}`}
+						title="Style Settings"
 					>
 						<Settings2 className="w-4 h-4" />
 					</button>
-					<button onClick={() => removeField(field.id)} className="p-1 hover:bg-red-900/50 rounded text-red-400"><Trash2 className="w-4 h-4" /></button>
+					<div className="w-px h-6 bg-border my-auto mx-1" />
+					<button 
+						onClick={() => removeField(field.id)} 
+						onPointerDown={(e) => e.stopPropagation()}
+						onMouseDown={(e) => e.stopPropagation()}
+						className="p-2 rounded-full transition-colors text-red-500 hover:bg-red-100 hover:text-red-600"
+						title="Remove Field"
+					>
+						<Trash2 className="w-4 h-4" />
+					</button>
 				</div>
 
 				{showSettings && (
 					<div 
 						ref={menuRef}
-						className="absolute top-full mt-2 left-0 w-64 p-4 bg-card border border-border rounded-md shadow-2xl flex flex-col gap-4 text-foreground z-50 cursor-default"
+						className="absolute top-full mt-2 left-0 w-64 p-4 bg-background/95 backdrop-blur-md border border-border/60 rounded-xl shadow-2xl flex flex-col gap-4 text-foreground z-50 cursor-default animate-in fade-in slide-in-from-top-2 duration-200"
 						style={{ 
 							transform: `scale(${1 / scale})`,
 							transformOrigin: 'top left' 
