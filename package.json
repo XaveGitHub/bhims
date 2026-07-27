@@ -20,6 +20,9 @@
     "postinstall": "node-gyp rebuild --directory node_modules/better-sqlite3 --release"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@faker-js/faker": "^10.3.0",
     "@radix-ui/react-slot": "^1.2.5",
     "@tabler/icons-react": "^3.44.0",
