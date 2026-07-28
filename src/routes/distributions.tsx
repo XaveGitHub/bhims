@@ -14,7 +14,8 @@ import {
 	Calendar as CalendarIcon,
 	Loader2,
 	FileSpreadsheet,
-	AlertCircle
+	AlertCircle,
+	Edit
 } from "lucide-react";
 import { toast } from "sonner";
 import { read, utils, writeFile } from "xlsx";
@@ -23,6 +24,7 @@ import {
 	getDistributionPrograms, 
 	getBeneficiariesByProgram, 
 	createDistributionProgram,
+	updateDistributionProgram,
 	deleteDistributionProgram,
 	importScannedExcel,
 	markClaimedViaScan
@@ -100,6 +102,8 @@ function DistributionsPage() {
 	const [programs, setPrograms] = React.useState(initialPrograms);
 	const [selectedProgram, setSelectedProgram] = React.useState<{id: number, name: string, date: string} | null>(null);
 	const [isCreating, setIsCreating] = React.useState(false);
+	const [editingProgramId, setEditingProgramId] = React.useState<number | null>(null);
+	const isModalOpen = isCreating || editingProgramId !== null;
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isDeleting, setIsDeleting] = React.useState<number | null>(null);
 
@@ -134,7 +138,7 @@ function DistributionsPage() {
 
 	// Auto-fetch when search changes (debounced)
 	React.useEffect(() => {
-		if (!isCreating || (!hasFetched && !previewSearch)) return;
+		if (!isModalOpen || (!hasFetched && !previewSearch)) return;
 
 		const timeout = setTimeout(() => {
 			fetchPreview();
@@ -177,6 +181,54 @@ function DistributionsPage() {
 		}
 	};
 
+	// Modal Handlers
+	const openCreateModal = () => {
+		setNewName("");
+		setNewDate(new Date());
+		setNewDescription("");
+		setPurok("ALL");
+		setAgeBracket("ALL");
+		setIsPwd(false);
+		setIsSoloParent(false);
+		setSelectedResidentIds(new Set());
+		setPreviewSearch("");
+		setPreviewResidents([]);
+		setHasFetched(false);
+		setIsCreating(true);
+	};
+
+	const openEditModal = async (prog: any) => {
+		setNewName(prog.name);
+		setNewDate(new Date(prog.date));
+		setNewDescription(prog.description || "");
+		setPurok("ALL");
+		setAgeBracket("ALL");
+		setIsPwd(false);
+		setIsSoloParent(false);
+		setPreviewSearch("");
+		setHasFetched(false);
+		
+		setIsLoading(true);
+		setEditingProgramId(prog.id);
+		
+		try {
+			const beneficiaries = await getBeneficiariesByProgram({ data: prog.id });
+			const ids = new Set(beneficiaries.map(b => b.residentId));
+			setSelectedResidentIds(ids);
+			setPreviewResidents(beneficiaries);
+			setHasFetched(true);
+		} catch (error) {
+			toast("Failed to load program beneficiaries", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const closeDialog = () => {
+		setIsCreating(false);
+		setEditingProgramId(null);
+	};
+
 	const toggleResident = React.useCallback((id: number) => {
 		setSelectedResidentIds(prev => {
 			const next = new Set(prev);
@@ -206,7 +258,7 @@ function DistributionsPage() {
 		});
 	}, [previewResidents]);
 
-	const handleCreate = async (e: React.FormEvent) => {
+	const handleSave = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!newName) {
 			toast("Please enter a program name", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
@@ -219,7 +271,6 @@ function DistributionsPage() {
 		
 		setIsLoading(true);
 		try {
-			// Compute an automatic target demographic string based on filters
 			const tags = [];
 			if (purok !== "ALL") tags.push(purok);
 			if (ageBracket !== "ALL") tags.push(ageBracket);
@@ -227,30 +278,57 @@ function DistributionsPage() {
 			if (isSoloParent) tags.push("Solo Parent");
 			
 			const targetDemographic = tags.length > 0 ? tags.join(", ") : "Custom Selection";
+			const dateStr = newDate ? newDate.toISOString().split("T")[0] : new Date().toISOString().split("T")[0];
 
-			const res = await createDistributionProgram({
-				data: {
-					name: newName,
-					date: newDate ? newDate.toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
-					description: newDescription || undefined,
-					targetDemographic,
-					selectedResidentIds: Array.from(selectedResidentIds)
-				}
-			});
-			if (res.success) {
-				toast(`Program created with ${res.count} residents selected`, { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
-				const updated = await getDistributionPrograms();
-				setPrograms(updated);
-				setIsCreating(false);
-				setSelectedProgram({ 
-					id: res.programId, 
-					name: newName, 
-					date: newDate ? newDate.toISOString().split("T")[0] : new Date().toISOString().split("T")[0] 
+			if (editingProgramId) {
+				const res = await updateDistributionProgram({
+					data: {
+						id: editingProgramId,
+						name: newName,
+						date: dateStr,
+						description: newDescription || undefined,
+						targetDemographic,
+						selectedResidentIds: Array.from(selectedResidentIds)
+					}
 				});
-				setNewName("");
+				if (res.success) {
+					toast("Program updated successfully", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
+					const updated = await getDistributionPrograms();
+					setPrograms(updated);
+					closeDialog();
+					// If the detail view is currently open and it's the one we just edited, update its details
+					if (selectedProgram && selectedProgram.id === editingProgramId) {
+						setSelectedProgram({
+							id: editingProgramId,
+							name: newName,
+							date: dateStr
+						});
+					}
+				}
+			} else {
+				const res = await createDistributionProgram({
+					data: {
+						name: newName,
+						date: dateStr,
+						description: newDescription || undefined,
+						targetDemographic,
+						selectedResidentIds: Array.from(selectedResidentIds)
+					}
+				});
+				if (res.success) {
+					toast(`Program created with ${res.count} residents selected`, { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
+					const updated = await getDistributionPrograms();
+					setPrograms(updated);
+					closeDialog();
+					setSelectedProgram({ 
+						id: res.programId, 
+						name: newName, 
+						date: dateStr 
+					});
+				}
 			}
 		} catch (err: any) {
-			toast(err.message || "Failed to create program", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
+			toast(err.message || "Failed to save program", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsLoading(false);
 		}
@@ -289,6 +367,7 @@ function DistributionsPage() {
 					setSelectedProgram(null);
 					getDistributionPrograms().then(setPrograms);
 				}} 
+				onEdit={() => openEditModal(selectedProgram)}
 			/>
 		);
 	}
@@ -305,7 +384,7 @@ function DistributionsPage() {
 							Manage relief goods, financial assistance, and targeted demographic programs.
 						</p>
 					</div>
-					<Button onClick={() => setIsCreating(true)} className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-md px-4">
+					<Button onClick={openCreateModal} className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-md px-4">
 						<Plus className="w-4 h-4" />
 						<span>New Program</span>
 					</Button>
@@ -345,15 +424,28 @@ function DistributionsPage() {
 											</Badge>
 										</TableCell>
 										<TableCell className="text-right py-2">
-											<Button
-												variant="ghost"
-												size="sm"
-												className="h-8 w-8 p-0 text-red-500 hover:!text-red-600 hover:!bg-red-500/10 rounded-full"
-												onClick={(e) => confirmDelete(prog.id, prog.name, e)}
-												disabled={isDeleting === prog.id}
-											>
-												<Trash2 className="w-4 h-4" />
-											</Button>
+											<div className="flex justify-end gap-1">
+												<Button
+													variant="ghost"
+													size="sm"
+													className="h-8 w-8 p-0 text-foreground/70 hover:!text-foreground hover:!bg-muted rounded-full"
+													onClick={(e) => {
+														e.stopPropagation();
+														openEditModal(prog);
+													}}
+												>
+													<Edit className="w-4 h-4" />
+												</Button>
+												<Button
+													variant="ghost"
+													size="sm"
+													className="h-8 w-8 p-0 text-red-500 hover:!text-red-600 hover:!bg-red-500/10 rounded-full"
+													onClick={(e) => confirmDelete(prog.id, prog.name, e)}
+													disabled={isDeleting === prog.id}
+												>
+													<Trash2 className="w-4 h-4" />
+												</Button>
+											</div>
 										</TableCell>
 									</TableRow>
 								))}
@@ -370,13 +462,13 @@ function DistributionsPage() {
 				</div>
 			</div>
 
-			{/* Create Modal */}
-			<Dialog open={isCreating} onOpenChange={setIsCreating}>
+			{/* Create/Edit Modal */}
+			<Dialog open={isModalOpen} onOpenChange={(open) => !open && closeDialog()}>
 				<DialogContent className="max-w-4xl bg-background border-border/60 p-0 shadow-md flex flex-col max-h-[85vh] overflow-hidden rounded-xl">
 					<div className="px-6 pt-6">
 						<DialogHeader>
 							<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-								Create Distribution Program
+								{editingProgramId ? "Edit Distribution Program" : "Create Distribution Program"}
 							</DialogTitle>
 						</DialogHeader>
 						
@@ -629,17 +721,17 @@ function DistributionsPage() {
 							<span className="text-primary">{selectedResidentIds.size}</span> residents selected
 						</div>
 						<div className="flex gap-3">
-							<Button type="button" variant="ghost" onClick={() => setIsCreating(false)} className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5">
+							<Button type="button" variant="ghost" onClick={closeDialog} className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5">
 							Cancel
 						</Button>
-						<Button onClick={handleCreate} disabled={isLoading || selectedResidentIds.size === 0} className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 shadow-sm">
+						<Button onClick={handleSave} disabled={isLoading || selectedResidentIds.size === 0} className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 shadow-sm">
 							{isLoading ? (
 								<div className="flex items-center gap-2">
 									<Loader2 className="w-4 h-4 animate-spin" />
-									Creating...
+									{editingProgramId ? "Saving..." : "Creating..."}
 								</div>
 							) : (
-								`Create Program (${selectedResidentIds.size} beneficiaries)`
+								editingProgramId ? `Save Changes (${selectedResidentIds.size} beneficiaries)` : `Create Program (${selectedResidentIds.size} beneficiaries)`
 							)}
 						</Button>
 						</div>
@@ -683,7 +775,7 @@ function DistributionsPage() {
 	);
 }
 
-function DistributionDetail({ program, onBack }: { program: {id: number, name: string, date: string}, onBack: () => void }) {
+function DistributionDetail({ program, onBack, onEdit }: { program: {id: number, name: string, date: string, description?: string}, onBack: () => void, onEdit: () => void }) {
 	const [beneficiaries, setBeneficiaries] = React.useState<any[]>([]);
 	const [isScannerOpen, setIsScannerOpen] = React.useState(false);
 	const [isImporting, setIsImporting] = React.useState(false);
@@ -883,14 +975,26 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 				</div>
 
 				{/* Results Table */}
-				<div className="bg-card/40 rounded-xl border border-border overflow-hidden print-container">
+				<div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden print-container">
 					<div className="p-5 bg-card border-b border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print-header-only">
-						<div>
-							<h3 className="text-lg font-bold text-foreground">{program.name}</h3>
-							<div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
-								<span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-primary" /> {claimed} Claimed</span>
-								<span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-amber-500" /> {pending} Pending</span>
-								<span className="font-medium ml-2 text-muted-foreground">{new Date(program.date).toLocaleDateString()}</span>
+						<div className="flex items-center gap-3">
+							<div>
+								<div className="flex items-center gap-2">
+									<h3 className="text-lg font-bold text-foreground">{program.name}</h3>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
+										onClick={onEdit}
+									>
+										<Edit className="w-3.5 h-3.5" />
+									</Button>
+								</div>
+								<div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
+									<span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-primary" /> {claimed} Claimed</span>
+									<span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-amber-500" /> {pending} Pending</span>
+									<span className="font-medium ml-2 text-muted-foreground">{new Date(program.date).toLocaleDateString()}</span>
+								</div>
 							</div>
 						</div>
 						<div className="flex items-center gap-3 w-full sm:w-64">

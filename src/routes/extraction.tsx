@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Download, Printer, UserCheck } from "lucide-react";
+import { Download, Printer, UserCheck, AlertCircle, SearchX, Users } from "lucide-react";
 import { getPuroks } from "../lib/residents-service";
 import { extractResidents } from "../lib/reports-service";
 import { Button } from "../components/ui/button";
@@ -76,15 +76,15 @@ function ExtractionView() {
 				setResults(dataWithAge);
 				setPage(1); // Reset page on new search
 				if (dataWithAge.length === 0) {
-					toast.info("No residents found with these filters.");
+					toast("No residents found with these filters", { icon: <SearchX className="h-4 w-4 text-amber-500" /> });
 				} else {
-					toast.success(`Found ${dataWithAge.length} residents`);
+					toast(`Found ${dataWithAge.length} residents`, { icon: <Users className="h-4 w-4 text-primary" /> });
 				}
 			} else {
-				toast.error(res.error || "Failed to extract data");
+				toast(res.error || "Failed to extract data", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			}
 		} catch (error) {
-			toast.error("An error occurred");
+			toast("An error occurred", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsLoading(false);
 		}

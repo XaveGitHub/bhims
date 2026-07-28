@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, inArray, notInArray } from "drizzle-orm";
 import { db } from "../db";
 import * as schema from "../db/schema";
 import { requireStaff } from "./security";
@@ -139,6 +139,77 @@ export const deleteDistributionProgram = createServerFn({
 			.run();
 			
 		return { success: true };
+	});
+
+// Update a program and its beneficiaries
+export const updateDistributionProgram = createServerFn({
+	method: "POST",
+})
+	.validator(
+		(data: {
+			id: number;
+			name: string;
+			date: string;
+			description?: string;
+			targetDemographic: string;
+			selectedResidentIds: number[];
+		}) => data,
+	)
+	.handler(async ({ data }) => {
+		await requireStaff();
+
+		if (!data.selectedResidentIds || data.selectedResidentIds.length === 0) {
+			throw new Error("No residents selected for this program");
+		}
+
+		// 1. Update the Program details
+		db.update(schema.distributionPrograms)
+			.set({
+				name: data.name,
+				date: data.date,
+				description: data.description,
+				targetDemographic: data.targetDemographic,
+			})
+			.where(eq(schema.distributionPrograms.id, data.id))
+			.run();
+
+		// 2. Remove beneficiaries that are no longer selected
+		db.delete(schema.distributionBeneficiaries)
+			.where(
+				and(
+					eq(schema.distributionBeneficiaries.programId, data.id),
+					notInArray(schema.distributionBeneficiaries.residentId, data.selectedResidentIds)
+				)
+			)
+			.run();
+
+		// 3. Find which residents are already in the program
+		const existingBeneficiaries = db
+			.select({ residentId: schema.distributionBeneficiaries.residentId })
+			.from(schema.distributionBeneficiaries)
+			.where(eq(schema.distributionBeneficiaries.programId, data.id))
+			.all();
+			
+		const existingIds = new Set(existingBeneficiaries.map((b) => b.residentId));
+
+		// 4. Insert new beneficiaries
+		const newResidents = data.selectedResidentIds.filter((id) => !existingIds.has(id));
+		
+		if (newResidents.length > 0) {
+			const beneficiariesData = newResidents.map((residentId) => ({
+				programId: data.id,
+				residentId,
+				status: "Pending" as const,
+			}));
+
+			const chunkSize = 100;
+			for (let i = 0; i < beneficiariesData.length; i += chunkSize) {
+				const chunk = beneficiariesData.slice(i, i + chunkSize);
+				db.insert(schema.distributionBeneficiaries).values(chunk).run();
+			}
+		}
+
+		return { success: true, programId: data.id };
 	});
 
 // Process uploaded Excel data (Offline OCR Workflow)
