@@ -96,8 +96,8 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 				commTaxNo: "",
 				issuedAt: "Bacolod City",
 				witness: "",
-				punongBarangay: "Juan Dela Cruz", // Placeholder
-				brgySecretary: "Maria Clara",     // Placeholder
+				punongBarangay: "", // Intentionally left blank for manual entry
+				brgySecretary: "",  // Intentionally left blank for manual entry
 				controlNo: controlNoStr,          // Auto-generated like MM-DD-YY-0001
 			};
 
