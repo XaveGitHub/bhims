@@ -791,7 +791,7 @@ function KioskPage() {
 											<Label className="text-foreground/80 font-bold text-lg">What is the purpose of this request?</Label>
 											<Input 
 												placeholder="e.g. Employment, School requirement, Business..." 
-												className="h-16 bg-card border-border rounded-xl px-6 text-lg focus:border-primary/20 transition-all shadow-inner"
+												className="h-14 bg-white text-foreground text-lg md:text-lg rounded-xl border-slate-300 px-6 focus-visible:border-primary/50 focus-visible:ring-primary/50 transition-all shadow-inner"
 												value={purpose}
 												onChange={e => setPurpose(e.target.value)}
 											/>

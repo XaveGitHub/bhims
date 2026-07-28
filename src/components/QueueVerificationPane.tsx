@@ -33,10 +33,12 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 	const activeItem = batch?.items[selectedIndex];
 
 	// Editable state
-	const [editForm, setEditForm] = useState({
+	const [editForm, setEditForm] = useState<Record<string, any>>({
 		firstName: "",
 		lastName: "",
+		middleName: "",
 		birthDate: "",
+		birthday: "",
 		purok: "",
 		gender: "",
 		civilStatus: "",
@@ -48,7 +50,10 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 		orNumber: "",
 		commTaxNo: "",
 		issuedAt: "Bacolod City",
-		witness: ""
+		witness: "",
+		punongBarangay: "",
+		brgySecretary: "",
+		controlNo: "",
 	});
 
 	const previewContainerRef = useRef<HTMLDivElement>(null);
@@ -69,23 +74,43 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 	useEffect(() => {
 		if (batch && activeItem) {
-			setEditForm({
+			const today = new Date();
+			const dateStr = format(today, 'MM-dd-yy');
+			const controlNoStr = `${dateStr}-${Math.floor(Math.random() * 1000).toString().padStart(4, '0')}`;
+
+			const initialForm: Record<string, any> = {
 				firstName: batch.resident?.firstName || "",
 				lastName: batch.resident?.lastName || "",
+				middleName: batch.resident?.middleName || "",
 				birthDate: batch.resident?.birthDate || "",
+				birthday: batch.resident?.birthDate || "", // map both
 				purok: batch.resident?.purok || "",
 				gender: batch.resident?.gender || "",
 				civilStatus: batch.resident?.civilStatus || "",
 				purpose: activeItem.purpose || "",
 				occupation: batch.resident?.occupation || "",
 				monthlyIncome: batch.resident?.monthlyIncome?.toString() || "",
-				dateIssued: new Date().toISOString().split("T")[0],
+				dateIssued: today.toISOString().split("T")[0],
 				yearsResident: "",
 				orNumber: "",
 				commTaxNo: "",
 				issuedAt: "Bacolod City",
-				witness: ""
-			});
+				witness: "",
+				punongBarangay: "Juan Dela Cruz", // Placeholder
+				brgySecretary: "Maria Clara",     // Placeholder
+				controlNo: controlNoStr,          // Auto-generated like MM-DD-YY-0001
+			};
+
+			// Initialize any custom fields found on the template
+			if (activeItem.template?.fieldMappings) {
+				activeItem.template.fieldMappings.forEach((field: any) => {
+					if (field.id.startsWith("custom_")) {
+						initialForm[field.id] = "";
+					}
+				});
+			}
+
+			setEditForm(initialForm);
 		}
 	}, [batch, activeItem]);
 
@@ -373,7 +398,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 											let value = "";
 											switch (field.id) {
 												case "fullName":
-													value = `${editForm.firstName || ""} ${editForm.lastName || ""}`.trim();
+													value = `${editForm.firstName || ""} ${editForm.middleName ? editForm.middleName + " " : ""}${editForm.lastName || ""}`.trim();
 													break;
 												case "age":
 													if (editForm.birthDate) {
@@ -381,6 +406,11 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 														const ageDiffMs = Date.now() - birthDate.getTime();
 														const ageDate = new Date(ageDiffMs);
 														value = Math.abs(ageDate.getUTCFullYear() - 1970).toString();
+													}
+													break;
+												case "birthday":
+													if (editForm.birthDate) {
+														value = new Date(editForm.birthDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 													}
 													break;
 												case "gender":
@@ -403,14 +433,29 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 														value = new Date(editForm.dateIssued).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 													}
 													break;
+												case "month":
+													if (editForm.dateIssued) {
+														value = new Date(editForm.dateIssued).toLocaleDateString('en-US', { month: 'long' });
+													}
+													break;
 												case "civilStatus":
 													value = editForm.civilStatus || "";
 													break;
 												case "yearsResident":
 													value = editForm.yearsResident || "";
 													break;
+												case "orNo":
 												case "orNumber":
 													value = editForm.orNumber || "";
+													break;
+												case "controlNo":
+													value = editForm.controlNo || "";
+													break;
+												case "punongBarangay":
+													value = editForm.punongBarangay || "";
+													break;
+												case "brgySecretary":
+													value = editForm.brgySecretary || "";
 													break;
 												case "commTaxNo":
 													value = editForm.commTaxNo || "";
@@ -420,6 +465,11 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 													break;
 												case "witness":
 													value = editForm.witness || "";
+													break;
+												default:
+													if (field.id.startsWith("custom_")) {
+														value = editForm[field.id] || "";
+													}
 													break;
 											}
 											
@@ -456,7 +506,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 								</div>
 
 								<div className="grid grid-cols-2 gap-4 bg-card/50 p-4 rounded-2xl border border-border">
-									{(hasField('fullName') || hasField('firstName')) && (
+									{hasField('fullName') && (
 										<>
 											<div className="space-y-2">
 												<Label className="text-sm font-medium text-foreground/80 mb-1">First Name</Label>
@@ -467,6 +517,14 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 												/>
 											</div>
 											<div className="space-y-2">
+												<Label className="text-sm font-medium text-foreground/80 mb-1">Middle Name</Label>
+												<Input 
+													value={editForm.middleName}
+													onChange={(e) => setEditForm({...editForm, middleName: e.target.value})}
+													className="bg-background border-border text-foreground h-11"
+												/>
+											</div>
+											<div className="space-y-2 col-span-2">
 												<Label className="text-sm font-medium text-foreground/80 mb-1">Last Name</Label>
 												<Input 
 													value={editForm.lastName}
@@ -644,6 +702,55 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 										</Popover>
 									</div>
 									)}
+									{hasField('punongBarangay') && (
+									<div className="space-y-2 col-span-2">
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Punong Barangay</Label>
+										<Input 
+											value={editForm.punongBarangay}
+											onChange={(e) => setEditForm({...editForm, punongBarangay: e.target.value})}
+											className="bg-background border-border text-foreground h-11"
+										/>
+									</div>
+									)}
+
+									{hasField('brgySecretary') && (
+									<div className="space-y-2 col-span-2">
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Brgy. Secretary</Label>
+										<Input 
+											value={editForm.brgySecretary}
+											onChange={(e) => setEditForm({...editForm, brgySecretary: e.target.value})}
+											className="bg-background border-border text-foreground h-11"
+										/>
+									</div>
+									)}
+
+									{hasField('controlNo') && (
+									<div className="space-y-2">
+										<Label className="text-sm font-medium text-foreground/80 mb-1">Control No.</Label>
+										<Input 
+											value={editForm.controlNo}
+											onChange={(e) => setEditForm({...editForm, controlNo: e.target.value})}
+											className="bg-background border-border text-foreground h-11 font-mono"
+										/>
+									</div>
+									)}
+
+									{/* Render dynamically added custom fields */}
+									{activeItem.template?.fieldMappings?.map((field: any) => {
+										if (field.id.startsWith("custom_")) {
+											return (
+												<div key={field.id} className="space-y-2 col-span-2">
+													<Label className="text-sm font-medium text-foreground/80 mb-1">{field.label}</Label>
+													<Input 
+														value={editForm[field.id] || ""}
+														onChange={(e) => setEditForm({...editForm, [field.id]: e.target.value})}
+														className="bg-background border-border text-foreground h-11"
+													/>
+												</div>
+											);
+										}
+										return null;
+									})}
 								</div>
 							</div>
 

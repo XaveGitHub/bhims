@@ -3,7 +3,10 @@ import Draggable from "react-draggable";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Check, Settings2, Plus, Trash2 } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";export type FieldMapping = {
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Input } from "./ui/input";
+
+export type FieldMapping = {
 	id: string;
 	label: string;
 	x: number;
@@ -22,18 +25,28 @@ type Props = {
 const DEFAULT_FIELDS = [
 	{ id: "fullName", label: "Full Name" },
 	{ id: "age", label: "Age" },
+	{ id: "birthday", label: "Birthday" },
 	{ id: "gender", label: "Gender" },
-	{ id: "purok", label: "Purok" },
+	{ id: "civilStatus", label: "Civil Status" },
+	{ id: "purok", label: "Address (Purok)" },
+	{ id: "yearsResident", label: "Years of Residency" },
 	{ id: "occupation", label: "Occupation" },
 	{ id: "monthlyIncome", label: "Income" },
 	{ id: "purpose", label: "Purpose" },
 	{ id: "dateIssued", label: "Date Issued" },
+	{ id: "month", label: "Month" },
+	{ id: "punongBarangay", label: "Punong Barangay Name" },
+	{ id: "brgySecretary", label: "Brgy. Secretary Name" },
+	{ id: "controlNo", label: "Control No." },
+	{ id: "orNo", label: "OR No." },
+	{ id: "communityTaxNo", label: "Community Tax No." },
 ];
 
 export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props) {
 	const [fields, setFields] = useState<FieldMapping[]>(initialMappings || []);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [scale, setScale] = useState(1);
+	const [customFieldLabel, setCustomFieldLabel] = useState("");
 
 	useEffect(() => {
 		if (!containerRef.current) return;
@@ -78,8 +91,11 @@ export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props)
 								<Plus className="w-4 h-4 mr-2" /> Add Field
 							</Button>
 						</PopoverTrigger>
-						<PopoverContent align="end" className="w-48 p-2 bg-card border-border">
-							<div className="space-y-1">
+						<PopoverContent align="end" className="w-56 p-2 bg-card border-border">
+							<div 
+								className="space-y-1 max-h-64 overflow-y-auto custom-scrollbar pr-1 overscroll-contain"
+								onWheel={(e) => e.stopPropagation()}
+							>
 								{DEFAULT_FIELDS.map(f => {
 									const isAdded = fields.some(field => field.id === f.id);
 									return (
@@ -88,14 +104,41 @@ export function TemplateBuilder({ imageBase64, initialMappings, onSave }: Props)
 											variant="ghost"
 											size="sm"
 											className="w-full justify-start font-normal text-sm"
-											disabled={isAdded}
-											onClick={() => addField(f.id, f.label)}
+											onClick={() => isAdded ? removeField(f.id) : addField(f.id, f.label)}
 										>
 											{isAdded ? <Check className="w-3 h-3 mr-2 text-primary" /> : <Plus className="w-3 h-3 mr-2" />}
 											{f.label}
 										</Button>
 									);
 								})}
+							</div>
+							<div className="border-t border-border mt-2 pt-2">
+								<p className="text-xs font-semibold text-muted-foreground mb-2 px-2">Custom Field</p>
+								<div className="flex gap-2">
+									<Input 
+										placeholder="e.g. Requester" 
+										className="h-8 text-sm"
+										value={customFieldLabel}
+										onChange={(e) => setCustomFieldLabel(e.target.value)}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter' && customFieldLabel.trim()) {
+												addField(`custom_${Date.now()}`, customFieldLabel.trim());
+												setCustomFieldLabel("");
+											}
+										}}
+									/>
+									<Button 
+										size="sm" 
+										className="shrink-0 h-8 w-8 p-0 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm transition-all"
+										disabled={!customFieldLabel.trim()}
+										onClick={() => {
+											addField(`custom_${Date.now()}`, customFieldLabel.trim());
+											setCustomFieldLabel("");
+										}}
+									>
+										<Plus className="w-4 h-4" />
+									</Button>
+								</div>
 							</div>
 						</PopoverContent>
 					</Popover>
