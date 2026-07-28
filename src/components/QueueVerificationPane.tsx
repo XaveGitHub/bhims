@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Printer, X, GripHorizontal, Calendar as CalendarIcon, CheckCircle2, Download, Loader2 } from "lucide-react";
+import { Printer, X, GripHorizontal, Calendar as CalendarIcon, CheckCircle2, Download, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
@@ -198,7 +198,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 			}
 		} catch (error) {
 			console.error("Print failed:", error);
-			toast.error("Failed to print document");
+			toast("Failed to print document", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsProcessing(false);
 			setIsPrinting(false);
@@ -231,11 +231,11 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 			link.href = dataUrl;
 			link.click();
 			
-			toast.success("Downloaded successfully!");
+			toast("Downloaded successfully", { icon: <Download className="h-4 w-4 text-blue-500" /> });
 			
 		} catch (error) {
 			console.error("Download failed:", error);
-			toast.error("Failed to download image");
+			toast("Failed to download image", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsProcessing(false);
 			setIsSaving(false);
@@ -249,7 +249,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 			await onStatusChange(ids, "Ready to Claim");
 			onClose();
 		} catch (error) {
-			toast.error("Failed to update status");
+			toast("Failed to update status", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsProcessing(false);
 		}

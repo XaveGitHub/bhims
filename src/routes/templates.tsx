@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { FileImage, Plus, Trash2, Edit } from "lucide-react";
+import { FileImage, Plus, Trash2, Edit, CheckCircle, AlertCircle, FileText, XCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -14,6 +14,7 @@ import {
 } from "../components/ui/dialog";
 import { TemplateBuilder, type FieldMapping } from "@/components/TemplateBuilder";
 import { getTemplates, createTemplate, updateTemplate, deleteTemplate, toggleTemplateActive } from "../lib/document-templates-service";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/templates")({
 	loader: async () => {
@@ -111,6 +112,11 @@ function TemplatesPage() {
 
 	const handleToggleActive = async (id: number, currentActive: boolean) => {
 		await toggleTemplateActive({ data: { id, isActive: !currentActive } });
+		if (currentActive) {
+			toast("Template deactivated", { icon: <XCircle className="h-4 w-4 text-muted-foreground" /> });
+		} else {
+			toast("Template activated", { icon: <CheckCircle className="h-4 w-4 text-emerald-500" /> });
+		}
 		await reload();
 	};
 
@@ -122,15 +128,21 @@ function TemplatesPage() {
 			return;
 		}
 
-		if (editingId) {
-			await updateTemplate({ data: { id: editingId, name, price: p, imageBase64, originalFileName, fieldMappings } });
-		} else {
-			await createTemplate({ data: { name, price: p, imageBase64, originalFileName, fieldMappings } });
+		try {
+			if (editingId) {
+				await updateTemplate({ data: { id: editingId, name, price: p, imageBase64, originalFileName, fieldMappings } });
+				toast("Template updated successfully", { icon: <FileText className="h-4 w-4 text-emerald-500" /> });
+			} else {
+				await createTemplate({ data: { name, price: p, imageBase64, originalFileName, fieldMappings } });
+				toast("Template created successfully", { icon: <FileText className="h-4 w-4 text-emerald-500" /> });
+			}
+			
+			setIsModalOpen(false);
+			setIsBuilderMode(false);
+			reload();
+		} catch (error) {
+			toast("Failed to save template", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		}
-		
-		setIsModalOpen(false);
-		setIsBuilderMode(false);
-		reload();
 	};
 
 	const handleDelete = (id: number) => {
@@ -139,9 +151,14 @@ function TemplatesPage() {
 
 	const confirmDelete = async () => {
 		if (deleteId !== null) {
-			await deleteTemplate({ data: deleteId });
-			setDeleteId(null);
-			reload();
+			try {
+				await deleteTemplate({ data: deleteId });
+				toast("Template deleted", { icon: <Trash2 className="h-4 w-4 text-red-500" /> });
+				setDeleteId(null);
+				reload();
+			} catch (error) {
+				toast("Failed to delete template", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
+			}
 		}
 	};
 

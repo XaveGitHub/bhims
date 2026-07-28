@@ -241,7 +241,7 @@ function HouseholdsView() {
 					householdDetailCache[result.newHouseholdId] = null;
 				}
 
-				toast.success("Household updated successfully.");
+				toast("Household updated successfully", { icon: <Home className="h-4 w-4 text-emerald-500" /> });
 
 				if (result.newHouseholdId && result.newHouseholdId !== detail.householdId) {
 					setSelectedId(result.newHouseholdId);
@@ -252,10 +252,10 @@ function HouseholdsView() {
 					loadDetail(detail.householdId, true);
 				}
 			} else {
-				toast.error(result.error || "Failed to update household.");
+				toast(result.error || "Failed to update household", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			}
 		} catch (err) {
-			toast.error("An error occurred while saving.");
+			toast("An error occurred while saving", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		}
 	};
 

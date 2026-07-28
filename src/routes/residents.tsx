@@ -19,6 +19,8 @@ import {
 	Trash2,
 	UserPlus,
 	X,
+	MapPin,
+	UserMinus
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "../components/ui/badge";
@@ -328,7 +330,7 @@ function ResidentsView() {
 				invalidateHouseholdsCache();
 				loadData();
 				loadPuroks();
-				toast.success("Resident deleted successfully");
+				toast("Resident deleted successfully", { icon: <Trash2 className="h-4 w-4 text-red-500" /> });
 			} catch (err) {
 				toast.error("Failed to delete resident");
 			}
@@ -665,7 +667,7 @@ function ResidentsView() {
 		
 		const res = await bulkDeleteResidents({ data: selectedIds });
 		if (res.success) {
-			toast.success(`Deleted ${selectedIds.length} residents.`);
+			toast(`Deleted ${selectedIds.length} residents`, { icon: <Trash2 className="h-4 w-4 text-red-500" /> });
 			setRowSelection({});
 			setIsBulkDeleteModalOpen(false);
 			invalidateResidentsCache();
@@ -673,7 +675,7 @@ function ResidentsView() {
 			loadData();
 			loadPuroks();
 		} else {
-			toast.error("Failed to delete residents.");
+			toast.error("Failed to delete residents");
 		}
 	};
 
@@ -683,7 +685,7 @@ function ResidentsView() {
 		
 		const res = await markResidentDeceased({ data: archiveModalIds });
 		if (res.success) {
-			toast.success(`Marked ${archiveModalIds.length} resident(s) as deceased.`);
+			toast(`Marked ${archiveModalIds.length} resident(s) as deceased`, { icon: <UserMinus className="h-4 w-4 text-amber-500" /> });
 			setRowSelection({});
 			setArchiveModalIds(null);
 			invalidateResidentsCache();
@@ -691,7 +693,7 @@ function ResidentsView() {
 			loadData();
 			loadPuroks();
 		} else {
-			toast.error("Failed to update residents.");
+			toast.error("Failed to update residents");
 		}
 	};
 
@@ -702,12 +704,12 @@ function ResidentsView() {
 		if (!selectedIds.length || !bulkPurokToUpdate) return;
 		const res = await bulkUpdatePurok({ data: { ids: selectedIds, purok: bulkPurokToUpdate } });
 		if (res.success) {
-			toast.success(`Moved ${selectedIds.length} residents to ${bulkPurokToUpdate}.`);
+			toast(`Moved ${selectedIds.length} residents to ${bulkPurokToUpdate}`, { icon: <MapPin className="h-4 w-4 text-primary" /> });
 			setBulkPurokToUpdate(null);
 			setRowSelection({});
 			loadData();
 		} else {
-			toast.error("Failed to update Purok.");
+			toast.error("Failed to update Purok");
 		}
 	};
 
@@ -1119,7 +1121,7 @@ function ResidentsView() {
 							</Button>
 							<Button
 								onClick={confirmDelete}
-								className="bg-amber-500 hover:bg-amber-400 text-white rounded-xl px-5 font-semibold"
+								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5 font-semibold"
 							>
 								Delete Profile
 							</Button>
@@ -1160,24 +1162,25 @@ function ResidentsView() {
 								size="sm"
 								variant="outline"
 								onClick={() => setArchiveModalIds(selectedIds)}
-								className="h-8 text-xs bg-accent/50 hover:bg-accent dark:hover:bg-muted text-foreground border border-border"
+								className="h-8 text-xs bg-background hover:!bg-amber-100 hover:!text-amber-700 hover:!border-amber-300 text-muted-foreground border-border flex items-center gap-1.5 transition-all"
 							>
+								<UserMinus className="w-3.5 h-3.5 mr-0.5" />
 								Archive
 							</Button>
 							<Button
 								size="sm"
-								variant="destructive"
+								variant="outline"
 								onClick={() => setIsBulkDeleteModalOpen(true)}
-								className="h-8 text-xs bg-red-50 hover:bg-red-500/10 text-red-500 hover:text-red-400 border-red-200 border flex items-center gap-1.5"
+								className="h-8 text-xs bg-background hover:!bg-red-100 hover:!text-red-600 hover:!border-red-300 text-red-500 border-border flex items-center gap-1.5 transition-all"
 							>
-								<Trash2 className="w-3.5 h-3.5 mr-1.5" />
+								<Trash2 className="w-3.5 h-3.5 mr-0.5" />
 								Delete
 							</Button>
 							<Button
 								size="sm"
 								variant="ghost"
 								onClick={() => setRowSelection({})}
-								className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full ml-1"
+								className="h-8 w-8 p-0 text-muted-foreground transition-all hover:!bg-red-100 hover:!text-red-600 rounded-full ml-1"
 							>
 								<X className="w-4 h-4" />
 							</Button>
@@ -1210,7 +1213,7 @@ function ResidentsView() {
 							</Button>
 							<Button
 								onClick={confirmBulkDelete}
-								className="bg-amber-500 hover:bg-amber-400 text-white rounded-xl px-5 font-semibold"
+								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5 font-semibold"
 							>
 								Delete {selectedIds.length} Profiles
 							</Button>

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { format, parseISO } from "date-fns";
-import { Calendar as CalendarIcon, Clock, Edit2, FileText, GripHorizontal, Home, Loader2, MapPin, Package, User, X, Printer, Download } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Edit2, FileText, GripHorizontal, Home, Loader2, MapPin, Package, User, X, Printer, Download, UserCheck, AlertCircle } from "lucide-react";
 import { getResidentTransactions } from "../lib/queue-service";
 import { ResidentIdCard } from "./residents/resident-id-card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
@@ -110,7 +110,7 @@ export function ResidentProfilePane({
 			}
 
 			setErrors(newErrors);
-			toast.error("Please fill in all required fields correctly.");
+			toast("Please fill in all required fields correctly", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 
@@ -143,12 +143,12 @@ export function ResidentProfilePane({
 				},
 			});
 			if (result.success) {
-				toast.success("Profile updated successfully");
+				toast("Profile updated successfully", { icon: <UserCheck className="h-4 w-4 text-emerald-500" /> });
 				setIsEditing(false);
 				onUpdateComplete?.({ ...resident, ...payload } as Resident);
 			}
 		} catch (error) {
-			toast.error("Failed to update profile");
+			toast("Failed to update profile", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsSaving(false);
 		}
@@ -181,10 +181,10 @@ export function ResidentProfilePane({
 			link.download = `ID_${resident.firstName}_${resident.lastName}.png`.replace(/\s+/g, '_');
 			link.href = image;
 			link.click();
-			toast.success("ID Card downloaded successfully!");
+			toast("ID Card downloaded successfully", { icon: <Download className="h-4 w-4 text-blue-500" /> });
 		} catch (error) {
 			console.error("Failed to generate ID:", error);
-			toast.error("Failed to generate ID card image");
+			toast("Failed to generate ID card image", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsDownloading(false);
 		}

@@ -12,7 +12,9 @@ import {
 	Trash2,
 	ChevronLeft,
 	Calendar as CalendarIcon,
-	Loader2
+	Loader2,
+	FileSpreadsheet,
+	AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
 import { read, utils, writeFile } from "xlsx";
@@ -207,11 +209,11 @@ function DistributionsPage() {
 	const handleCreate = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!newName) {
-			toast.error("Please enter a program name");
+			toast("Please enter a program name", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 		if (selectedResidentIds.size === 0) {
-			toast.error("Please select at least one resident");
+			toast("Please select at least one resident", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 		
@@ -236,7 +238,7 @@ function DistributionsPage() {
 				}
 			});
 			if (res.success) {
-				toast.success(`Program created! ${res.count} residents selected.`);
+				toast(`Program created with ${res.count} residents selected`, { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
 				const updated = await getDistributionPrograms();
 				setPrograms(updated);
 				setIsCreating(false);
@@ -248,7 +250,7 @@ function DistributionsPage() {
 				setNewName("");
 			}
 		} catch (err: any) {
-			toast.error(err.message || "Failed to create program");
+			toast(err.message || "Failed to create program", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsLoading(false);
 		}
@@ -268,12 +270,12 @@ function DistributionsPage() {
 		try {
 			const res = await deleteDistributionProgram({ data: id });
 			if (res.success) {
-				toast.success("Program deleted");
+				toast("Program deleted", { icon: <Trash2 className="h-4 w-4 text-red-500" /> });
 				const updated = await getDistributionPrograms();
 				setPrograms(updated);
 			}
 		} catch (err: any) {
-			toast.error("Failed to delete program");
+			toast("Failed to delete program", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsDeleting(null);
 		}
@@ -669,7 +671,7 @@ function DistributionsPage() {
 							</Button>
 							<Button
 								onClick={executeDelete}
-								className="bg-red-600 hover:bg-red-500 text-foreground rounded-xl px-5"
+								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
 							>
 								Delete Program
 							</Button>
@@ -709,7 +711,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 	// Export to Excel
 	const handleExport = () => {
 		if (beneficiaries.length === 0) {
-			toast.error("No beneficiaries to export");
+			toast("No beneficiaries to export", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 
@@ -739,7 +741,7 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 		utils.book_append_sheet(workbook, worksheet, "Checklist");
 		
 		writeFile(workbook, `Distribution_Checklist_${program.id}.xlsx`);
-		toast.success("Excel checklist downloaded!");
+		toast("Excel checklist downloaded", { icon: <FileSpreadsheet className="h-4 w-4 text-emerald-500" /> });
 	};
 
 	// Import Scanned Excel
@@ -768,12 +770,12 @@ function DistributionDetail({ program, onBack }: { program: {id: number, name: s
 			});
 
 			if (result.success) {
-				toast.success(`Import successful! Marked ${result.updatedCount} residents as claimed.`);
+				toast(`Import successful with ${result.updatedCount} residents marked as claimed`, { icon: <FileSpreadsheet className="h-4 w-4 text-primary" /> });
 				loadData();
 			}
 		} catch (err: any) {
 			console.error("Import error", err);
-			toast.error("Failed to parse the Excel file. Please ensure it matches the exported format.");
+			toast("Failed to parse the Excel file", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsImporting(false);
 			if (fileInputRef.current) {

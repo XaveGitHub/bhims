@@ -252,7 +252,7 @@ function QueueDashboard() {
       setQueue(activeItems);
     } catch (error) {
       console.error("Failed to load queue:", error);
-      if (!silent) toast.error("Failed to load queue.");
+      if (!silent) toast("Failed to load queue", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
     } finally {
       setLoading(false);
       setIsRefreshing(false);
@@ -274,11 +274,21 @@ function QueueDashboard() {
         data: { transactionIds, newStatus } 
       });
       if (result.success) {
-        toast.success(`Marked as ${newStatus}`);
+        const getStatusToastIcon = (status: string) => {
+          switch (status) {
+            case 'Pending': return <Clock className="w-4 h-4 text-amber-500" />;
+            case 'Processing': return <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />;
+            case 'Ready to Claim': return <CheckCircle className="w-4 h-4 text-emerald-500" />;
+            case 'Completed': return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
+            case 'Cancelled': return <XCircle className="w-4 h-4 text-red-500" />;
+            default: return <CheckCircle2 className="w-4 h-4 text-primary" />;
+          }
+        };
+        toast(`Marked as ${newStatus}`, { icon: getStatusToastIcon(newStatus) });
         loadQueue(true); // Refresh instantly
       }
     } catch (error) {
-      toast.error("Failed to update status.");
+      toast("Failed to update status", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
     }
   };
 
@@ -340,7 +350,7 @@ function QueueDashboard() {
     };
 
     if (!validTransitions[activeStatus]?.includes(overStatus)) {
-      toast.error(`Invalid move. You can only move between adjacent stages.`);
+      toast("Invalid move. You can only move between adjacent stages", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
       return;
     }
 
@@ -472,7 +482,7 @@ function QueueDashboard() {
               </Button>
               <Button 
                 type="button"
-                className="bg-red-600 hover:bg-red-500 text-foreground rounded-xl px-5"
+                className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
                 onClick={async () => {
                   await handleStatusChange(cancelBatch.items.map((i: any) => i.id), 'Cancelled');
                   setCancelBatch(null);

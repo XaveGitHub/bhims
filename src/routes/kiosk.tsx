@@ -1,12 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from "react";
-import { Search, ScanBarcode, UserPlus, FileText, CheckCircle2, ArrowLeft, Loader2, Home, Calendar as CalendarIcon, User, X, Users, MapPin, Phone } from "lucide-react";
+import { Search, ScanBarcode, UserPlus, FileText, CheckCircle2, ArrowLeft, Loader2, Home, Calendar as CalendarIcon, User, X, Users, MapPin, Phone, Clock, UserCheck } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
 import { Calendar as CalendarComponent } from "../components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/dialog";
 import { cn } from "../lib/utils";
 import { format, parseISO } from "date-fns";
 import { kioskLoginByBarcode, kioskLoginByName, submitKioskRequest } from "../lib/kiosk-service";
@@ -22,6 +23,8 @@ function KioskPage() {
 	// State Machine
 	const [step, setStep] = useState<"WELCOME" | "IDENTIFY_SCAN" | "IDENTIFY_SEARCH" | "REGISTER_NEW_RESIDENT" | "SELECT_DOCUMENTS" | "CHECKOUT" | "SUCCESS">("WELCOME");
 	const [countdown, setCountdown] = useState(6);
+	const [showInactivityWarning, setShowInactivityWarning] = useState(false);
+	const [warningCountdown, setWarningCountdown] = useState(15);
 
 	// Data
 	const [activeResident, setActiveResident] = useState<any>(null);
@@ -72,6 +75,61 @@ function KioskPage() {
 		}
 	}, [step]);
 
+	// Global Inactivity Tracker
+	useEffect(() => {
+		const inactiveSteps = ["IDENTIFY_SCAN", "IDENTIFY_SEARCH", "SELECT_DOCUMENTS", "CHECKOUT"];
+		if (!inactiveSteps.includes(step)) {
+			if (showInactivityWarning) setShowInactivityWarning(false);
+			return;
+		}
+
+		let inactivityTimer: any;
+
+		const resetTimer = () => {
+			if (showInactivityWarning) return; // Don't reset if warning is already showing
+			clearTimeout(inactivityTimer);
+			inactivityTimer = setTimeout(() => {
+				setShowInactivityWarning(true);
+				setWarningCountdown(15);
+			}, 5000); // 5 seconds (temporary for testing)
+		};
+
+		const handleActivity = () => resetTimer();
+
+		window.addEventListener("mousemove", handleActivity);
+		window.addEventListener("mousedown", handleActivity);
+		window.addEventListener("keypress", handleActivity);
+		window.addEventListener("touchstart", handleActivity);
+
+		resetTimer();
+
+		return () => {
+			clearTimeout(inactivityTimer);
+			window.removeEventListener("mousemove", handleActivity);
+			window.removeEventListener("mousedown", handleActivity);
+			window.removeEventListener("keypress", handleActivity);
+			window.removeEventListener("touchstart", handleActivity);
+		};
+	}, [step, showInactivityWarning]);
+
+	// Warning Countdown
+	useEffect(() => {
+		if (!showInactivityWarning) return;
+		
+		if (warningCountdown <= 0) {
+			setShowInactivityWarning(false);
+			toast("Session reset due to inactivity.", { icon: <Clock className="h-4 w-4 text-amber-500" /> });
+			handleReset();
+			return;
+		}
+		
+		const interval = setInterval(() => {
+			setWarningCountdown(prev => prev - 1);
+		}, 1000);
+		
+		return () => clearInterval(interval);
+	}, [showInactivityWarning, warningCountdown]);
+
 	useEffect(() => {
 		if (step === "SELECT_DOCUMENTS") {
 			getTemplates().then((res) => setTemplates(res.filter((t: any) => t.isActive)));
@@ -92,7 +150,7 @@ function KioskPage() {
 				setError(null);
 				setActiveResident(res.resident);
 				setStep("SELECT_DOCUMENTS");
-				toast.success("Welcome, " + res.resident.firstName);
+			toast("Welcome, " + res.resident.firstName, { icon: <UserCheck className="h-4 w-4 text-blue-500" /> });
 			} else {
 				setError(res.error || "ID Code not found.");
 				setBarcode("");
@@ -114,7 +172,7 @@ function KioskPage() {
 				setError(null);
 				setActiveResident(res.resident);
 				setStep("SELECT_DOCUMENTS");
-				toast.success("Welcome, " + res.resident.firstName);
+			toast("Welcome, " + res.resident.firstName, { icon: <UserCheck className="h-4 w-4 text-blue-500" /> });
 			} else {
 				setError(res.error || "No resident found with those details.");
 			}
@@ -183,7 +241,7 @@ function KioskPage() {
 				setError(null);
 				setActiveResident(res.resident);
 				setStep("SELECT_DOCUMENTS");
-				toast.success("Registration successful! Welcome " + res.resident.firstName);
+				toast("Registration successful! Welcome " + res.resident.firstName, { icon: <UserCheck className="h-4 w-4 text-blue-500" /> });
 			} else {
 				setError(res.error || "Failed to register.");
 			}
@@ -240,6 +298,7 @@ function KioskPage() {
 		setPurpose("");
 		setError(null);
 		setQueueNumber("");
+		setShowInactivityWarning(false);
 	};
 
 	return (
@@ -870,6 +929,26 @@ function KioskPage() {
 					</div>
 				)}
 			</div>
+			
+			{/* Inactivity Warning Dialog */}
+			<Dialog open={showInactivityWarning} onOpenChange={setShowInactivityWarning}>
+				<DialogContent className="sm:max-w-lg border-border bg-card">
+					<DialogHeader>
+						<DialogTitle className="text-2xl text-center pt-4">Are you still there?</DialogTitle>
+					</DialogHeader>
+					<div className="flex flex-col items-center justify-center py-8">
+						<Clock className="h-16 w-16 text-muted-foreground mb-6 animate-pulse" />
+						<p className="text-center text-muted-foreground text-base max-w-sm">
+							Your session will reset in <span className="font-bold text-primary text-3xl inline-block mx-2">{warningCountdown}</span> seconds to protect your privacy.
+						</p>
+					</div>
+					<DialogFooter className="sm:justify-center pb-4">
+						<Button size="lg" className="w-full sm:w-64 h-14 text-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-transform active:scale-95" onClick={() => setShowInactivityWarning(false)}>
+							I'm still here
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

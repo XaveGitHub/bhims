@@ -97,7 +97,7 @@ function SettingsView() {
 				data: { barangayName: brgyName },
 			});
 			if (result.success) {
-				toast.success("Settings updated successfully.");
+				toast("Settings updated successfully.", { icon: <Settings className="h-4 w-4 text-primary" /> });
 				// Refresh page branding
 				setTimeout(() => {
 					window.location.reload();
@@ -136,7 +136,7 @@ function SettingsView() {
 				window.URL.revokeObjectURL(url);
 				document.body.removeChild(a);
 
-				toast.success("Backup downloaded successfully.");
+				toast("Backup downloaded successfully.", { icon: <Download className="h-4 w-4 text-primary" /> });
 			} else {
 				toast.error("Failed to create backup: No data received.");
 			}
@@ -162,7 +162,7 @@ function SettingsView() {
 		try {
 			const result = await clearAllData({ data: "DELETE ALL" });
 			if (result.success) {
-				toast.success("All data has been deleted. Reloading...");
+				toast("All data has been deleted. Reloading...", { icon: <Trash2 className="h-4 w-4 text-red-500" /> });
 				setIsDeleteAllOpen(false);
 				setDeleteConfirmText("");
 				setTimeout(() => {
@@ -200,9 +200,7 @@ function SettingsView() {
 
 				const result = await restoreBackup({ data: base64 });
 				if (result.success) {
-					toast.success(
-						"Database restored successfully! Reloading application...",
-					);
+					toast("Database restored successfully! Reloading...", { icon: <Upload className="h-4 w-4 text-primary" /> });
 					setTimeout(() => {
 						window.location.href = "/";
 					}, 2000);
@@ -450,7 +448,7 @@ function SettingsView() {
 								type="button"
 								onClick={handleDeleteAll}
 								disabled={deleteConfirmText !== "DELETE ALL" || deleting}
-								className="bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-foreground rounded-xl px-5 flex items-center gap-2 transition-all"
+								className="bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl px-5 flex items-center gap-2 transition-all"
 							>
 								{deleting ? (
 									<><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Deleting...</>
@@ -492,7 +490,7 @@ function SettingsView() {
 							</Button>
 							<Button
 								onClick={confirmRestore}
-								className="bg-red-600 hover:bg-red-500 text-foreground rounded-xl px-5"
+								className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
 							>
 								Overwrite & Restore
 							</Button>
