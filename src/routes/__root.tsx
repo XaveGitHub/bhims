@@ -18,7 +18,7 @@ import {
 } from "../components/ui/sidebar";
 import { Toaster } from "../components/ui/sonner";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-import { getBarangayName, isFirstRun } from "../lib/auth-service";
+import { getBarangayName, isFirstRun, getServerIp } from "../lib/auth-service";
 import { getClientAuth, getClientUser } from "../lib/client-auth";
 import appCss from "../styles.css?url";
 import { TooltipProvider } from "../components/ui/tooltip";
@@ -97,10 +97,12 @@ function RootLayout() {
 	const isSetupPage = location.pathname === "/setup";
 	const isFullscreenPage = isLoginPage || isKioskPage || isSetupPage || isMonitorPage;
 	const [brgyName, setBrgyName] = useState("Barangay Handumanan");
+	const [serverIp, setServerIp] = useState("");
 
 	useEffect(() => {
 		if (!isFullscreenPage) {
 			getBarangayName().then(setBrgyName);
+			getServerIp().then(setServerIp);
 		}
 	}, [isFullscreenPage]);
 
@@ -133,7 +135,7 @@ function RootLayout() {
 
 			{/* SidebarProvider must wrap ONLY the sidebar + content so peer selectors work */}
 			<SidebarProvider defaultOpen={true}>
-				<AppSidebar brgyName={brgyName} userRole={user?.role} />
+				<AppSidebar brgyName={brgyName} userRole={user?.role} serverIp={serverIp} />
 
 				{/* Main Content Area */}
 				<SidebarInset className="flex flex-col bg-transparent">

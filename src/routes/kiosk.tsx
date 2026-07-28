@@ -91,7 +91,7 @@ function KioskPage() {
 			inactivityTimer = setTimeout(() => {
 				setShowInactivityWarning(true);
 				setWarningCountdown(15);
-			}, 5000); // 5 seconds (temporary for testing)
+			}, 60000); // 1 minute
 		};
 
 		const handleActivity = () => resetTimer();

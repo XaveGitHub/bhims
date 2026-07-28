@@ -34,14 +34,13 @@ export function NavUser({ user }: { user: UserInfo }) {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+							className="data-[state=open]:bg-primary/5 data-[state=open]:text-primary hover:!text-primary hover:bg-primary/5 transition-all duration-200"
 						>
 							<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
 								<Shield className="size-4" />
 							</div>
-							<div className="grid flex-1 text-left text-sm leading-tight ml-1">
-								<span className="truncate font-semibold text-sm">{user.name}</span>
-								<span className="truncate text-xs">{user.email || "Local Server"}</span>
+							<div className="flex flex-1 items-center">
+								<span className="font-semibold text-[13.5px] tracking-tight whitespace-nowrap">{user.name}</span>
 							</div>
 							<ChevronsUpDown className="ml-auto size-4" />
 						</SidebarMenuButton>

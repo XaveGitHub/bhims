@@ -4,9 +4,10 @@ import {
 	Download,
 	RefreshCw,
 	Settings,
-	ShieldAlert,
-	Trash2,
 	Upload,
+	CheckCircle2,
+	AlertCircle,
+	Loader2,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -56,9 +57,7 @@ function SettingsView() {
 	const [backingUp, setBackingUp] = useState(false);
 	const [restoring, setRestoring] = useState(false);
 	const [isRestoreConfirmOpen, setIsRestoreConfirmOpen] = useState(false);
-	const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
-	const [deleteConfirmText, setDeleteConfirmText] = useState("");
-	const [deleting, setDeleting] = useState(false);
+
 
 	const loadSettings = useCallback(async (force = false) => {
 		if (!force && cachedSettings) {
@@ -86,7 +85,7 @@ function SettingsView() {
 	const handleSaveSettings = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!brgyName) {
-			toast.error("Barangay Name is required.");
+			toast("Barangay Name is required", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 
@@ -97,14 +96,14 @@ function SettingsView() {
 				data: { barangayName: brgyName },
 			});
 			if (result.success) {
-				toast("Settings updated successfully.", { icon: <Settings className="h-4 w-4 text-primary" /> });
+				toast("Settings updated successfully", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
 				// Refresh page branding
 				setTimeout(() => {
 					window.location.reload();
 				}, 500);
 			}
 		} catch (err) {
-			toast.error("Failed to save settings.");
+			toast("Failed to save settings", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setSaving(false);
 		}
@@ -136,12 +135,12 @@ function SettingsView() {
 				window.URL.revokeObjectURL(url);
 				document.body.removeChild(a);
 
-				toast("Backup downloaded successfully.", { icon: <Download className="h-4 w-4 text-primary" /> });
+				toast("Backup downloaded successfully", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
 			} else {
-				toast.error("Failed to create backup: No data received.");
+				toast("Failed to create backup: No data received", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			}
 		} catch (err) {
-			toast.error("An error occurred during backup.");
+			toast("An error occurred during backup", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setBackingUp(false);
 		}
@@ -156,27 +155,7 @@ function SettingsView() {
 		restoreInputRef.current?.click();
 	};
 
-	const handleDeleteAll = async () => {
-		if (deleteConfirmText !== "DELETE ALL") return;
-		setDeleting(true);
-		try {
-			const result = await clearAllData({ data: "DELETE ALL" });
-			if (result.success) {
-				toast("All data has been deleted. Reloading...", { icon: <Trash2 className="h-4 w-4 text-red-500" /> });
-				setIsDeleteAllOpen(false);
-				setDeleteConfirmText("");
-				setTimeout(() => {
-					window.location.href = "/";
-				}, 1500);
-			} else {
-				toast.error(result.error || "Failed to delete data.");
-			}
-		} catch {
-			toast.error("An unexpected error occurred.");
-		} finally {
-			setDeleting(false);
-		}
-	};
+
 
 	const handleRestoreFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -200,15 +179,15 @@ function SettingsView() {
 
 				const result = await restoreBackup({ data: base64 });
 				if (result.success) {
-					toast("Database restored successfully! Reloading...", { icon: <Upload className="h-4 w-4 text-primary" /> });
+					toast("Database restored successfully! Reloading", { icon: <Upload className="h-4 w-4 text-primary" /> });
 					setTimeout(() => {
 						window.location.href = "/";
 					}, 2000);
 				} else {
-					toast.error(result.error || "Failed to restore database.");
+					toast(result.error || "Failed to restore database", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 				}
 			} catch (err) {
-				toast.error("Failed to read backup file.");
+				toast("Failed to read backup file", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			} finally {
 				setRestoring(false);
 				// Reset file input value
@@ -231,7 +210,7 @@ function SettingsView() {
 		<div className="space-y-8 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
 			{/* Header */}
 			<div>
-				<h2 className="text-2xl font-semibold tracking-tight text-foreground">
+				<h2 className="text-2xl font-bold tracking-tight text-foreground">
 					System Settings
 				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
@@ -268,7 +247,14 @@ function SettingsView() {
 						disabled={saving}
 						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 text-sm font-semibold active:scale-95 transition-all shadow-md shadow-primary/20"
 					>
-						{saving ? "Saving..." : "Save Settings"}
+						{saving ? (
+							<div className="flex items-center gap-2">
+								<Loader2 className="w-4 h-4 animate-spin" />
+								Saving
+							</div>
+						) : (
+							"Save Settings"
+						)}
 					</Button>
 				</form>
 			</Card>
@@ -302,7 +288,7 @@ function SettingsView() {
 							type="button"
 							onClick={handleBackup}
 							disabled={backingUp}
-							className="bg-accent hover:bg-accent text-primary border border-primary/20 dark:bg-muted dark:hover:bg-muted dark:text-primary dark:border-primary/20 rounded-xl px-5 text-xs font-semibold w-full sm:w-auto flex items-center justify-center gap-2"
+							className="bg-primary/5 hover:bg-primary/15 text-primary border border-primary/20 rounded-xl px-5 text-xs font-semibold w-full sm:w-auto flex items-center justify-center gap-2 transition-colors"
 						>
 							{backingUp ? (
 								<RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -337,7 +323,7 @@ function SettingsView() {
 							type="button"
 							onClick={handleRestoreClick}
 							disabled={restoring}
-							className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 dark:bg-red-950/20 dark:hover:bg-red-900/30 dark:text-red-400 dark:border-red-500/20 rounded-xl py-2 px-4 text-xs font-semibold flex items-center justify-center gap-2"
+							className="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-500 border border-red-500/20 rounded-xl py-2 px-4 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
 						>
 							{restoring ? (
 								<RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -350,11 +336,11 @@ function SettingsView() {
 				</div>
 
 				{/* Warnings */}
-				<div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 dark:bg-amber-950/30 dark:border-amber-900/40 dark:text-red-600 flex items-start gap-3 leading-relaxed">
-					<AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
+				<div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-start gap-3 shadow-sm">
+					<AlertTriangle className="h-5 w-5 shrink-0 mt-0.5 text-amber-600" />
 					<div className="space-y-1">
-						<span className="font-bold">Important Notice:</span>
-						<p>
+						<span className="text-sm font-bold text-amber-700 dark:text-amber-500">Important Notice</span>
+						<p className="text-amber-700/90 dark:text-amber-500/90 text-sm leading-relaxed">
 							SQLite database files are fully self-contained. For daily backups,
 							we recommend downloading the backup `.db` file and saving it to an
 							external USB flash drive. Keep backups in a secure place.
@@ -363,103 +349,7 @@ function SettingsView() {
 				</div>
 			</Card>
 
-			{/* Danger Zone */}
-			<Card className="rounded-xl border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/10 shadow-sm p-6 space-y-5">
-				<div>
-					<h3 className="text-lg font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
-						<ShieldAlert className="h-4.5 w-4.5" />
-						<span>Danger Zone</span>
-					</h3>
-					<p className="text-xs text-muted-foreground mt-1">
-						Destructive actions that cannot be undone. Proceed with extreme caution.
-					</p>
-				</div>
 
-				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-red-500/20 bg-card">
-					<div className="space-y-1">
-						<h4 className="font-bold text-sm text-foreground">Delete All Records</h4>
-						<p className="text-[10px] text-muted-foreground leading-normal max-w-sm">
-							Permanently removes <strong className="text-muted-foreground">all residents and household records</strong> from the database.
-							System settings (barangay name, PIN) are preserved. This action is irreversible.
-						</p>
-					</div>
-					<Button
-						type="button"
-						onClick={() => { setDeleteConfirmText(""); setIsDeleteAllOpen(true); }}
-						className="shrink-0 bg-red-100 hover:bg-red-200 text-red-600 border border-red-200 hover:border-red-300 dark:bg-red-600/20 dark:hover:bg-red-600/30 dark:text-red-400 dark:border-red-800/50 dark:hover:border-red-700 rounded-xl px-4 py-2 text-xs font-semibold flex items-center gap-2 transition-all"
-					>
-						<Trash2 className="h-3.5 w-3.5" />
-						Delete All Data
-					</Button>
-				</div>
-			</Card>
-
-			{/* DELETE ALL CONFIRMATION DIALOG */}
-			<Dialog
-				open={isDeleteAllOpen}
-				onOpenChange={(open) => {
-					if (!deleting) {
-						setIsDeleteAllOpen(open);
-						if (!open) setDeleteConfirmText("");
-					}
-				}}
-			>
-				<DialogContent className="max-w-md bg-background border-red-500/30 shadow-md text-foreground p-6 sm:rounded-xl">
-					<DialogHeader>
-						<DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-							<Trash2 className="h-5 w-5 text-red-600" />
-							<span>Delete All Records</span>
-						</DialogTitle>
-					</DialogHeader>
-					<div className="mt-4 space-y-4">
-						<div className="p-3 rounded-xl bg-red-950/40 border border-red-500/30">
-							<p className="text-sm text-red-300 leading-relaxed">
-								⚠️ This will <strong>permanently delete every resident and household record</strong> in the system.
-								This cannot be undone. Make sure you have a backup before proceeding.
-							</p>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="delete-confirm" className="text-sm text-foreground/80">
-								Type <strong className="text-red-400 font-mono">DELETE ALL</strong> to confirm:
-							</Label>
-							<Input
-								id="delete-confirm"
-								value={deleteConfirmText}
-								onChange={(e) => setDeleteConfirmText(e.target.value)}
-								placeholder="DELETE ALL"
-								className="bg-background border-red-500/30 text-foreground placeholder:text-muted-foreground focus:border-red-500 rounded-xl font-mono tracking-widest"
-								disabled={deleting}
-								autoComplete="off"
-							/>
-						</div>
-
-						<div className="flex items-center justify-end gap-2 pt-4 border-t border-border">
-							<Button
-								type="button"
-								variant="ghost"
-								onClick={() => { setIsDeleteAllOpen(false); setDeleteConfirmText(""); }}
-								disabled={deleting}
-								className="rounded-xl bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900 px-5"
-							>
-								Cancel
-							</Button>
-							<Button
-								type="button"
-								onClick={handleDeleteAll}
-								disabled={deleteConfirmText !== "DELETE ALL" || deleting}
-								className="bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl px-5 flex items-center gap-2 transition-all"
-							>
-								{deleting ? (
-									<><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Deleting...</>
-								) : (
-									<><Trash2 className="h-3.5 w-3.5" /> Delete Everything</>
-								)}
-							</Button>
-						</div>
-					</div>
-				</DialogContent>
-			</Dialog>
 
 			{/* RESTORE CONFIRMATION DIALOG */}
 			<Dialog

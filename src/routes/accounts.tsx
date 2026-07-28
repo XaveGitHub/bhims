@@ -199,7 +199,7 @@ function AccountsView() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h2 className="text-2xl font-semibold tracking-tight text-foreground">
+					<h2 className="text-2xl font-bold tracking-tight text-foreground">
 						User Management
 					</h2>
 					<p className="text-sm text-muted-foreground mt-1">

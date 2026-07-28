@@ -27,12 +27,13 @@ import {
 export function AppSidebar({
 	brgyName,
 	userRole,
+	serverIp,
 	...props
-}: { brgyName: string; userRole?: string } & React.ComponentProps<typeof Sidebar>) {
+}: { brgyName: string; userRole?: string; serverIp?: string } & React.ComponentProps<typeof Sidebar>) {
 	const data = {
 		user: {
 			name: brgyName,
-			email: "local-node@bhims.gov",
+			email: "System Administrator",
 		},
 		overview: [] as any[],
 		documentServices: [] as any[],

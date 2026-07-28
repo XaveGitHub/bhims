@@ -96,7 +96,7 @@ function DashboardView() {
 
 	const copyLanLink = () => {
 		if (!stats) return;
-		navigator.clipboard.writeText(`http://${stats.serverIp}:3000`);
+		navigator.clipboard.writeText(`${stats.serverIp}:3000`);
 		setCopied(true);
 		setTimeout(() => setCopied(false), 2000);
 	};
@@ -815,7 +815,7 @@ function DashboardView() {
 								</p>
 								<div className="flex items-center gap-2 rounded-xl bg-card border border-border p-3">
 									<span className="text-sm font-mono text-foreground font-bold break-all flex-1">
-										http://{stats?.serverIp ?? "127.0.0.1"}:3000
+										{stats?.serverIp ?? "127.0.0.1"}:3000
 									</span>
 									<button
 										type="button"

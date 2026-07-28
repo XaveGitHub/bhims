@@ -37,7 +37,7 @@ export function NavSecondary({
 									}}
 									activeProps={{
 										className:
-											"!bg-primary !text-primary-foreground font-semibold shadow-sm",
+											"!bg-primary hover:!bg-primary/90 !text-primary-foreground font-semibold shadow-sm",
 									}}
 									inactiveProps={{
 										className:

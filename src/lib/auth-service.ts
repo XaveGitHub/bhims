@@ -245,3 +245,29 @@ export const deleteUserAccount = createServerFn({ method: "POST" })
 		}
 	});
 
+export const getServerIp = createServerFn({ method: "GET" }).handler(async () => {
+	let serverIp = "127.0.0.1";
+	try {
+		const os = await import("node:os");
+		const interfaces = os.networkInterfaces();
+		let foundIp = "";
+		for (const name of Object.keys(interfaces)) {
+			const iface = interfaces[name];
+			if (!iface) continue;
+			for (const net of iface) {
+				if (net.family === "IPv4" && !net.internal) {
+					if (net.address.startsWith("192.168.") || net.address.startsWith("10.")) {
+						foundIp = net.address;
+						break;
+					}
+					if (!foundIp) foundIp = net.address;
+				}
+			}
+			if (foundIp && (foundIp.startsWith("192.168.") || foundIp.startsWith("10."))) break;
+		}
+		serverIp = foundIp || "127.0.0.1";
+	} catch (_err) {
+		// fallback silently
+	}
+	return serverIp;
+});
