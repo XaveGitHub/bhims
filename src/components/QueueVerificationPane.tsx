@@ -75,8 +75,8 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 	useEffect(() => {
 		if (batch && activeItem) {
 			const today = new Date();
-			const dateStr = format(today, 'MM-dd-yy');
-			const controlNoStr = `${dateStr}-${Math.floor(Math.random() * 1000).toString().padStart(4, '0')}`;
+			const dateStr = batch?.createdAt ? format(new Date(batch.createdAt), 'MMddyy') : format(today, 'MMddyy');
+			const controlNoStr = batch?.id ? `TRN-${dateStr}-${batch.id.toString().padStart(4, '0')}` : "";
 
 			const initialForm: Record<string, any> = {
 				firstName: batch.resident?.firstName || "",

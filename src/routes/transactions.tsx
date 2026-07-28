@@ -59,13 +59,17 @@ function TransactionsView() {
 			{
 				accessorKey: "id",
 				header: "Transaction ID",
-				cell: ({ row }) => (
-					<span className="font-mono text-sm text-foreground">
-						TRX-{row.original.id?.toString().padStart(5, "0")}
-					</span>
-				),
+				cell: ({ row }) => {
+					const dateStr = row.original.createdAt ? format(new Date(row.original.createdAt), 'MMddyy') : '000000';
+					return (
+						<span className="font-mono text-sm text-foreground">
+							TRN-{dateStr}-{row.original.id?.toString().padStart(4, "0")}
+						</span>
+					);
+				},
 				filterFn: (row, _id, value) => {
-					const txId = `TRX-${row.original.id?.toString().padStart(5, "0")}`;
+					const dateStr = row.original.createdAt ? format(new Date(row.original.createdAt), 'MMddyy') : '000000';
+					const txId = `TRN-${dateStr}-${row.original.id?.toString().padStart(4, "0")}`;
 					return txId.toLowerCase().includes(value.toLowerCase());
 				},
 			},

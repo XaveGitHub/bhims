@@ -1565,14 +1565,14 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 				<div key={month}>
 					<div className="flex items-center gap-2 mb-4">
 						<Clock className="h-3.5 w-3.5 text-muted-foreground" />
-						<span className="text-[11px] font-bold text-muted-foreground tracking-wider">
+						<span className="text-sm font-medium text-foreground/80">
 							{month}
 						</span>
 					</div>
 
 					<div className="relative pl-6">
 						{/* Vertical timeline line */}
-						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-background" />
+						<div className="absolute left-[7px] top-2 bottom-2 w-px bg-border/50" />
 
 						<div className="space-y-4">
 							{items.map((tx: any) => {
@@ -1581,7 +1581,7 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 								return (
 									<div key={tx.id} className="relative group">
 										{/* Timeline dot */}
-										<div className={`absolute -left-6 top-1/2 -translate-y-1/2 h-3.5 w-3.5 rounded-full border-2 border-neutral-950 ${config.dot} shadow-lg`} />
+										<div className={`absolute -left-[22px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full ${config.dot} shadow-sm`} />
 
 										<Card className="bg-card/40 border-border/60 shadow-none hover:bg-surface-strong transition-colors">
 											<CardContent className="p-3.5">
@@ -1602,23 +1602,25 @@ function ResidentHistoryTimeline({ transactions }: { transactions: any[] }) {
 																{tx.purpose}
 															</p>
 														)}
-														<div className="flex items-center gap-3 mt-2 ml-5">
-															<span className="text-[11px] text-muted-foreground">
-																{format(date, "MMM d, yyyy   h:mm a")}
-															</span>
+														<div className="flex items-center gap-3 mt-2 ml-5 flex-wrap">
+															<div className="flex items-center gap-2 flex-wrap">
+																<span className="text-xs text-muted-foreground whitespace-nowrap">
+																	{format(new Date(tx.createdAt), "MMM d, yyyy h:mm a")}
+																</span>
+																<span className="text-xs text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded-md border border-border/50 whitespace-nowrap">
+																	TRN-{format(new Date(tx.createdAt), 'MMddyy')}-{tx.id?.toString().padStart(4, "0")}
+																</span>
+															</div>
 															{tx.totalPrice > 0 && (
 																<span className="text-[11px] text-muted-foreground">
 																	• ₱{tx.totalPrice.toFixed(2)}
 																</span>
 															)}
-															<span className="text-[11px] text-muted-foreground font-mono">
-																TRX-{tx.id?.toString().padStart(5, "0")}
-															</span>
 														</div>
 													</div>
 													<Badge
 														variant="outline"
-														className={`${config.badge} text-[10px] font-bold px-2 py-0.5 shrink-0 rounded-full`}
+														className={`${config.badge} font-medium shadow-none shrink-0`}
 													>
 														{config.label}
 													</Badge>
