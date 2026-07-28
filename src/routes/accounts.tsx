@@ -26,7 +26,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "../components/ui/table";
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { getUsers, updateUserAccount, createUserAccount, deleteUserAccount } from "../lib/auth-service";
 
 export const Route = createFileRoute("/accounts")({
@@ -95,7 +95,7 @@ function AccountsView() {
 	const handleUpdateAccount = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!selectedUserId || !editUsername || !editName) {
-			toast.error("Username and Name are required.");
+			toast("Username and Name are required", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 
@@ -110,14 +110,14 @@ function AccountsView() {
 				} 
 			});
 			if (result.success) {
-				toast.success("Account updated successfully.");
+				toast("Account updated successfully", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
 				setIsAccountModalOpen(false);
 				loadUsers(true); // Force reload users to show new names
 			} else {
-				toast.error(result.error || "Failed to update account.");
+				toast(result.error || "Failed to update account", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			}
 		} catch (err) {
-			toast.error("An unexpected error occurred.");
+			toast("An unexpected error occurred", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setUpdatingAccount(false);
 		}
@@ -134,7 +134,7 @@ function AccountsView() {
 	const handleCreateAccount = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!createUsername || !createName || !createPassword) {
-			toast.error("All fields are required.");
+			toast("All fields are required", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 
@@ -149,14 +149,14 @@ function AccountsView() {
 				} 
 			});
 			if (result.success) {
-				toast.success("Account created successfully.");
+				toast("Account created successfully", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
 				setIsCreateModalOpen(false);
 				loadUsers(true);
 			} else {
-				toast.error(result.error || "Failed to create account.");
+				toast(result.error || "Failed to create account", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			}
 		} catch (err) {
-			toast.error("An unexpected error occurred.");
+			toast("An unexpected error occurred", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setCreatingAccount(false);
 		}
@@ -173,14 +173,14 @@ function AccountsView() {
 		try {
 			const result = await deleteUserAccount({ data: { id: deletingUserId } });
 			if (result.success) {
-				toast.success("Account deleted successfully.");
+				toast("Account deleted successfully", { icon: <Trash2 className="h-4 w-4 text-red-500" /> });
 				setIsDeleteModalOpen(false);
 				loadUsers(true);
 			} else {
-				toast.error(result.error || "Failed to delete account.");
+				toast(result.error || "Failed to delete account", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			}
 		} catch (err) {
-			toast.error("An unexpected error occurred.");
+			toast("An unexpected error occurred", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setDeletingAccount(false);
 		}
@@ -210,7 +210,7 @@ function AccountsView() {
 					onClick={handleCreateAccountClick}
 					className="bg-primary hover:bg-primary/90 rounded-xl px-4 text-primary-foreground"
 				>
-					Add Account
+					Create Account
 				</Button>
 			</div>
 
@@ -327,7 +327,14 @@ function AccountsView() {
 								disabled={updatingAccount}
 								className="bg-primary hover:bg-primary/90 rounded-xl px-5"
 							>
-								{updatingAccount ? "Saving..." : "Save Changes"}
+								{updatingAccount ? (
+									<div className="flex items-center gap-2">
+										<Loader2 className="w-4 h-4 animate-spin" />
+										Saving
+									</div>
+								) : (
+									"Save Changes"
+								)}
 							</Button>
 						</div>
 					</form>
@@ -342,7 +349,7 @@ function AccountsView() {
 				<DialogContent className="max-w-md bg-background border-border text-foreground p-6 sm:rounded-xl shadow-md">
 					<DialogHeader>
 						<DialogTitle className="text-xl font-bold tracking-tight text-foreground">
-							Add New Account
+							Create New Account
 						</DialogTitle>
 					</DialogHeader>
 					<form onSubmit={handleCreateAccount} className="mt-4 space-y-4">
@@ -410,7 +417,14 @@ function AccountsView() {
 								disabled={creatingAccount}
 								className="bg-primary hover:bg-primary/90 rounded-xl px-5"
 							>
-								{creatingAccount ? "Adding..." : "Add Account"}
+								{creatingAccount ? (
+									<div className="flex items-center gap-2">
+										<Loader2 className="w-4 h-4 animate-spin" />
+										Creating
+									</div>
+								) : (
+									"Create Account"
+								)}
 							</Button>
 						</div>
 					</form>
@@ -447,7 +461,14 @@ function AccountsView() {
 							disabled={deletingAccount}
 							className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-5"
 						>
-							{deletingAccount ? "Deleting..." : "Delete"}
+							{deletingAccount ? (
+								<div className="flex items-center gap-2">
+									<Loader2 className="w-4 h-4 animate-spin" />
+									Deleting
+								</div>
+							) : (
+								"Delete Account"
+							)}
 						</Button>
 					</div>
 				</DialogContent>
