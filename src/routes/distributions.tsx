@@ -399,7 +399,7 @@ function DistributionsPage() {
 									<TableHead className="text-muted-foreground font-medium h-10">Program Name</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Description</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Date</TableHead>
-									<TableHead className="text-muted-foreground font-medium h-10">Target Demographic</TableHead>
+									<TableHead className="text-center text-muted-foreground font-medium h-10">Target Demographic</TableHead>
 									<TableHead className="w-24 text-right text-muted-foreground font-medium h-10">Actions</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -418,10 +418,23 @@ function DistributionsPage() {
 											{prog.description || "—"}
 										</TableCell>
 										<TableCell className="text-muted-foreground text-sm py-2">{prog.date}</TableCell>
-										<TableCell className="py-2">
-											<Badge variant="outline" className="text-primary border-primary/20">
-												{prog.targetDemographic || "Custom Selection"}
-											</Badge>
+										<TableCell className="py-2 text-center">
+											<div className="flex flex-wrap items-center justify-center gap-1.5">
+												{(prog.targetDemographic || "Custom Selection").split(",").map((tag: string, idx: number) => {
+													const t = tag.trim();
+													if (!t) return null;
+													let colorCls = "bg-muted text-muted-foreground border-border";
+													if (t.toLowerCase().includes("pwd")) colorCls = "bg-purple-100 text-purple-700 border-purple-200";
+													else if (t.toLowerCase().includes("solo parent") || t.toLowerCase().includes("single parent")) colorCls = "bg-pink-100 text-pink-700 border-pink-200";
+													else if (t.toLowerCase().includes("senior")) colorCls = "bg-amber-100 text-amber-700 border-amber-200";
+													else if (t.toLowerCase().includes("purok") && !t.toLowerCase().includes("all")) colorCls = "bg-primary/10 text-primary border-primary/20";
+													return (
+														<Badge key={idx} variant="outline" className={`text-[13px] py-0 h-5 ${colorCls}`}>
+															{t}
+														</Badge>
+													);
+												})}
+											</div>
 										</TableCell>
 										<TableCell className="text-right py-2">
 											<div className="flex justify-end gap-1">

@@ -214,7 +214,7 @@ function SettingsView() {
 					System Settings
 				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Manage system configurations, user passwords, and database backups.
+					Manage system configurations, and database backups.
 				</p>
 			</div>
 
