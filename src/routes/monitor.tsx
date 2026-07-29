@@ -11,7 +11,9 @@ export const Route = createFileRoute("/monitor")({
 function MonitorDashboard() {
   const [queue, setQueue] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isMuted, setIsMuted] = useState(true); // Browsers require autoplaying videos to start muted
+  const [isMuted, setIsMuted] = useState(true);
+  const [volume, setVolume] = useState(1);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     loadQueue();
@@ -180,6 +182,7 @@ function MonitorDashboard() {
         {/* RIGHT COLUMN: NATIVE VIDEO (55% of screen) */}
         <div className="w-[55%] bg-black flex items-center justify-center pointer-events-auto relative group">
           <video 
+            ref={videoRef}
             src="/video.mp4" 
             autoPlay 
             loop 
@@ -188,13 +191,30 @@ function MonitorDashboard() {
           />
           
           {/* Custom Volume Overlay */}
-          <button 
-            onClick={() => setIsMuted(!isMuted)}
-            className="absolute bottom-6 right-6 p-4 rounded-full bg-black/60 hover:bg-black/80 text-white transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
-            aria-label={isMuted ? "Unmute video" : "Mute video"}
-          >
-            {isMuted ? <VolumeX className="w-8 h-8" /> : <Volume2 className="w-8 h-8" />}
-          </button>
+          <div className="absolute bottom-6 right-6 flex items-center gap-3 p-3 px-4 rounded-full bg-black/60 hover:bg-black/80 text-white transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm">
+            <button 
+              onClick={() => setIsMuted(!isMuted)}
+              className="rounded-full hover:bg-white/20 transition-colors p-1"
+              aria-label={isMuted ? "Unmute video" : "Mute video"}
+            >
+              {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={(e) => {
+                const newVol = parseFloat(e.target.value);
+                setVolume(newVol);
+                if (videoRef.current) videoRef.current.volume = newVol;
+                if (newVol > 0 && isMuted) setIsMuted(false);
+                if (newVol === 0 && !isMuted) setIsMuted(true);
+              }}
+              className="w-24 h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-primary"
+            />
+          </div>
         </div>
 
       </div>
