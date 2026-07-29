@@ -307,7 +307,7 @@ function KioskPage() {
 			<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/10 via-zinc-50 to-zinc-50 dark:via-background dark:to-background pointer-events-none z-0" />
 			{/* Grid Lines Background */}
 			<div
-				className="absolute inset-0 opacity-[0.08] pointer-events-none z-0"
+				className="absolute inset-0 opacity-[0.025] pointer-events-none z-0"
 				style={{
 					backgroundImage:
 						"linear-gradient(to right, #808080 1px, transparent 1px), linear-gradient(to bottom, #808080 1px, transparent 1px)",
