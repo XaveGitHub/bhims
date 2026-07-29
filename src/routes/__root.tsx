@@ -1,4 +1,3 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,
@@ -8,7 +7,6 @@ import {
 	Scripts,
 	useLocation,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect, useState } from "react";
 import { AppSidebar } from "../components/app-sidebar";
 import {
@@ -17,7 +15,6 @@ import {
 	SidebarTrigger,
 } from "../components/ui/sidebar";
 import { Toaster } from "../components/ui/sonner";
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import { getBarangayName, isFirstRun, getServerIp } from "../lib/auth-service";
 import { getClientAuth, getClientUser } from "../lib/client-auth";
 import appCss from "../styles.css?url";
@@ -39,6 +36,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 			{
 				title: "Barangay Handumanan - BHIMS",
+			},
+		],
+		scripts: [
+			{
+				children: `
+					window.addEventListener('unhandledrejection', function(event) {
+						if (event.reason && event.reason.message && event.reason.message.includes('Failed to fetch dynamically imported module')) {
+							event.preventDefault();
+							window.location.reload();
+						}
+					});
+				`,
 			},
 		],
 		links: [
@@ -185,18 +194,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<TooltipProvider delayDuration={150}>
 					{children}
 				</TooltipProvider>
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-						TanStackQueryDevtools,
-					]}
-				/>
+
 				<Toaster />
 				<Scripts />
 			</body>

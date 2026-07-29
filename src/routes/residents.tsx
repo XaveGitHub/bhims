@@ -1079,6 +1079,7 @@ function ResidentsView() {
 						<div
 							ref={dragNodeRef}
 							className="fixed top-20 right-4 w-[460px] lg:w-[520px] z-50 pointer-events-none [&>*]:pointer-events-auto"
+							style={{ marginRight: "var(--removed-body-scroll-bar-size, 0px)" }}
 						>
 							<ResidentProfilePane
 								resident={drawerResident}
@@ -1146,8 +1147,10 @@ function ResidentsView() {
 
 			{/* Floating Bulk Action Bar */}
 			{selectedIds.length > 0 && (
-				<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10 fade-in duration-300">
-					<div className="bg-card border border-border shadow-md rounded-xl px-4 py-3 flex items-center gap-4">
+				<div 
+					className="fixed bottom-6 left-0 w-[100vw] pointer-events-none flex justify-center z-50 animate-in slide-in-from-bottom-10 fade-in duration-300"
+				>
+					<div className="pointer-events-auto bg-card border border-border shadow-md rounded-xl px-4 py-3 flex items-center gap-4">
 						<span className="text-sm font-medium text-foreground whitespace-nowrap">
 							{selectedIds.length} selected
 						</span>

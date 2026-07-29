@@ -29,8 +29,6 @@ export function PurokCombobox({
 		o.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
-	const isCustomMatch = searchQuery.trim() !== "" && !options.some(o => o.toLowerCase() === searchQuery.trim().toLowerCase());
-
 	return (
 		<Popover open={open} onOpenChange={setOpen} modal={true}>
 			<PopoverTrigger asChild>
@@ -46,7 +44,7 @@ export function PurokCombobox({
 					)}
 				>
 					<span className={cn("truncate", !value && "text-muted-foreground")}>
-						{value || placeholder}
+						{value || "Select Purok..."}
 					</span>
 					<ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
 				</button>
@@ -63,7 +61,7 @@ export function PurokCombobox({
 						<input
 							autoFocus
 							className="flex h-9 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-							placeholder="Search or type new Purok..."
+							placeholder="Search Purok..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
@@ -72,22 +70,7 @@ export function PurokCombobox({
 						className="overflow-y-auto p-1 overscroll-contain flex-1 min-h-0"
 						style={{ maxHeight: 'min(250px, calc(var(--radix-popover-content-available-height) - 45px))' }}
 					>
-						{isCustomMatch && (
-							<button
-								type="button"
-								className="relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary text-primary font-medium transition-colors"
-								onClick={() => {
-									onChange(searchQuery.trim());
-									setOpen(false);
-									setSearchQuery("");
-								}}
-							>
-								<PlusCircle className="mr-2 h-4 w-4" />
-								Use "{searchQuery.trim()}"
-							</button>
-						)}
-
-						{filteredOptions.length === 0 && !isCustomMatch && (
+						{filteredOptions.length === 0 && (
 							<div className="py-6 text-center text-sm text-muted-foreground">
 								No Puroks found.
 							</div>

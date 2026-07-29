@@ -680,10 +680,10 @@ export function ResidentProfilePane({
 	// ── EDIT MODE RENDERING ──
 	const renderEditMode = () => (
 		<Tabs defaultValue="personal" className="w-full h-full flex flex-col">
-			<TabsList className="flex w-[calc(100%-3rem)] bg-card border border-border shadow-sm px-2 py-[26px] rounded-xl mx-6 mt-4 mb-0 shrink-0">
+			<TabsList className="flex w-[calc(100%-3rem)] bg-card border border-border px-2 py-[26px] rounded-xl mx-6 mt-4 mb-0 shrink-0">
 				<TabsTrigger
 					value="personal"
-					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Personal
@@ -694,7 +694,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="health"
-					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Health
@@ -705,7 +705,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="economic"
-					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground transition-all"
 				>
 					<span className="flex items-center justify-center gap-2">
 						Household
@@ -716,7 +716,7 @@ export function ResidentProfilePane({
 				</TabsTrigger>
 				<TabsTrigger
 					value="history"
-					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground data-[state=active]:!shadow-md transition-all"
+					className="!h-10 flex-1 rounded-lg !border-none !shadow-none font-medium text-muted-foreground hover:bg-accent hover:text-primary data-[state=active]:!bg-primary data-[state=active]:hover:!bg-primary/90 data-[state=active]:!text-primary-foreground transition-all"
 				>
 					History
 				</TabsTrigger>

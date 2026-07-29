@@ -261,9 +261,15 @@ function HouseholdsView() {
 
 	// Filtered households list
 	const filteredHouseholds = householdsList.filter((h) => {
-		const matchesSearch =
-			h.headName.toLowerCase().includes(search.toLowerCase()) ||
-			h.householdId.toLowerCase().includes(search.toLowerCase());
+		const searchLower = search.toLowerCase();
+		const searchTerms = searchLower.split(/\s+/);
+		
+		const matchesSearch = searchTerms.every(term => {
+			return (h.headName && h.headName.toLowerCase().includes(term)) ||
+				   (h.householdId && h.householdId.toLowerCase().includes(term)) ||
+				   (h.allMemberNames && h.allMemberNames.toLowerCase().includes(term));
+		});
+		
 		const matchesPurok = selectedPurok ? h.purok === selectedPurok : true;
 		return matchesSearch && matchesPurok;
 	});
@@ -381,7 +387,7 @@ function HouseholdsView() {
 									<Search className="h-3.5 w-3.5" />
 								</span>
 								<Input
-									placeholder="Search head of family..."
+									placeholder="Search household members..."
 									value={search}
 									onChange={(e) => setSearch(e.target.value)}
 									className="pl-8 py-2 bg-card border-border text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/50 focus-visible:border-primary/20 h-9 rounded-xl"
@@ -397,7 +403,7 @@ function HouseholdsView() {
 								<SelectTrigger className="w-full bg-card border-border text-xs text-foreground/80 px-3 py-2 rounded-xl focus:border-primary/20 h-9">
 									<SelectValue placeholder="All Puroks" />
 								</SelectTrigger>
-								<SelectContent className="bg-card border-border text-foreground rounded-xl">
+								<SelectContent position="popper" className="bg-card border-border text-foreground rounded-xl">
 									<SelectItem value="ALL">All Puroks</SelectItem>
 									{purokOptions.map((p) => (
 										<SelectItem key={p} value={p}>

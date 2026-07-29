@@ -890,7 +890,17 @@ function DistributionDetail({ program, onBack, onEdit }: { program: {id: number,
 
 	const filteredBeneficiaries = React.useMemo(() => {
 		let result = beneficiaries.filter(b => {
-			if (searchQuery && !b.fullName.toLowerCase().includes(searchQuery.toLowerCase()) && !b.residentCode.includes(searchQuery)) return false;
+			if (searchQuery) {
+				const query = searchQuery.toLowerCase();
+				const searchTerms = query.split(/\s+/);
+				
+				const matches = searchTerms.every(term => 
+					b.fullName.toLowerCase().includes(term) || 
+					b.residentCode.toLowerCase().includes(term)
+				);
+				
+				if (!matches) return false;
+			}
 			return true;
 		});
 

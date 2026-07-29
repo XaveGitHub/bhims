@@ -40,7 +40,7 @@ export function ResidentIdCard({ resident }: { resident: any }) {
 			>
 				{resident.firstName} {resident.middleName && resident.middleName !== "-" ? resident.middleName.charAt(0) + "." : ""} {resident.lastName}
 			</div>
-
+			
 			{/* BARCODE (Under ID NO.) */}
 			<div 
 				className="absolute flex flex-col items-center justify-start"

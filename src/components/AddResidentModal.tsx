@@ -1,5 +1,5 @@
 import { format, parseISO } from "date-fns";
-import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import { Calendar as CalendarIcon, Loader2, AlertCircle, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -140,7 +140,7 @@ export function AddResidentModal({
 			}
 
 			setErrors(newErrors);
-			toast.error("Please fill in all required fields correctly.");
+			toast("Please fill in all required fields correctly", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			return;
 		}
 
@@ -168,13 +168,13 @@ export function AddResidentModal({
 
 			const result = await addResident({ data: payload });
 			if (result.success && result.resident) {
-				toast.success("Resident added successfully!");
+				toast("Resident added successfully!", { icon: <UserCheck className="h-4 w-4 text-emerald-500" /> });
 				onSuccess(result.resident as unknown as Resident);
 			} else {
-				toast.error(result.error || "Failed to add resident.");
+				toast(result.error || "Failed to add resident.", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 			}
 		} catch (err) {
-			toast.error("An error occurred while saving.");
+			toast("An error occurred while saving.", { icon: <AlertCircle className="h-4 w-4 text-red-500" /> });
 		} finally {
 			setIsSaving(false);
 		}
@@ -255,7 +255,7 @@ export function AddResidentModal({
 						</TabsList>
 
 						<div className="flex-1 overflow-y-auto px-6 pb-6 pt-4 min-h-0">
-							<TabsContent value="personal" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border shadow-inner">
+							<TabsContent value="personal" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border">
 								<div className="space-y-4">
 									<div className="grid grid-cols-2 gap-4">
 										<div className="space-y-1.5">
@@ -453,7 +453,7 @@ export function AddResidentModal({
 								</div>
 							</TabsContent>
 
-							<TabsContent value="health" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border shadow-inner">
+							<TabsContent value="health" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border">
 								<div className="grid grid-cols-2 gap-8">
 									<div className="space-y-4">
 										<h4 className="text-sm font-semibold text-foreground mb-2">
@@ -582,7 +582,7 @@ export function AddResidentModal({
 								</div>
 							</TabsContent>
 
-							<TabsContent value="economic" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border shadow-inner">
+							<TabsContent value="economic" className="m-0 space-y-6 bg-card/30 p-6 rounded-xl border border-border">
 								<div className="space-y-6">
 									<div className="space-y-4">
 										<h4 className="text-sm font-semibold text-foreground mb-3">

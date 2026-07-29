@@ -74,12 +74,13 @@ export interface HouseholdDetail {
 export interface HouseholdSummary {
 	householdId: string;
 	purok: string;
+	block: string | null;
+	lot: string | null;
 	headName: string;
 	memberCount: number;
 	adultsCount: number;
 	childrenCount: number;
-	block?: string | null;
-	lot?: string | null;
+	allMemberNames?: string;
 }
 
 const currentYear = new Date().getFullYear();
@@ -141,6 +142,8 @@ export const getHouseholds = createServerFn({
 				: "Unknown";
 		const purok = head ? head.purok : members[0]?.purok || "Unknown";
 
+		const allNames = members.map(m => m.fullName).join(" ");
+
 		summaries.push({
 			householdId,
 			purok,
@@ -150,6 +153,7 @@ export const getHouseholds = createServerFn({
 			childrenCount,
 			block: hhMap.get(householdId)?.block || null,
 			lot: hhMap.get(householdId)?.lot || null,
+			allMemberNames: allNames,
 		});
 	}
 
@@ -284,9 +288,12 @@ export const updateHouseholdDetails = createServerFn({
 			headMember = members[0];
 		}
 
-		let newHouseholdId = `HH-${data.purok || "UNKNOWN"}-BLK${data.block || ""}-LOT${data.lot || ""}`.replace(/[\s\/]+/g, "_").toUpperCase();
-		if (!data.block && !data.lot) {
-			newHouseholdId = `HH-${data.purok || "UNKNOWN"}-FAM-${headMember.lastName || "UNKNOWN"}`.replace(/[\s\/]+/g, "_").toUpperCase();
+		const cleanBlock = data.block?.trim() || "";
+		const cleanLot = data.lot?.trim() || "";
+
+		let newHouseholdId = `HH-${data.purok || "UNKNOWN"}-BLK${cleanBlock}-LOT${cleanLot}`.replace(/[\s\/]+/g, "_").toUpperCase();
+		if (!cleanBlock && !cleanLot) {
+			newHouseholdId = `HH-${data.purok || "UNKNOWN"}-FAM-${headMember.lastName?.trim() || "UNKNOWN"}`.replace(/[\s\/]+/g, "_").toUpperCase();
 		}
 
 		// Upsert the household
@@ -335,6 +342,11 @@ export const updateHouseholdDetails = createServerFn({
 				.where(eq(residents.id, member.id))
 				.run();
 		}
+		
+		// Clean up the old household since everyone just moved to the new one
+		if (data.oldHouseholdId !== newHouseholdId) {
+			db.delete(households).where(eq(households.id, data.oldHouseholdId)).run();
+		}
 
 		return { success: true, newHouseholdId };
 	});
@@ -350,14 +362,31 @@ export const searchHouseholds = createServerFn({
 		const conditions = [eq(households.purok, purok)];
 		
 		if (query && query.trim() !== "") {
-			const searchTerm = `%${query.trim()}%`;
-			conditions.push(
-				or(
-					like(households.id, searchTerm),
-					like(households.block, searchTerm),
-					like(households.lot, searchTerm)
-				) as any
-			);
+			const rawQuery = query.trim();
+			// Strip common words to extract the raw numbers if present
+			const strippedQuery = rawQuery.toLowerCase().replace(/(block|blk|lot|phase)\s*/g, '').trim();
+			
+			// Format for hidden ID matches (e.g. "Lot 2" -> "LOT2")
+			const idFormatQuery = rawQuery.toUpperCase().replace(/\s+/g, '');
+			
+			const orConditions: any[] = [
+				like(households.id, `%${idFormatQuery}%`),
+				like(households.id, `%${rawQuery}%`)
+			];
+			
+			if (strippedQuery !== "") {
+				orConditions.push(
+					like(households.block, `%${strippedQuery}%`),
+					like(households.lot, `%${strippedQuery}%`)
+				);
+			} else {
+				orConditions.push(
+					like(households.block, `%${rawQuery}%`),
+					like(households.lot, `%${rawQuery}%`)
+				);
+			}
+			
+			conditions.push(or(...orConditions) as any);
 		}
 
 		// Find the households
@@ -368,69 +397,89 @@ export const searchHouseholds = createServerFn({
 			.limit(30)
 			.all();
 
-		if (hhQuery.length === 0) return [];
-
-		// For each household, find the head to get their name
-		const householdIds = hhQuery.map((h) => h.id);
-		
-		const heads = db
-			.select({
-				householdId: residents.householdId,
-				firstName: residents.firstName,
-				lastName: residents.lastName,
-			})
-			.from(residents)
-			.where(
-				and(
-					eq(residents.isHeadOfHousehold, true),
-					// Using or for IN clause since sqlite IN requires specific syntax in drizzle sometimes
-					or(...householdIds.map(id => eq(residents.householdId, id)))
-				)
-			)
-			.all();
-
+		const results: HouseholdSummary[] = [];
 		const headMap = new Map();
-		for (const h of heads) {
-			headMap.set(h.householdId, `${h.firstName || ""} ${h.lastName || ""}`.trim() || "Unknown");
+
+		if (hhQuery.length > 0) {
+			const householdIds = hhQuery.map((h) => h.id);
+			
+			const heads = db
+				.select({
+					householdId: residents.householdId,
+					firstName: residents.firstName,
+					lastName: residents.lastName,
+				})
+				.from(residents)
+				.where(
+					and(
+						eq(residents.isHeadOfHousehold, true),
+						or(...householdIds.map(id => eq(residents.householdId, id)))
+					)
+				)
+				.all();
+
+			for (const h of heads) {
+				if (h.householdId) {
+					headMap.set(h.householdId, `${h.firstName || ""} ${h.lastName || ""}`.trim() || "Unknown");
+				}
+			}
+
+			// Map results
+			for (const h of hhQuery) {
+				results.push({
+					householdId: h.id,
+					purok: h.purok,
+					block: h.block,
+					lot: h.lot,
+					headName: headMap.get(h.id) || "Family",
+					memberCount: 0, 
+					adultsCount: 0,
+					childrenCount: 0,
+				});
+			}
 		}
 
-		// Map results
-		const results: HouseholdSummary[] = hhQuery.map((h) => ({
-			householdId: h.id,
-			purok: h.purok,
-			block: h.block,
-			lot: h.lot,
-			headName: headMap.get(h.id) || "Family",
-			memberCount: 0, // Not needed for combobox
-			adultsCount: 0,
-			childrenCount: 0,
-		}));
-
-		// If there is a query, we should also search by resident head name directly
+		// If there is a query, we should also search by any resident's name in that purok
 		if (query && query.trim() !== "") {
-			const headNameSearch = db
+			const searchTerms = query.trim().split(/\s+/);
+			const termConditions = searchTerms.map(term => {
+				const wildcardTerm = `%${term}%`;
+				return or(
+					like(residents.fullName, wildcardTerm),
+					like(residents.firstName, wildcardTerm),
+					like(residents.lastName, wildcardTerm)
+				);
+			});
+
+			const residentNameSearch = db
 				.select()
 				.from(residents)
 				.where(
 					and(
 						eq(residents.purok, purok),
-						eq(residents.isHeadOfHousehold, true),
-						like(residents.fullName, `%${query.trim()}%`)
+						...termConditions
 					)
 				)
-				.limit(20)
+				.limit(30)
 				.all();
 
-			for (const resident of headNameSearch) {
+			for (const resident of residentNameSearch) {
 				if (resident.householdId && !results.some(r => r.householdId === resident.householdId)) {
 					const hh = db.select().from(households).where(eq(households.id, resident.householdId)).get();
 					if (hh) {
+						// We need the head's name for the summary, not the member who matched the search
+						let displayHeadName = headMap.get(hh.id);
+						if (!displayHeadName) {
+							const hhHead = db.select().from(residents).where(and(eq(residents.householdId, hh.id), eq(residents.isHeadOfHousehold, true))).get();
+							displayHeadName = hhHead ? `${hhHead.firstName || ""} ${hhHead.lastName || ""}`.trim() : resident.fullName;
+						}
+						
 						results.push({
 							householdId: hh.id,
 							purok: hh.purok,
 							block: hh.block,
 							lot: hh.lot,
-							headName: resident.fullName,
+							headName: displayHeadName || "Family",
 							memberCount: 0,
 							adultsCount: 0,
 							childrenCount: 0,

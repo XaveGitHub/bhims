@@ -31,8 +31,20 @@ export const createTemplate = createServerFn({
 					throw new Error("Invalid image format. Only PNG, JPEG, and WebP are allowed.");
 				}
 				const buffer = Buffer.from(matches[2], "base64");
-				finalFilename = `template_${Date.now()}_${Math.random().toString(36).substring(7)}.${mimeType}`;
-				await fs.writeFile(path.join(process.cwd(), "public/templates", finalFilename), buffer);
+				
+				// Clean the original filename or fallback to 'template'
+				const baseName = data.originalFileName 
+					? data.originalFileName.replace(/\.[^/.]+$/, "") // Remove extension
+					: "template";
+					
+				// Keep the original name but add a small timestamp so files don't overwrite each other
+				finalFilename = `${baseName}_${Date.now()}.${mimeType}`;
+				
+				const templatesDir = process.env.USER_DATA_PATH 
+					? path.join(process.env.USER_DATA_PATH, "templates") 
+					: path.join(process.cwd(), "public/templates");
+				await fs.mkdir(templatesDir, { recursive: true });
+				await fs.writeFile(path.join(templatesDir, finalFilename), buffer);
 			} else {
 				throw new Error("Invalid image data");
 			}
@@ -63,8 +75,20 @@ export const updateTemplate = createServerFn({
 					throw new Error("Invalid image format. Only PNG, JPEG, and WebP are allowed.");
 				}
 				const buffer = Buffer.from(matches[2], "base64");
-				finalFilename = `template_${Date.now()}_${Math.random().toString(36).substring(7)}.${mimeType}`;
-				await fs.writeFile(path.join(process.cwd(), "public/templates", finalFilename), buffer);
+				
+				// Clean the original filename or fallback to 'template'
+				const baseName = data.originalFileName 
+					? data.originalFileName.replace(/\.[^/.]+$/, "") // Remove extension
+					: "template";
+					
+				// Keep the original name but add a small timestamp so files don't overwrite each other
+				finalFilename = `${baseName}_${Date.now()}.${mimeType}`;
+				
+				const templatesDir = process.env.USER_DATA_PATH 
+					? path.join(process.env.USER_DATA_PATH, "templates") 
+					: path.join(process.cwd(), "public/templates");
+				await fs.mkdir(templatesDir, { recursive: true });
+				await fs.writeFile(path.join(templatesDir, finalFilename), buffer);
 			} else {
 				throw new Error("Invalid image data");
 			}

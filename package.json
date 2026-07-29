@@ -1,5 +1,8 @@
 {
   "name": "bhims",
+  "version": "1.0.0",
+  "description": "Barangay Handumanan Information Management System",
+  "author": "Barangay Handumanan",
   "private": true,
   "type": "module",
   "main": "electron.js",
@@ -16,8 +19,7 @@
     "lint": "biome lint",
     "check": "biome check",
     "electron:dev": "concurrently -k \"vite dev --host 0.0.0.0 --port 3000\" \"electron .\"",
-    "electron:build": "vite build && electron-builder",
-    "postinstall": "node-gyp rebuild --directory node_modules/better-sqlite3 --release"
+    "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -38,11 +40,13 @@
     "@tanstack/react-start": "latest",
     "@tanstack/react-table": "latest",
     "@tanstack/router-plugin": "^1.132.0",
-    "better-sqlite3": "^12.10.0",
+    "better-sqlite3": "^13.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "h3": "2.0.1-rc.26",
     "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.577.0",
@@ -55,6 +59,7 @@
     "react-draggable": "^4.6.0",
     "react-to-print": "^3.3.0",
     "recharts": "3.8.0",
+    "sirv": "^3.0.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.1.18",
@@ -108,19 +113,41 @@
       "output": "dist-electron"
     },
     "files": [
-      "dist/**/*",
-      "drizzle/**/*",
       "electron.js",
-      "package.json"
+      "package.json",
+      "!node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "public/barangay_logo.png",
+        "to": "barangay_logo.png"
+      },
+      {
+        "from": "dist",
+        "to": "dist"
+      },
+      {
+        "from": "prod-server.js",
+        "to": "prod-server.js"
+      },
+      {
+        "from": "drizzle",
+        "to": "drizzle"
+      },
+      {
+        "from": "node_modules/better-sqlite3",
+        "to": "node_modules/better-sqlite3"
+      }
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "public/barangay_logo.png",
+      "verifyUpdateCodeSignature": false
     },
     "nsis": {
       "oneClick": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "BHIMS"
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false
     }
   }
 }

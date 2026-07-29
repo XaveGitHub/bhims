@@ -31,8 +31,9 @@ export const db = drizzle(sqlite, { schema });
 // Run migrations programmatically
 export function runMigrations() {
 	try {
-		const migrationsPath =
-			process.env.NODE_ENV === "production"
+		const migrationsPath = process.env.MIGRATIONS_PATH
+			? process.env.MIGRATIONS_PATH
+			: process.env.NODE_ENV === "production"
 				? path.resolve(
 						(process as any).resourcesPath || process.cwd(),
 						"drizzle",
@@ -47,37 +48,97 @@ export function runMigrations() {
 			console.log("[Database] Migrations completed successfully.");
 		} else {
 			console.warn(
-				`[Database] Migrations folder not found at ${migrationsPath}. Checking if tables need to be created...`,
+				`[Database] Migrations folder not found at ${migrationsPath}. Running full schema initialization...`,
 			);
-
-			// Fallback: simple table creation in case migrations folder is not packaged
-			db.run(`
-        CREATE TABLE IF NOT EXISTS residents (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          full_name TEXT NOT NULL,
-          birth_date TEXT,
-          gender TEXT,
-          contact_number TEXT,
-          purok TEXT NOT NULL,
-          household_id TEXT,
-          is_head_of_household INTEGER DEFAULT 0,
-          relationship_to_head TEXT,
-          is_pwd INTEGER DEFAULT 0,
-          pwd_type TEXT,
-          is_senior_citizen INTEGER DEFAULT 0,
-          is_voter INTEGER DEFAULT 0,
-          is_single_parent INTEGER DEFAULT 0,
-          created_at INTEGER,
-          updated_at INTEGER
-        );
-      `);
-			db.run(`
-        CREATE TABLE IF NOT EXISTS settings (
-          key TEXT PRIMARY KEY,
-          value TEXT NOT NULL
-        );
-      `);
-			console.log("[Database] Fallback schema initialization completed.");
+			// Complete schema — creates ALL tables. Safe to run on existing DBs (IF NOT EXISTS).
+			sqlite.exec(`
+				CREATE TABLE IF NOT EXISTS puroks (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					name TEXT NOT NULL UNIQUE,
+					order_index INTEGER NOT NULL DEFAULT 0,
+					created_at INTEGER,
+					updated_at INTEGER
+				);
+				CREATE TABLE IF NOT EXISTS households (
+					id TEXT PRIMARY KEY,
+					purok TEXT NOT NULL,
+					block TEXT,
+					lot TEXT,
+					phase TEXT,
+					tenure_status TEXT,
+					housing_type TEXT,
+					construction_type TEXT,
+					sanitation_method TEXT,
+					created_at INTEGER,
+					updated_at INTEGER
+				);
+				CREATE TABLE IF NOT EXISTS users (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					username TEXT NOT NULL UNIQUE,
+					password TEXT NOT NULL,
+					role TEXT NOT NULL DEFAULT 'staff',
+					name TEXT NOT NULL,
+					created_at INTEGER,
+					updated_at INTEGER
+				);
+				CREATE TABLE IF NOT EXISTS residents (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					resident_id TEXT UNIQUE,
+					full_name TEXT NOT NULL,
+					last_name TEXT, first_name TEXT, middle_name TEXT, suffix TEXT,
+					birth_date TEXT, gender TEXT, civil_status TEXT, religion TEXT,
+					contact_number TEXT, email TEXT, purok TEXT NOT NULL,
+					household_id TEXT, is_head_of_household INTEGER DEFAULT 0,
+					relationship_to_head TEXT, educational_attainment TEXT,
+					occupation TEXT, employment_status TEXT, monthly_income TEXT,
+					source_of_livelihood TEXT, is_pwd INTEGER DEFAULT 0, pwd_type TEXT,
+					is_senior_citizen INTEGER DEFAULT 0, is_resident_voter INTEGER DEFAULT 0,
+					is_registered_voter INTEGER DEFAULT 0, is_single_parent INTEGER DEFAULT 0,
+					is_ofw INTEGER DEFAULT 0, is_osy INTEGER DEFAULT 0,
+					is_ip INTEGER DEFAULT 0, is_migrant INTEGER DEFAULT 0,
+					is_national_pensioner INTEGER DEFAULT 0, is_local_pensioner INTEGER DEFAULT 0,
+					debilitating_diseases TEXT, is_bed_bound INTEGER DEFAULT 0,
+					is_wheelchair_bound INTEGER DEFAULT 0, is_dialysis_patient INTEGER DEFAULT 0,
+					is_cancer_patient INTEGER DEFAULT 0, is_deceased INTEGER DEFAULT 0,
+					created_at INTEGER, updated_at INTEGER
+				);
+				CREATE TABLE IF NOT EXISTS settings (
+					key TEXT PRIMARY KEY NOT NULL,
+					value TEXT NOT NULL
+				);
+				CREATE TABLE IF NOT EXISTS document_templates (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					name TEXT NOT NULL, price REAL DEFAULT 0,
+					is_active INTEGER DEFAULT 1, image_base64 TEXT,
+					field_mappings TEXT, created_at INTEGER
+				);
+				CREATE TABLE IF NOT EXISTS transactions (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					queue_number INTEGER NOT NULL, resident_id INTEGER NOT NULL,
+					template_id INTEGER NOT NULL, purpose TEXT,
+					total_price REAL NOT NULL, status TEXT NOT NULL DEFAULT 'Pending',
+					processed_by TEXT, remarks TEXT,
+					created_at INTEGER, updated_at INTEGER
+				);
+				CREATE TABLE IF NOT EXISTS distribution_programs (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					name TEXT NOT NULL, description TEXT, date TEXT,
+					status TEXT NOT NULL DEFAULT 'Active', target_demographic TEXT,
+					created_at INTEGER
+				);
+				CREATE TABLE IF NOT EXISTS distribution_beneficiaries (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					program_id INTEGER NOT NULL, resident_id INTEGER NOT NULL,
+					status TEXT NOT NULL DEFAULT 'Pending', claimed_at INTEGER, notes TEXT
+				);
+				CREATE INDEX IF NOT EXISTS purok_idx ON residents(purok);
+				CREATE INDEX IF NOT EXISTS household_idx ON residents(household_id);
+				CREATE INDEX IF NOT EXISTS trans_resident_idx ON transactions(resident_id);
+				CREATE INDEX IF NOT EXISTS trans_status_idx ON transactions(status);
+				CREATE INDEX IF NOT EXISTS program_resident_idx ON distribution_beneficiaries(program_id, resident_id);
+				CREATE INDEX IF NOT EXISTS dist_status_idx ON distribution_beneficiaries(status);
+			`);
+			console.log("[Database] Full schema initialization completed.");
 		}
 
 		// Initialize default settings if missing
@@ -123,6 +184,7 @@ export function runMigrations() {
 		console.error("[Database] Migration failed:", error);
 	}
 }
+
 
 // Automatically run migrations on database module load
 runMigrations();

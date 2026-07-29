@@ -44,7 +44,7 @@ function KanbanColumn({ id, title, items, onStatusChange, setSelectedBatch, setC
     <div className="flex flex-col flex-1 bg-card/30 border border-border rounded-2xl overflow-hidden shadow-sm h-[calc(100vh-200px)] min-h-[600px]">
       <div className="p-4 border-b border-border bg-card shadow-sm z-10 flex justify-between items-center">
         <h3 className="font-semibold text-lg text-foreground">{title}</h3>
-        <Badge variant="secondary" className="rounded-full px-2.5">
+        <Badge variant="secondary" className="rounded-full size-6 flex items-center justify-center p-0 text-xs shrink-0">
           {items.length}
         </Badge>
       </div>

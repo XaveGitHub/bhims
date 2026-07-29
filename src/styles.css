@@ -157,19 +157,33 @@
 }
 
 
-/* Custom Scrollbar for dashboard charts */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+/* Global Modern Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
   border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.25);
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Specific helper for hiding scrollbars completely while still allowing scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 
@@ -182,4 +196,11 @@ html, body {
 .card-transition-fix * {
   transform: translateZ(0);
   will-change: transform;
+}
+
+/* Prevent Radix UI from hiding the scrollbar and shifting the layout when dialogs open */
+body[data-scroll-locked] {
+  overflow: auto !important;
+  padding-right: 0px !important;
+  margin-right: 0px !important;
 }

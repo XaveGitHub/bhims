@@ -174,10 +174,12 @@ function TransactionsView() {
 		// Apply Global Search Filter
 		if (globalFilter) {
 			const query = globalFilter.toLowerCase();
+			const searchTerms = query.split(/\s+/);
 			data = data.filter((tx) => {
-				const txId = `TRX-${tx.id?.toString().padStart(5, "0")}`;
-				const name = `${tx.resident?.firstName} ${tx.resident?.lastName}`.toLowerCase();
-				return txId.toLowerCase().includes(query) || name.includes(query);
+				const txId = `TRX-${tx.id?.toString().padStart(5, "0")}`.toLowerCase();
+				const name = `${tx.resident?.firstName || ""} ${tx.resident?.lastName || ""}`.toLowerCase();
+				
+				return searchTerms.every(term => txId.includes(term) || name.includes(term));
 			});
 		}
 

@@ -223,9 +223,12 @@ export const addResident = createServerFn({
 
 		let finalHouseholdId = data.householdId;
 		if (data.isNewHousehold) {
-			let hhId = `HH-${data.purok}-BLK${data.newHouseholdBlock || ""}-LOT${data.newHouseholdLot || ""}`.replace(/[\s\/]+/g, "_").toUpperCase();
-			if (!data.newHouseholdBlock && !data.newHouseholdLot) {
-				hhId = `HH-${data.purok}-FAM-${data.lastName}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			const cleanBlock = data.newHouseholdBlock?.trim() || "";
+			const cleanLot = data.newHouseholdLot?.trim() || "";
+
+			let hhId = `HH-${data.purok || "UNKNOWN"}-BLK${cleanBlock}-LOT${cleanLot}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			if (!cleanBlock && !cleanLot) {
+				hhId = `HH-${data.purok || "UNKNOWN"}-FAM-${data.lastName?.trim() || "UNKNOWN"}`.replace(/[\s\/]+/g, "_").toUpperCase();
 			}
 			
 			db.insert(households).values({
@@ -437,9 +440,12 @@ export const updateResident = createServerFn({
 
 		let finalHouseholdId = data.householdId;
 		if (data.isNewHousehold) {
-			let hhId = `HH-${data.purok || "UNKNOWN"}-BLK${data.newHouseholdBlock || ""}-LOT${data.newHouseholdLot || ""}`.replace(/[\s\/]+/g, "_").toUpperCase();
-			if (!data.newHouseholdBlock && !data.newHouseholdLot) {
-				hhId = `HH-${data.purok || "UNKNOWN"}-FAM-${data.lastName || "UNKNOWN"}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			const cleanBlock = data.newHouseholdBlock?.trim() || "";
+			const cleanLot = data.newHouseholdLot?.trim() || "";
+
+			let hhId = `HH-${data.purok || "UNKNOWN"}-BLK${cleanBlock}-LOT${cleanLot}`.replace(/[\s\/]+/g, "_").toUpperCase();
+			if (!cleanBlock && !cleanLot) {
+				hhId = `HH-${data.purok || "UNKNOWN"}-FAM-${data.lastName?.trim() || "UNKNOWN"}`.replace(/[\s\/]+/g, "_").toUpperCase();
 			}
 			
 			db.insert(households).values({
@@ -452,6 +458,9 @@ export const updateResident = createServerFn({
 			finalHouseholdId = hhId;
 		}
 
+		const oldResident = db.select({ householdId: residents.householdId }).from(residents).where(eq(residents.id, id)).get();
+		const oldHouseholdId = oldResident?.householdId;
+
 		// Remove the extra UI-only fields before updating
 		const { isNewHousehold, newHouseholdBlock, newHouseholdLot, ...restData } = data;
 
@@ -463,6 +472,19 @@ export const updateResident = createServerFn({
 		};
 
 		db.update(residents).set(updateData).where(eq(residents.id, id)).run();
+
+		// Clean up the old household if it is now empty
+		const newHouseholdId = finalHouseholdId !== undefined ? finalHouseholdId : oldHouseholdId;
+		if (oldHouseholdId && oldHouseholdId !== newHouseholdId) {
+			const memberCount = db.select({ count: sql<number>`count(*)` })
+				.from(residents)
+				.where(eq(residents.householdId, oldHouseholdId))
+				.get();
+				
+			if (memberCount && memberCount.count === 0) {
+				db.delete(households).where(eq(households.id, oldHouseholdId)).run();
+			}
+		}
 
 		return { success: true };
 	});
