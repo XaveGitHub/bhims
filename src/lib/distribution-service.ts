@@ -240,7 +240,7 @@ export const importScannedExcel = createServerFn({
 			if (residentMatch.length > 0) {
 				const residentDbId = residentMatch[0].id;
 				// Mark as claimed
-				db.update(schema.distributionBeneficiaries)
+				const result = db.update(schema.distributionBeneficiaries)
 					.set({
 						status: "Claimed",
 						claimedAt: new Date(),
@@ -254,7 +254,7 @@ export const importScannedExcel = createServerFn({
 						),
 					)
 					.run();
-				updatedCount++;
+				updatedCount += result.changes;
 			}
 		}
 
@@ -282,7 +282,7 @@ export const markClaimedViaScan = createServerFn({
 			.all();
 
 		if (residentMatch.length === 0) {
-			return { success: false, error: "Resident not found in database." };
+			return { success: false, error: "Resident not found in list." };
 		}
 
 		const resident = residentMatch[0];
@@ -300,12 +300,12 @@ export const markClaimedViaScan = createServerFn({
 			.all();
 
 		if (beneficiaryMatch.length === 0) {
-			return { success: false, error: "Resident is not eligible for this distribution program." };
+			return { success: false, error: "Resident is not eligible for this distribution program.", errorType: "NOT_ELIGIBLE", resident };
 		}
 
 		const beneficiary = beneficiaryMatch[0];
 		if (beneficiary.status === "Claimed") {
-			return { success: false, error: "Resident has already claimed this distribution.", resident };
+			return { success: false, error: "Already claimed this distribution.", errorType: "ALREADY_CLAIMED", resident, claimedAt: beneficiary.claimedAt };
 		}
 
 		// Mark as claimed

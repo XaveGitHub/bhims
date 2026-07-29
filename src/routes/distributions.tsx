@@ -1146,7 +1146,7 @@ function DistributionDetail({ program, onBack, onEdit }: { program: {id: number,
 
 function ScannerMode({ programId, onClose }: { programId: number, onClose: () => void }) {
 	const [barcodeInput, setBarcodeInput] = React.useState("");
-	const [lastResult, setLastResult] = React.useState<{success: boolean, message: string, resident?: any} | null>(null);
+	const [lastResult, setLastResult] = React.useState<{success: boolean, message: string, resident?: any, errorType?: string, claimedAt?: Date | string | null} | null>(null);
 	const [isProcessing, setIsProcessing] = React.useState(false);
 	const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -1187,7 +1187,9 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 				setLastResult({
 					success: false,
 					message: res.error || "Failed to process scan.",
-					resident: res.resident
+					resident: res.resident,
+					errorType: res.errorType,
+					claimedAt: res.claimedAt
 				});
 				try {
 					const ctx = new window.AudioContext();
@@ -1207,7 +1209,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 bg-background/95 flex flex-col items-center justify-center p-6">
+		<div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
 			<form onSubmit={handleScanSubmit} className="absolute opacity-0 pointer-events-none">
 				<input
 					ref={inputRef}
@@ -1218,66 +1220,81 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 				/>
 			</form>
 
-			<Button 
-				variant="outline"
-				size="icon"
+			<button
 				onClick={onClose}
-				className="absolute top-8 right-8 rounded-full bg-card border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+				className="absolute right-8 top-8 h-12 w-12 inline-flex items-center justify-center rounded-full text-muted-foreground opacity-70 transition-all hover:!bg-red-100 hover:!text-red-600 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
 			>
-				<X className="w-5 h-5" />
-			</Button>
+				<X className="h-6 w-6" />
+				<span className="sr-only">Close</span>
+			</button>
 
-			<div className="text-center space-y-4 mb-12">
-				<div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto animate-pulse">
-					<ScanBarcode className="w-10 h-10" />
+			<div className="text-center space-y-5 mb-14">
+				<div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/5 text-primary rounded-full flex items-center justify-center mx-auto animate-pulse shadow-lg shadow-primary/10 border border-primary/20">
+					<ScanBarcode className="w-12 h-12" />
 				</div>
-				<h2 className="text-3xl font-semibold text-foreground">Scanner Mode Active</h2>
-				<p className="text-muted-foreground max-w-sm mx-auto">
+				<h2 className="text-5xl font-bold tracking-tight text-foreground">Scanner Mode Active</h2>
+				<p className="text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
 					Ready. Point your USB Barcode Scanner at the Resident ID to instantly mark them as claimed.
 				</p>
 			</div>
 
-			<div className="w-full max-w-2xl h-80 flex items-center justify-center">
+			<div className="w-full max-w-3xl h-[400px] flex items-center justify-center">
 				{isProcessing ? (
-					<div className="animate-pulse text-primary flex flex-col items-center gap-4">
-						<ScanBarcode className="w-12 h-12 animate-bounce" />
-						<span className="font-bold text-xl">Processing Scan...</span>
+					<div className="animate-pulse flex flex-col items-center gap-6">
+						<div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+						<span className="font-semibold text-2xl text-primary tracking-wide">Processing Scan</span>
 					</div>
 				) : lastResult ? (
-					<div className={`w-full p-8 rounded-xl border-2 flex items-center gap-8 shadow-md transition-all duration-300 transform scale-100 ${
+					<div className={`w-full p-10 rounded-3xl border flex items-center gap-10 shadow-2xl transition-all duration-500 transform scale-100 ${
 						lastResult.success 
-							? "bg-primary/10 border-primary/20 shadow-primary/20" 
-							: "bg-rose-950/50 border-rose-500/50 shadow-rose-900/20"
+							? "bg-emerald-500/10 border-emerald-500/20 shadow-emerald-500/10" 
+							: lastResult.errorType === "ALREADY_CLAIMED"
+								? "bg-amber-500/10 border-amber-500/30 shadow-amber-500/10"
+								: "bg-destructive/10 border-destructive/20 shadow-destructive/10"
 					}`}>
-						<div className="shrink-0">
+						<div className="shrink-0 relative">
 							{lastResult.resident?.photoBase64 ? (
 								<img 
 									src={lastResult.resident.photoBase64} 
 									alt="Resident" 
-									className={`w-32 h-32 rounded-xl object-cover border-4 ${lastResult.success ? "border-primary/20" : "border-rose-500"}`} 
+									className={`w-40 h-40 rounded-2xl object-cover shadow-xl border-4 ${lastResult.success ? "border-emerald-500/30" : lastResult.errorType === "ALREADY_CLAIMED" ? "border-amber-500/40" : "border-destructive/30"}`} 
 								/>
 							) : (
-								<div className={`w-32 h-32 rounded-xl flex items-center justify-center border-4 ${lastResult.success ? "border-primary/20 bg-primary/10" : "border-rose-500 bg-rose-950"}`}>
-									<span className="text-4xl text-foreground font-semibold">?</span>
+								<div className={`w-40 h-40 rounded-2xl flex items-center justify-center shadow-xl border-4 ${lastResult.success ? "border-emerald-500/30 bg-emerald-500/10" : lastResult.errorType === "ALREADY_CLAIMED" ? "border-amber-500/40 bg-amber-500/10" : "border-destructive/30 bg-destructive/10"}`}>
+									<span className="text-5xl text-foreground/50 font-semibold">?</span>
 								</div>
 							)}
+							<div className={`absolute -bottom-4 -right-4 w-12 h-12 rounded-full flex items-center justify-center shadow-lg border-4 border-background ${lastResult.success ? "bg-emerald-500" : lastResult.errorType === "ALREADY_CLAIMED" ? "bg-amber-500" : "bg-destructive"}`}>
+								{lastResult.success ? <CheckCircle2 className="w-6 h-6 text-white" /> : <AlertCircle className="w-6 h-6 text-white" />}
+							</div>
 						</div>
 						
-						<div>
-							<h3 className={`text-4xl font-semibold mb-2 ${lastResult.success ? "text-primary" : "text-rose-400"}`}>
+						<div className="flex-1">
+							<h3 className={`text-3xl font-bold mb-4 ${lastResult.success ? "text-emerald-500" : lastResult.errorType === "ALREADY_CLAIMED" ? "text-amber-500" : "text-destructive"}`}>
 								{lastResult.message}
 							</h3>
-							{lastResult.resident && (
-								<>
-									<p className="text-2xl text-foreground font-bold">{lastResult.resident.fullName}</p>
-									<p className="text-muted-foreground font-mono text-lg mt-1">{lastResult.resident.residentId}</p>
-								</>
+							{lastResult.resident ? (
+								<div className="space-y-2 bg-background/40 p-5 rounded-xl border border-border/50">
+									<p className="text-3xl text-foreground font-bold tracking-tight">{lastResult.resident.fullName}</p>
+									<div className="flex items-center gap-4">
+										<p className="text-primary font-mono text-xl">{lastResult.resident.residentId}</p>
+										{lastResult.claimedAt && (
+											<span className="text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+												<Clock className="w-4 h-4" />
+												Claimed on {new Date(lastResult.claimedAt).toLocaleString()}
+											</span>
+										)}
+									</div>
+								</div>
+							) : (
+								<p className="text-muted-foreground text-2xl font-medium mt-2">Please check the ID card and try again.</p>
 							)}
 						</div>
 					</div>
 				) : (
-					<div className="w-full h-full border-2 border-dashed border-border rounded-xl flex items-center justify-center text-muted-foreground font-medium text-xl">
-						Waiting for scan...
+					<div className="w-full h-full border-2 border-dashed border-border/60 bg-card/30 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center text-muted-foreground gap-5 transition-colors hover:border-primary/50 hover:bg-card/50">
+						<ScanBarcode className="w-16 h-16 text-muted-foreground/50" />
+						<span className="font-medium text-2xl tracking-tight">Waiting for scan</span>
 					</div>
 				)}
 			</div>
