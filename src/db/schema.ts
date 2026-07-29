@@ -1,4 +1,4 @@
-import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text, index } from "drizzle-orm/sqlite-core";
 
 export const puroks = sqliteTable("puroks", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
@@ -47,7 +47,7 @@ export const users = sqliteTable("users", {
 export const residents = sqliteTable("residents", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
 	residentId: text("resident_id").unique(), // 8-digit unique code
-	photoBase64: text("photo_base64"), // Base64 encoded resident photo
+	// photoBase64 completely removed for memory optimization
 	// Name
 	fullName: text("full_name").notNull(), // Kept for computed display/search
 	lastName: text("last_name"),
@@ -103,7 +103,10 @@ export const residents = sqliteTable("residents", {
 	updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
 		() => new Date(),
 	),
-});
+}, (table) => ({
+	purokIdx: index("purok_idx").on(table.purok),
+	householdIdx: index("household_idx").on(table.householdId),
+}));
 
 export const settings = sqliteTable("settings", {
 	key: text("key").primaryKey().notNull(),
@@ -138,7 +141,10 @@ export const transactions = sqliteTable("transactions", {
 	updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
 		() => new Date(),
 	),
-});
+}, (table) => ({
+	residentIdx: index("trans_resident_idx").on(table.residentId),
+	statusIdx: index("trans_status_idx").on(table.status),
+}));
 
 export const distributionPrograms = sqliteTable("distribution_programs", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
@@ -159,4 +165,7 @@ export const distributionBeneficiaries = sqliteTable("distribution_beneficiaries
 	status: text("status").default("Pending").notNull(), // Pending, Claimed
 	claimedAt: integer("claimed_at", { mode: "timestamp" }),
 	notes: text("notes"),
-});
+}, (table) => ({
+	programResidentIdx: index("program_resident_idx").on(table.programId, table.residentId),
+	statusIdx: index("dist_status_idx").on(table.status),
+}));

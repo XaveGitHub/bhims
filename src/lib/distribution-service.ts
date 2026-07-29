@@ -18,7 +18,7 @@ export const getDistributionPrograms = createServerFn({
 
 // Fetch a single distribution program by ID
 export const getDistributionProgramById = createServerFn({
-	method: "GET",
+	method: "POST",
 })
 	.validator((id: number) => id)
 	.handler(async ({ data: id }) => {
@@ -86,14 +86,15 @@ export const createDistributionProgram = createServerFn({
 
 // Get beneficiaries for a program joined with resident details
 export const getBeneficiariesByProgram = createServerFn({
-	method: "GET",
+	method: "POST",
 })
 	.validator((programId: number) => programId)
 	.handler(async ({ data: programId }) => {
 		await requireStaff();
 		return db
 			.select({
-				id: schema.distributionBeneficiaries.id,
+				id: schema.residents.id,
+				beneficiaryId: schema.distributionBeneficiaries.id,
 				programId: schema.distributionBeneficiaries.programId,
 				residentId: schema.distributionBeneficiaries.residentId,
 				status: schema.distributionBeneficiaries.status,
@@ -106,7 +107,6 @@ export const getBeneficiariesByProgram = createServerFn({
 				middleName: schema.residents.middleName,
 				residentCode: schema.residents.residentId,
 				purok: schema.residents.purok,
-				photoBase64: schema.residents.photoBase64,
 				birthDate: schema.residents.birthDate,
 				gender: schema.residents.gender,
 				isPwd: schema.residents.isPwd,

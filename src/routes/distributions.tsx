@@ -799,7 +799,7 @@ function DistributionDetail({ program, onBack, onEdit }: { program: {id: number,
 	const loadData = React.useCallback(async () => {
 		const data = await getBeneficiariesByProgram({ data: program.id });
 		setBeneficiaries(data);
-	}, [program.id]);
+	}, [program]);
 
 	React.useEffect(() => {
 		loadData();
@@ -1254,23 +1254,16 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 								: "bg-destructive/10 border-destructive/20 shadow-destructive/10"
 					}`}>
 						<div className="shrink-0 relative">
-							{lastResult.resident?.photoBase64 ? (
-								<img 
-									src={lastResult.resident.photoBase64} 
-									alt="Resident" 
-									className={`w-40 h-40 rounded-2xl object-cover shadow-xl border-4 ${lastResult.success ? "border-emerald-500/30" : lastResult.errorType === "ALREADY_CLAIMED" ? "border-amber-500/40" : "border-destructive/30"}`} 
-								/>
-							) : (
-								<div className={`w-40 h-40 rounded-2xl flex items-center justify-center shadow-xl border-4 ${lastResult.success ? "border-emerald-500/30 bg-emerald-500/10" : lastResult.errorType === "ALREADY_CLAIMED" ? "border-amber-500/40 bg-amber-500/10" : "border-destructive/30 bg-destructive/10"}`}>
-									<span className="text-5xl text-foreground/50 font-semibold">?</span>
-								</div>
-							)}
-							<div className={`absolute -bottom-4 -right-4 w-12 h-12 rounded-full flex items-center justify-center shadow-lg border-4 border-background ${lastResult.success ? "bg-emerald-500" : lastResult.errorType === "ALREADY_CLAIMED" ? "bg-amber-500" : "bg-destructive"}`}>
-								{lastResult.success ? <CheckCircle2 className="w-6 h-6 text-white" /> : <AlertCircle className="w-6 h-6 text-white" />}
+							<div className={`w-40 h-40 rounded-2xl flex items-center justify-center shadow-xl border-4 ${
+								lastResult.success ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-500" 
+								: lastResult.errorType === "ALREADY_CLAIMED" ? "border-amber-500/40 bg-amber-500/10 text-amber-500" 
+								: "border-destructive/30 bg-destructive/10 text-destructive"
+							}`}>
+								{lastResult.success ? <CheckCircle2 className="w-20 h-20 opacity-80" /> : <AlertCircle className="w-20 h-20 opacity-80" />}
 							</div>
 						</div>
 						
-						<div className="flex-1">
+						<div className="flex-1 text-left">
 							<h3 className={`text-3xl font-bold mb-4 ${lastResult.success ? "text-emerald-500" : lastResult.errorType === "ALREADY_CLAIMED" ? "text-amber-500" : "text-destructive"}`}>
 								{lastResult.message}
 							</h3>
