@@ -1241,8 +1241,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 			<div className="w-full max-w-3xl h-[400px] flex items-center justify-center">
 				{isProcessing ? (
 					<div className="animate-pulse flex flex-col items-center gap-6">
-						<div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-						<span className="font-semibold text-2xl text-primary tracking-wide">Processing Scan</span>
+						<Loader2 className="w-16 h-16 text-primary animate-spin" />
 					</div>
 				) : lastResult ? (
 					<div className={`w-full p-10 rounded-3xl border flex items-center gap-10 shadow-2xl transition-all duration-500 transform scale-100 ${
