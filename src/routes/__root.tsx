@@ -43,6 +43,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		],
 		links: [
 			{
+				rel: "icon",
+				href: "/barangay_logo.png",
+			},
+			{
 				rel: "stylesheet",
 				href: appCss,
 			},
