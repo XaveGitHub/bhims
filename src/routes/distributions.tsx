@@ -1149,6 +1149,23 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 	const [lastResult, setLastResult] = React.useState<{success: boolean, message: string, resident?: any, errorType?: string, claimedAt?: Date | string | null} | null>(null);
 	const [isProcessing, setIsProcessing] = React.useState(false);
 	const inputRef = React.useRef<HTMLInputElement>(null);
+	const audioCtxRef = React.useRef<AudioContext | null>(null);
+
+	const playBeep = React.useCallback((freq: number, type: OscillatorType = "sine", duration: number = 0.1) => {
+		try {
+			if (!audioCtxRef.current) {
+				audioCtxRef.current = new window.AudioContext();
+			}
+			const ctx = audioCtxRef.current;
+			if (ctx.state === "suspended") ctx.resume();
+			const osc = ctx.createOscillator();
+			osc.connect(ctx.destination);
+			osc.frequency.value = freq;
+			osc.type = type;
+			osc.start();
+			osc.stop(ctx.currentTime + duration);
+		} catch {}
+	}, []);
 
 	React.useEffect(() => {
 		const interval = setInterval(() => {
@@ -1175,14 +1192,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 					message: "Successfully Claimed!",
 					resident: res.resident
 				});
-				try {
-					const ctx = new window.AudioContext();
-					const osc = ctx.createOscillator();
-					osc.connect(ctx.destination);
-					osc.frequency.value = 800;
-					osc.start();
-					osc.stop(ctx.currentTime + 0.1);
-				} catch {}
+				playBeep(800, "sine", 0.1);
 			} else {
 				setLastResult({
 					success: false,
@@ -1191,15 +1201,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 					errorType: res.errorType,
 					claimedAt: res.claimedAt
 				});
-				try {
-					const ctx = new window.AudioContext();
-					const osc = ctx.createOscillator();
-					osc.connect(ctx.destination);
-					osc.frequency.value = 200;
-					osc.type = "square";
-					osc.start();
-					osc.stop(ctx.currentTime + 0.3);
-				} catch {}
+				playBeep(200, "square", 0.3);
 			}
 		} catch (err: any) {
 			setLastResult({ success: false, message: "Server error during scan." });
@@ -1234,7 +1236,7 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 				</div>
 				<h2 className="text-5xl font-bold tracking-tight text-foreground">Scanner Mode Active</h2>
 				<p className="text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
-					Ready. Point your USB Barcode Scanner at the Resident ID to instantly mark them as claimed.
+					Scan a Resident ID to mark as claimed.
 				</p>
 			</div>
 
@@ -1291,9 +1293,9 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 						</div>
 					</div>
 				) : (
-					<div className="w-full h-full border-2 border-dashed border-border/60 bg-card/30 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center text-muted-foreground gap-5 transition-colors hover:border-primary/50 hover:bg-card/50">
+					<div className="w-full h-full border-2 border-dashed border-border/60 bg-card/30 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center text-muted-foreground gap-6 transition-colors hover:border-primary/50 hover:bg-card/50">
 						<ScanBarcode className="w-16 h-16 text-muted-foreground/50" />
-						<span className="font-medium text-2xl tracking-tight">Waiting for scan</span>
+						<span className="font-bold text-3xl tracking-tight text-foreground/80">Waiting for scan</span>
 					</div>
 				)}
 			</div>
