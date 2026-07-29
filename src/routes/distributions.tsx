@@ -359,23 +359,20 @@ function DistributionsPage() {
 		}
 	};
 
-	if (selectedProgram) {
-		return (
-			<DistributionDetail 
-				program={selectedProgram} 
-				onBack={() => {
-					setSelectedProgram(null);
-					getDistributionPrograms().then(setPrograms);
-				}} 
-				onEdit={() => openEditModal(selectedProgram)}
-			/>
-		);
-	}
-
 	return (
 		<>
-			<div className="space-y-6 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
-			<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between hide-on-print">
+			{selectedProgram ? (
+				<DistributionDetail 
+					program={selectedProgram} 
+					onBack={() => {
+						setSelectedProgram(null);
+						getDistributionPrograms().then(setPrograms);
+					}} 
+					onEdit={() => openEditModal(selectedProgram)}
+				/>
+			) : (
+				<div className="space-y-6 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between hide-on-print">
 					<div>
 						<h2 className="text-2xl font-bold tracking-tight text-foreground">
 							Ayuda & Distributions
@@ -394,31 +391,31 @@ function DistributionsPage() {
 					<div className="flex-1 overflow-auto">
 						<Table>
 							<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
-								<TableRow className="border-border hover:bg-transparent">
-									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
-									<TableHead className="text-muted-foreground font-medium h-10">Program Name</TableHead>
-									<TableHead className="text-muted-foreground font-medium h-10">Description</TableHead>
-									<TableHead className="text-muted-foreground font-medium h-10">Date</TableHead>
-									<TableHead className="text-center text-muted-foreground font-medium h-10">Target Demographic</TableHead>
-									<TableHead className="w-24 text-right text-muted-foreground font-medium h-10">Actions</TableHead>
+								<TableRow className="border-0 hover:bg-transparent">
+									<TableHead className="w-16 text-muted-foreground font-medium h-10 px-5 bg-card whitespace-nowrap">No.</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 px-5 bg-card whitespace-nowrap">Program Name</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 px-5 bg-card whitespace-nowrap">Description</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 px-5 bg-card whitespace-nowrap">Date</TableHead>
+									<TableHead className="text-center text-muted-foreground font-medium h-10 px-5 bg-card whitespace-nowrap">Target Demographic</TableHead>
+									<TableHead className="w-24 text-right text-muted-foreground font-medium h-10 px-5 bg-card whitespace-nowrap">Actions</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{programs.map((prog: any, i: number) => (
 									<TableRow 
 										key={prog.id} 
-										className="border-border hover:bg-muted/30 transition-colors cursor-pointer"
+										className="border-b border-border/60 hover:bg-muted/50 transition-colors cursor-pointer"
 										onClick={() => setSelectedProgram({ id: prog.id, name: prog.name, date: prog.date })}
 									>
-										<TableCell className="text-muted-foreground text-sm py-2">{i + 1}</TableCell>
-										<TableCell className="text-foreground text-sm py-2">
+										<TableCell className="text-muted-foreground text-sm px-5 py-3 align-middle">{i + 1}</TableCell>
+										<TableCell className="text-foreground text-sm px-5 py-3 align-middle">
 											{prog.name}
 										</TableCell>
-										<TableCell className="text-muted-foreground text-sm py-2 max-w-[200px] truncate" title={prog.description || ""}>
+										<TableCell className="text-muted-foreground text-sm px-5 py-3 align-middle max-w-[200px] truncate" title={prog.description || ""}>
 											{prog.description || "—"}
 										</TableCell>
-										<TableCell className="text-muted-foreground text-sm py-2">{prog.date}</TableCell>
-										<TableCell className="py-2 text-center">
+										<TableCell className="text-muted-foreground text-sm px-5 py-3 align-middle">{prog.date}</TableCell>
+										<TableCell className="px-5 py-3 text-center align-middle">
 											<div className="flex flex-wrap items-center justify-center gap-1.5">
 												{(prog.targetDemographic || "Custom Selection").split(",").map((tag: string, idx: number) => {
 													const t = tag.trim();
@@ -436,7 +433,7 @@ function DistributionsPage() {
 												})}
 											</div>
 										</TableCell>
-										<TableCell className="text-right py-2">
+										<TableCell className="text-right px-5 py-3 align-middle">
 											<div className="flex justify-end gap-1">
 												<Button
 													variant="ghost"
@@ -474,6 +471,7 @@ function DistributionsPage() {
 					</div>
 				</div>
 			</div>
+			)}
 
 			{/* Create/Edit Modal */}
 			<Dialog open={isModalOpen} onOpenChange={(open) => !open && closeDialog()}>
