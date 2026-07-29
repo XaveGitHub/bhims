@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getPublicQueue } from "../lib/queue-service";
-import { Loader2 } from "lucide-react";
+import { Loader2, Volume2, VolumeX } from "lucide-react";
 
 
 export const Route = createFileRoute("/monitor")({
@@ -11,6 +11,7 @@ export const Route = createFileRoute("/monitor")({
 function MonitorDashboard() {
   const [queue, setQueue] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMuted, setIsMuted] = useState(true); // Browsers require autoplaying videos to start muted
 
   useEffect(() => {
     loadQueue();
@@ -32,10 +33,23 @@ function MonitorDashboard() {
   const readyToClaim = queue.filter((item) => item.status === "Ready to Claim");
   const processing = queue.filter((item) => item.status === "Processing");
 
+
+
+  const getGridCols = (length: number) => {
+    if (length > 24) return "grid-cols-6";
+    if (length > 16) return "grid-cols-5";
+    if (length > 8) return "grid-cols-4";
+    if (length > 4) return "grid-cols-3";
+    return "grid-cols-2";
+  };
+
   const getTextSize = (length: number) => {
-    if (length > 12) return "text-5xl";
-    if (length > 6) return "text-7xl";
-    return "text-8xl"; // Still use 8xl for just a few numbers, but shrink if there are many
+    if (length > 24) return "text-xl";
+    if (length > 16) return "text-2xl";
+    if (length > 8) return "text-4xl";
+    if (length > 4) return "text-5xl";
+    if (length > 2) return "text-7xl";
+    return "text-8xl";
   };
 
   return (
@@ -91,71 +105,98 @@ function MonitorDashboard() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* LEFT COLUMN: PREPARING (Processing) */}
-        <div className="flex-1 border-r border-border flex flex-col bg-transparent">
-          <div className="px-10 py-8 shrink-0">
-            <h2 className="text-5xl font-semibold tracking-tight text-foreground mb-2 uppercase">
-              Preparing
-            </h2>
-            <p className="text-2xl text-primary">
-              Please wait for your number
-            </p>
+        
+        {/* LEFT AREA: QUEUES STACKED VERTICALLY (45% of screen) */}
+        <div className="w-[45%] border-r border-border flex flex-col bg-transparent">
+          
+          {/* NOW SERVING (Ready to Claim) */}
+          <div className="h-1/2 flex flex-col border-b border-border bg-transparent">
+            <div className="px-10 py-8 shrink-0">
+              <h2 className="text-5xl font-semibold tracking-tight text-foreground mb-2 uppercase">
+                Ready to Claim
+              </h2>
+              <p className="text-2xl text-emerald-400">
+                Please approach the counter
+              </p>
+            </div>
+
+            <div className="flex-1 overflow-hidden px-10 pb-10 flex flex-col justify-center">
+              {readyToClaim.length === 0 ? (
+                <div className="h-[200px] flex flex-col items-center justify-center text-muted-foreground">
+                  {/* Empty State */}
+                </div>
+              ) : (
+                <div className={`grid ${getGridCols(readyToClaim.length)} gap-6`}>
+                  {readyToClaim.map((item) => (
+                    <div
+                      key={item.queueNumber}
+                      className="flex items-center justify-center py-4"
+                    >
+                      <span className={`${getTextSize(readyToClaim.length)} font-semibold tracking-tighter text-foreground drop-shadow-md`}>
+                        {String(item.queueNumber).padStart(4, "0")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar">
-            {processing.length === 0 ? (
-              <div className="h-[400px] flex flex-col items-center justify-center text-muted-foreground">
-                {/* Empty State */}
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-8">
-                {processing.map((item) => (
-                  <div
-                    key={item.queueNumber}
-                    className="flex items-center justify-center py-4"
-                  >
-                    <span className={`${getTextSize(processing.length)} font-semibold tracking-tighter text-foreground drop-shadow-md`}>
-                      {String(item.queueNumber).padStart(4, "0")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* PREPARING (Processing) */}
+          <div className="h-1/2 flex flex-col bg-transparent">
+            <div className="px-10 py-8 shrink-0">
+              <h2 className="text-5xl font-semibold tracking-tight text-foreground mb-2 uppercase">
+                Preparing
+              </h2>
+              <p className="text-2xl text-primary">
+                Please wait for your number
+              </p>
+            </div>
+
+            <div className="flex-1 overflow-hidden px-10 pb-10 flex flex-col justify-center">
+              {processing.length === 0 ? (
+                <div className="h-[200px] flex flex-col items-center justify-center text-muted-foreground">
+                  {/* Empty State */}
+                </div>
+              ) : (
+                <div className={`grid ${getGridCols(processing.length)} gap-6`}>
+                  {processing.map((item) => (
+                    <div
+                      key={item.queueNumber}
+                      className="flex items-center justify-center py-4"
+                    >
+                      <span className={`${getTextSize(processing.length)} font-semibold tracking-tighter text-foreground drop-shadow-md`}>
+                        {String(item.queueNumber).padStart(4, "0")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
         </div>
 
-        {/* RIGHT COLUMN: NOW SERVING (Ready to Claim) */}
-        <div className="flex-1 flex flex-col bg-transparent">
-          <div className="px-10 py-8 shrink-0">
-            <h2 className="text-5xl font-semibold tracking-tight text-foreground mb-2 uppercase">
-              Ready to Claim
-            </h2>
-            <p className="text-2xl text-emerald-400">
-              Please approach the counter
-            </p>
-          </div>
-
-          <div className="flex-1 overflow-y-auto px-10 pb-10 custom-scrollbar">
-            {readyToClaim.length === 0 ? (
-              <div className="h-[400px] flex flex-col items-center justify-center text-muted-foreground">
-                {/* Empty State */}
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-8">
-                {readyToClaim.map((item) => (
-                  <div
-                    key={item.queueNumber}
-                    className="flex items-center justify-center py-4"
-                  >
-                    <span className={`${getTextSize(readyToClaim.length)} font-semibold tracking-tighter text-foreground drop-shadow-md`}>
-                      {String(item.queueNumber).padStart(4, "0")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+        {/* RIGHT COLUMN: NATIVE VIDEO (55% of screen) */}
+        <div className="w-[55%] bg-black flex items-center justify-center pointer-events-auto relative group">
+          <video 
+            src="/video.mp4" 
+            autoPlay 
+            loop 
+            muted={isMuted}
+            className="w-full h-full object-contain"
+          />
+          
+          {/* Custom Volume Overlay */}
+          <button 
+            onClick={() => setIsMuted(!isMuted)}
+            className="absolute bottom-6 right-6 p-4 rounded-full bg-black/60 hover:bg-black/80 text-white transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+            aria-label={isMuted ? "Unmute video" : "Mute video"}
+          >
+            {isMuted ? <VolumeX className="w-8 h-8" /> : <Volume2 className="w-8 h-8" />}
+          </button>
         </div>
+
       </div>
     </div>
   );
