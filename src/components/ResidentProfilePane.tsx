@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { format, parseISO } from "date-fns";
-import { Calendar as CalendarIcon, Clock, Edit2, FileText, GripHorizontal, Home, Loader2, MapPin, Package, User, X, Printer, Download, UserCheck, AlertCircle } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Edit2, FileText, GripHorizontal, Home, Loader2, MapPin, Package, User, X, Printer, Download, UserCheck, AlertCircle, Copy, CheckCircle2 } from "lucide-react";
 import { getResidentTransactions } from "../lib/queue-service";
 import { ResidentIdCard } from "./residents/resident-id-card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
@@ -1377,8 +1377,16 @@ export function ResidentProfilePane({
 										variant="outline"
 										className="bg-card border-border text-foreground/80 font-normal px-2 py-0"
 									>
-										<span className="text-primary font-mono tracking-wider ml-1">
+										<span 
+											className="text-primary font-mono tracking-wider ml-1 flex items-center gap-1.5 cursor-pointer group"
+											onClick={() => {
+												const idToCopy = resident.residentId || resident.id.toString().padStart(4, "0");
+												navigator.clipboard.writeText(idToCopy);
+												toast("ID Copied to clipboard", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
+											}}
+										>
 											ID: {resident.residentId || resident.id.toString().padStart(4, "0")}
+											<Copy className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 transition-all" />
 										</span>
 									</Badge>
 									<span className="flex items-center">

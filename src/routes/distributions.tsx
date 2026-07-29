@@ -15,7 +15,8 @@ import {
 	Loader2,
 	FileSpreadsheet,
 	AlertCircle,
-	Edit
+	Edit,
+	Copy
 } from "lucide-react";
 import { toast } from "sonner";
 import { read, utils, writeFile } from "xlsx";
@@ -955,7 +956,7 @@ function DistributionDetail({ program, onBack, onEdit }: { program: {id: number,
 						</div>
 
 						<div className="flex flex-wrap items-center gap-3">
-							<Button variant="outline" onClick={handleExport} className="gap-2 bg-background border-border text-foreground/80 hover:bg-card rounded-xl">
+							<Button variant="outline" onClick={handleExport} className="gap-2 bg-card border-border text-foreground/80 hover:bg-muted hover:text-foreground transition-colors rounded-xl px-4">
 								<Download className="w-4 h-4" />
 								Export Excel
 							</Button>
@@ -971,7 +972,7 @@ function DistributionDetail({ program, onBack, onEdit }: { program: {id: number,
 								variant="outline" 
 								onClick={() => fileInputRef.current?.click()}
 								disabled={isImporting}
-								className="gap-2 bg-background border-border text-foreground/80 hover:bg-card rounded-xl"
+								className="gap-2 bg-card border-border text-foreground/80 hover:bg-muted hover:text-foreground transition-colors rounded-xl px-4"
 							>
 								<Upload className="w-4 h-4" />
 								{isImporting ? "Importing..." : "Import Scanned Results"}
@@ -1017,8 +1018,8 @@ function DistributionDetail({ program, onBack, onEdit }: { program: {id: number,
 						<Table>
 							<TableHeader className="sticky top-0 z-10 bg-surface border-b border-border">
 								<TableRow className="border-border hover:bg-transparent">
-									<TableHead className="w-16 text-muted-foreground font-medium h-10">No.</TableHead>
-									<TableHead className="text-muted-foreground font-medium h-10">ID</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 w-16">No.</TableHead>
+									<TableHead className="text-muted-foreground font-medium h-10 text-center">ID</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Last Name</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">First Name</TableHead>
 									<TableHead className="text-muted-foreground font-medium h-10">Middle Name</TableHead>
@@ -1036,7 +1037,17 @@ function DistributionDetail({ program, onBack, onEdit }: { program: {id: number,
 									return (
 									<TableRow key={b.id} className="border-border hover:bg-muted/30 transition-colors print-row">
 										<TableCell className="text-muted-foreground text-sm py-2">{(page - 1) * rowsPerPage + i + 1}</TableCell>
-										<TableCell className="text-muted-foreground text-xs font-mono py-2">{b.residentCode || "—"}</TableCell>
+										<TableCell className="py-2 text-center">
+											<div className="flex items-center justify-center gap-1.5 group cursor-pointer w-fit mx-auto" onClick={() => {
+												if (b.residentCode) {
+													navigator.clipboard.writeText(b.residentCode);
+													toast("ID Copied to clipboard", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
+												}
+											}}>
+												{b.residentCode && <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 text-primary transition-all" />}
+												<span className="text-muted-foreground text-xs font-mono group-hover:text-primary transition-colors">{b.residentCode || "—"}</span>
+											</div>
+										</TableCell>
 										<TableCell className="text-foreground text-sm py-2">{b.lastName || "-"}</TableCell>
 										<TableCell className="text-foreground text-sm py-2">{b.firstName || "-"}</TableCell>
 										<TableCell className="text-muted-foreground py-2">{b.middleName || "—"}</TableCell>
@@ -1271,7 +1282,18 @@ function ScannerMode({ programId, onClose }: { programId: number, onClose: () =>
 								<div className="space-y-2 bg-background/40 p-5 rounded-xl border border-border/50">
 									<p className="text-3xl text-foreground font-bold tracking-tight">{lastResult.resident.fullName}</p>
 									<div className="flex items-center gap-4">
-										<p className="text-primary font-mono text-xl">{lastResult.resident.residentId}</p>
+										<div 
+											className="flex items-center gap-2 group cursor-pointer w-fit" 
+											onClick={() => {
+												if (lastResult.resident.residentId) {
+													navigator.clipboard.writeText(lastResult.resident.residentId);
+													toast("ID Copied to clipboard", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
+												}
+											}}
+										>
+											<Copy className="w-5 h-5 text-muted-foreground/50 group-hover:text-primary transition-all" />
+											<p className="text-muted-foreground group-hover:text-primary transition-colors font-mono text-xl">{lastResult.resident.residentId}</p>
+										</div>
 										{lastResult.claimedAt && (
 											<span className="text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
 												<Clock className="w-4 h-4" />

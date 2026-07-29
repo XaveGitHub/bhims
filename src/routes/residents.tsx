@@ -20,7 +20,9 @@ import {
 	UserPlus,
 	X,
 	MapPin,
-	UserMinus
+	UserMinus,
+	Copy,
+	CheckCircle2
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "../components/ui/badge";
@@ -375,13 +377,25 @@ function ResidentsView() {
 			{
 				id: "residentId",
 				accessorKey: "residentId",
-				header: "ID",
+				header: () => <div className="text-center">ID</div>,
 				enableSorting: false,
 				enableHiding: false,
 				cell: ({ row }) => (
-					<span className="text-xs font-mono text-muted-foreground">
-						{row.original.residentId || "—"}
-					</span>
+					<div 
+						className="flex items-center justify-center gap-1.5 group cursor-pointer w-fit mx-auto" 
+						onClick={(e) => {
+							e.stopPropagation();
+							if (row.original.residentId) {
+								navigator.clipboard.writeText(row.original.residentId);
+								toast("ID Copied to clipboard", { icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> });
+							}
+						}}
+					>
+						<Copy className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 transition-all" />
+						<span className="text-xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
+							{row.original.residentId || "—"}
+						</span>
+					</div>
 				),
 			},
 			{
