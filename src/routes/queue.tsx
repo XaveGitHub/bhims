@@ -451,7 +451,7 @@ function QueueDashboard() {
       {/* Document Verification Pane */}
       {selectedBatch && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm" onClick={() => setSelectedBatch(null)} />
+          <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setSelectedBatch(null)} />
           <Draggable nodeRef={dragNodeRef} handle=".drag-handle" cancel=".no-drag">
             <div ref={dragNodeRef} className="fixed top-[5vh] left-1/2 -translate-x-1/2 w-[1300px] h-[85vh] max-h-[900px] z-50 pointer-events-none [&>*]:pointer-events-auto shadow-2xl rounded-2xl overflow-hidden">
               <QueueVerificationPane

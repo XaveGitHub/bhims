@@ -1322,8 +1322,8 @@ export function ResidentProfilePane({
 				)}
 			>
 				{/* Drag Indicator Icon */}
-				<div className="drag-handle cursor-move absolute top-0 left-0 right-0 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-					<GripHorizontal className="h-4 w-4 text-muted-foreground" />
+				<div className="drag-handle cursor-grab active:cursor-grabbing absolute top-0 left-0 right-0 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+					<GripHorizontal className="h-4 w-4 text-muted-foreground pointer-events-none" />
 				</div>
 
 				<div className="absolute top-4 right-4 flex items-center gap-1 no-drag">

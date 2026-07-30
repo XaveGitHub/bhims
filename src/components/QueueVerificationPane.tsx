@@ -283,9 +283,9 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 				}
 			`}</style>
 			
-			<div className="flex flex-col h-full bg-card border border-border rounded-xl shadow-lg overflow-hidden pointer-events-auto">
+			<div className="flex flex-col h-full bg-card border border-border rounded-2xl shadow-lg overflow-hidden pointer-events-auto">
 				{/* Header (Draggable) */}
-				<div className="drag-handle bg-card p-5 flex flex-col border-b border-border shrink-0 cursor-grab active:cursor-grabbing rounded-t-xl relative group">
+				<div className="drag-handle bg-card p-5 flex flex-col border-b border-border shrink-0 cursor-grab active:cursor-grabbing rounded-t-2xl relative group">
 					<div className="absolute top-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
 						<GripHorizontal className="w-8 h-8 text-muted-foreground" />
 					</div>
@@ -311,7 +311,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 
 				<div className="flex flex-1 overflow-hidden">
 					{/* Sidebar */}
-					<div className="w-64 bg-card/50 border-r border-border overflow-y-auto p-4 space-y-2 shrink-0">
+					<div className="w-64 bg-card/50 border-r border-border overflow-y-auto p-4 space-y-2 shrink-0 rounded-bl-2xl">
 						<h3 className="text-xs font-medium text-muted-foreground mb-3 pl-2">Documents ({batch.items.length})</h3>
 						{batch.items.map((item: any, idx: number) => {
 							const isPrinted = printedItems[item.id] || item.status === "Ready to Claim" || item.status === "Completed";
@@ -496,7 +496,7 @@ export function QueueVerificationPane({ batch, onClose, onStatusChange }: QueueV
 						</div>
 
 						{/* Right: Actions */}
-						<div className="w-5/12 bg-background p-6 flex flex-col overflow-y-auto">
+						<div className="w-5/12 bg-background p-6 flex flex-col overflow-y-auto rounded-br-2xl">
 							<div className="space-y-4 flex-1">
 								<div className="flex items-center justify-between">
 									<div>
