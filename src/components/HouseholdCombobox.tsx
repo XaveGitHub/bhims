@@ -44,6 +44,8 @@ export function HouseholdCombobox({
 				memberCount: 0,
 				adultsCount: 0,
 				childrenCount: 0,
+				block: null,
+				lot: null,
 			});
 		} else if (!value) {
 			setSelectedValue(null);
